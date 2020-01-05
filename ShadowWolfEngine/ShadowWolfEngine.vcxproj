@@ -87,10 +87,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\ShadowWolfEngine\Dependencies\imgui;D:\ShadowWolfEngine\Dependencies\stb\include;D:\ShadowWolfEngine\Dependencies\spdlog;D:\ShadowWolfEngine\Dependencies\Assimp\include;D:\ShadowWolfEngine\Dependencies\glfw;D:\ShadowWolfEngine\Dependencies\glm;D:\ShadowWolfEngine\Dependencies\glslang\include;D:\ShadowWolfEngine\Dependencies\PhysX\include;D:\ShadowWolfEngine\Dependencies\Vulkan\Include;D:\ShadowWolfEngine\ShadowWolfEngine\Source\Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\ShadowWolfEngine\Dependencies\imgui\bin;D:\ShadowWolfEngine\Dependencies\Vulkan\bin;D:\ShadowWolfEngine\Dependencies\PhysX\lib;D:\ShadowWolfEngine\Dependencies\glslang\lib;D:\ShadowWolfEngine\Dependencies\Assimp\win64;D:\ShadowWolfEngine\Dependencies\Assimp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;assimp-vc141-mt.lib;glslang.lib;glslangd.lib;HLSL.lib;HLSLd.lib;OGLCompiler.lib;OGLCompilerd.lib;OSDependent.lib;OSDependentd.lib;SPIRV.lib;SPIRVd.lib;SPVRemapper.lib;SPVRemapperd.lib;vulkan-1.lib;VkLayer_utils.lib;shaderc_combined.lib;PhysX3_x64.lib;PhysX3CharacterKinematic_x64.lib;PhysX3Common_x64.lib;PhysX3Cooking_x64.lib;PhysX3Extensions.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,10 +102,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\ShadowWolfEngine\Dependencies\imgui;D:\ShadowWolfEngine\Dependencies\stb\include;D:\ShadowWolfEngine\Dependencies\spdlog;D:\ShadowWolfEngine\Dependencies\Assimp\include;D:\ShadowWolfEngine\Dependencies\glfw;D:\ShadowWolfEngine\Dependencies\glm;D:\ShadowWolfEngine\Dependencies\glslang\include;D:\ShadowWolfEngine\Dependencies\PhysX\include;D:\ShadowWolfEngine\Dependencies\Vulkan\Include;D:\ShadowWolfEngine\ShadowWolfEngine\Source\Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\ShadowWolfEngine\Dependencies\imgui\bin;D:\ShadowWolfEngine\Dependencies\Vulkan\bin;D:\ShadowWolfEngine\Dependencies\PhysX\lib;D:\ShadowWolfEngine\Dependencies\glslang\lib;D:\ShadowWolfEngine\Dependencies\Assimp\win64;D:\ShadowWolfEngine\Dependencies\Assimp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;assimp-vc141-mt.lib;glslang.lib;glslangd.lib;HLSL.lib;HLSLd.lib;OGLCompiler.lib;OGLCompilerd.lib;OSDependent.lib;OSDependentd.lib;SPIRV.lib;SPIRVd.lib;SPVRemapper.lib;SPVRemapperd.lib;vulkan-1.lib;VkLayer_utils.lib;shaderc_combined.lib;PhysX3_x64.lib;PhysX3CharacterKinematic_x64.lib;PhysX3Common_x64.lib;PhysX3Cooking_x64.lib;PhysX3Extensions.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -113,12 +119,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\ShadowWolfEngine\Dependencies\imgui;D:\ShadowWolfEngine\Dependencies\stb\include;D:\ShadowWolfEngine\Dependencies\spdlog;D:\ShadowWolfEngine\Dependencies\Assimp\include;D:\ShadowWolfEngine\Dependencies\glfw;D:\ShadowWolfEngine\Dependencies\glm;D:\ShadowWolfEngine\Dependencies\glslang\include;D:\ShadowWolfEngine\Dependencies\PhysX\include;D:\ShadowWolfEngine\Dependencies\Vulkan\Include;D:\ShadowWolfEngine\ShadowWolfEngine\Source\Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\ShadowWolfEngine\Dependencies\imgui\bin;D:\ShadowWolfEngine\Dependencies\Vulkan\bin;D:\ShadowWolfEngine\Dependencies\PhysX\lib;D:\ShadowWolfEngine\Dependencies\glslang\lib;D:\ShadowWolfEngine\Dependencies\Assimp\win64;D:\ShadowWolfEngine\Dependencies\Assimp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;assimp-vc141-mt.lib;glslang.lib;glslangd.lib;HLSL.lib;HLSLd.lib;OGLCompiler.lib;OGLCompilerd.lib;OSDependent.lib;OSDependentd.lib;SPIRV.lib;SPIRVd.lib;SPVRemapper.lib;SPVRemapperd.lib;vulkan-1.lib;VkLayer_utils.lib;shaderc_combined.lib;PhysX3_x64.lib;PhysX3CharacterKinematic_x64.lib;PhysX3Common_x64.lib;PhysX3Cooking_x64.lib;PhysX3Extensions.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,15 +138,47 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\ShadowWolfEngine\Dependencies\imgui;D:\ShadowWolfEngine\Dependencies\stb\include;D:\ShadowWolfEngine\Dependencies\spdlog;D:\ShadowWolfEngine\Dependencies\Assimp\include;D:\ShadowWolfEngine\Dependencies\glfw;D:\ShadowWolfEngine\Dependencies\glm;D:\ShadowWolfEngine\Dependencies\glslang\include;D:\ShadowWolfEngine\Dependencies\PhysX\include;D:\ShadowWolfEngine\Dependencies\Vulkan\Include;D:\ShadowWolfEngine\ShadowWolfEngine\Source\Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\ShadowWolfEngine\Dependencies\imgui\bin;D:\ShadowWolfEngine\Dependencies\Vulkan\bin;D:\ShadowWolfEngine\Dependencies\PhysX\lib;D:\ShadowWolfEngine\Dependencies\glslang\lib;D:\ShadowWolfEngine\Dependencies\Assimp\win64;D:\ShadowWolfEngine\Dependencies\Assimp\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;assimp-vc141-mt.lib;glslang.lib;glslangd.lib;HLSL.lib;HLSLd.lib;OGLCompiler.lib;OGLCompilerd.lib;OSDependent.lib;OSDependentd.lib;SPIRV.lib;SPIRVd.lib;SPVRemapper.lib;SPVRemapperd.lib;vulkan-1.lib;VkLayer_utils.lib;shaderc_combined.lib;PhysX3_x64.lib;PhysX3CharacterKinematic_x64.lib;PhysX3Common_x64.lib;PhysX3Cooking_x64.lib;PhysX3Extensions.lib;ImGui.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CoreApplication\Core\Application.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\ApplicationEvent.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\Event.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\KeyEvent.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\MouseEvent.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Assert.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Base.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Buffer.h" />
+    <ClInclude Include="Source\CoreApplication\Core\InputCore\Input.h" />
+    <ClInclude Include="Source\CoreApplication\Core\InputCore\KeyCodes.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Layer.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\LayerStack.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Debug\Log.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Platform.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\TimeStep.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Window.h" />
+    <ClInclude Include="Source\Engine.h" />
+    <ClInclude Include="Source\CoreApplication\EntryPoint.h" />
+    <ClInclude Include="Source\SWpch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\CoreApplication\Core\Application.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\Base.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\Layer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\LayerStack.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Debug\Log.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\TimeStep.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Window.cpp" />
+    <ClCompile Include="Source\SWpch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
