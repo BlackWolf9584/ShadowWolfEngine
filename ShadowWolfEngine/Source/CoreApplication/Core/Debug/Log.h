@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Utilities/Base.h"
+#include "CoreApplication/Core/Utilities/Base.h"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/logger.h>

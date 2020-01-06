@@ -1,6 +1,6 @@
 #pragma once
-#include "Renderer/Shader.h"
-#include "Platform/OpenGL/OpenGLShaderUniform.h"
+#include "CoreApplication/Renderer/Shader.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLShaderUniform.h"
 
 #include <Glad/glad.h>
 

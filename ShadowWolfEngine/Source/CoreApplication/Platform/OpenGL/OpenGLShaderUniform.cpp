@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Platform/OpenGL/OpenGLShaderUniform.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLShaderUniform.h"
 
 namespace SW
 {

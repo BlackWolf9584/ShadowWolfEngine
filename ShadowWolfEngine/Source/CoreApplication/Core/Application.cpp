@@ -1,7 +1,7 @@
 #include "SWpch.h"
-#include "Core/Application.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/Framebuffer.h"
+#include "CoreApplication/Core/Application.h"
+#include "CoreApplication/Renderer/Renderer.h"
+#include "CoreApplication/Renderer/Framebuffer.h"
 
 #include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>

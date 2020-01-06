@@ -1,6 +1,6 @@
 #pragma once
-#include "Renderer/RenderCommandQueue.h"
-#include "Renderer/RendererAPI.h"
+#include "CoreApplication/Renderer/RenderCommandQueue.h"
+#include "CoreApplication/Renderer/RendererAPI.h"
 
 namespace SW
 {

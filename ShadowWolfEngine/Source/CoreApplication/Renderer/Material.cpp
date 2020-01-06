@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Renderer/Material.h"
+#include "CoreApplication/Renderer/Material.h"
 
 namespace SW
 {

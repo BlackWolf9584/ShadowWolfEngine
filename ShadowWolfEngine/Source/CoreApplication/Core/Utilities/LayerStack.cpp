@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Utilities/LayerStack.h"
+#include "CoreApplication/Core/Utilities/LayerStack.h"
 
 namespace SW
 {

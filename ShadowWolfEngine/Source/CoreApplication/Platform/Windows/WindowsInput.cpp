@@ -1,7 +1,7 @@
 #include "SWpch.h"
-#include "Platform/Windows/WindowsInput.h"
-#include "Platform/Windows/WindowsWindow.h"
-#include "Core/Application.h"
+#include "CoreApplication/Platform/Windows/WindowsInput.h"
+#include "CoreApplication/Platform/Windows/WindowsWindow.h"
+#include "CoreApplication/Core/Application.h"
 
 #include <GLFW/glfw3.h>
 

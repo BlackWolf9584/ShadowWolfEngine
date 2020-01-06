@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utilities/Base.h"
+#include "CoreApplication/Core/Utilities/Base.h"
 
 namespace SW
 {

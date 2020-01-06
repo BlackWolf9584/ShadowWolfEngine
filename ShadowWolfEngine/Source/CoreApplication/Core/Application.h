@@ -1,9 +1,9 @@
 #pragma once
-#include "Utilities/Base.h"
-#include "Utilities/TimeStep.h"
-#include "Utilities/Window.h"
-#include "Utilities/LayerStack.h"
-#include "Events/ApplicationEvent.h"
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Utilities/TimeStep.h"
+#include "CoreApplication/Core/Utilities/Window.h"
+#include "CoreApplication/Core/Utilities/LayerStack.h"
+#include "CoreApplication/Core/Events/ApplicationEvent.h"
 #include "CoreApplication/ImGui/ImGuiLayer.h"
 
 namespace SW

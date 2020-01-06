@@ -1,7 +1,7 @@
 #include "SWpch.h"
-#include "Renderer/Texture.h"
-#include "Renderer/RendererAPI.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "CoreApplication/Renderer/Texture.h"
+#include "CoreApplication/Renderer/RendererAPI.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLTexture.h"
 
 namespace SW
 {

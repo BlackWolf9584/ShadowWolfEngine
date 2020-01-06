@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer/Buffer.h"
+#include "CoreApplication/Renderer/Buffer.h"
 
 #include <memory>
 

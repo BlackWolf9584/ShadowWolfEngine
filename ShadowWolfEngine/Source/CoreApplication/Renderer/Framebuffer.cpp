@@ -1,6 +1,6 @@
 #include "SWpch.h"
-#include "Renderer/Framebuffer.h"
-#include "Platform/OpenGL/OpenGLFramebuffer.h"
+#include "CoreApplication/Renderer/Framebuffer.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLFramebuffer.h"
 
 namespace SW
 {

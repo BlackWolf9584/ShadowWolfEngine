@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/Utilities/Buffer.h"
-#include "Core/Utilities/Base.h"
-#include "Renderer/RendererAPI.h"
+#include "CoreApplication/Core/Utilities/Buffer.h"
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Renderer/RendererAPI.h"
 
 namespace SW
 {

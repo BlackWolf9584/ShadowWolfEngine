@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLVertexArray.h"
 
 #include <Glad/glad.h>
 

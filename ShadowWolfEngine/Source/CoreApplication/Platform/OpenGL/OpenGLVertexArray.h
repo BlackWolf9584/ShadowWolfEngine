@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer/VertexArray.h"
+#include "CoreApplication/Renderer/VertexArray.h"
 
 namespace SW
 {

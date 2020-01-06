@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer/ShaderUniform.h"
+#include "CoreApplication/Renderer/ShaderUniform.h"
 
 namespace SW
 {

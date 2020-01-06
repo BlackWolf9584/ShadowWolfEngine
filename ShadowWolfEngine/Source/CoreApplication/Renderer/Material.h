@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/Utilities/Base.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Texture.h"
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Renderer/Shader.h"
+#include "CoreApplication/Renderer/Texture.h"
 
 #include <unordered_set>
 

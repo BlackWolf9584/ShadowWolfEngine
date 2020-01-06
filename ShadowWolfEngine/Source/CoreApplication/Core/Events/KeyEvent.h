@@ -1,6 +1,6 @@
 #pragma once
-#include "Events/Event.h"
-#include "InputCore/KeyCodes.h"
+#include "CoreApplication/Core/Events/Event.h"
+#include "CoreApplication/Core/InputCore/KeyCodes.h"
 
 #include <sstream>
 

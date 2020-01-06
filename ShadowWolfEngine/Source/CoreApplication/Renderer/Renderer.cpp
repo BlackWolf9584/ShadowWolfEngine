@@ -1,6 +1,6 @@
 #include "SWpch.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/Shader.h"
+#include "CoreApplication/Renderer/Renderer.h"
+#include "CoreApplication/Renderer/Shader.h"
 
 namespace SW
 {

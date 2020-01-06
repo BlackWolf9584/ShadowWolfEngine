@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Debug/Log.h"
+#include "CoreApplication/Core/Debug/Log.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 

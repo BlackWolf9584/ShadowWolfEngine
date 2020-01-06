@@ -1,6 +1,6 @@
 #include "SWpch.h"
-#include "Platform/OpenGL/OpenGLFramebuffer.h"
-#include "Renderer/Renderer.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLFramebuffer.h"
+#include "CoreApplication/Renderer/Renderer.h"
 
 #include <Glad/glad.h>
 

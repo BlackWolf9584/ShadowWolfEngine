@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer/Framebuffer.h"
+#include "CoreApplication/Renderer/Framebuffer.h"
 
 namespace SW
 {

@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLShader.h"
 
 #include <string>
 #include <sstream>

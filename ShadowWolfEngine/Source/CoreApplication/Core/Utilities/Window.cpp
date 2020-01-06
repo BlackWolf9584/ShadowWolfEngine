@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Utilities/Window.h"
+#include "CoreApplication/Core/Utilities/Window.h"
 
 namespace SW
 {

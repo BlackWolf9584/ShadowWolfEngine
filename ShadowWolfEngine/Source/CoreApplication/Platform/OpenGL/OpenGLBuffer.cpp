@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Platform/OpenGL/OPenGLBuffer.h"
+#include "CoreApplication/Platform/OpenGL/OPenGLBuffer.h"
 
 #include <Glad/glad.h>
 

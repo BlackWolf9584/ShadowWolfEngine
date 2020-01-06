@@ -39,10 +39,10 @@ project "ShadowWolfEngine"
 
 	files
 	{
-		"%{prj.name}/src/**.h", 
-		"%{prj.name}/src/**.c", 
-		"%{prj.name}/src/**.hpp", 
-		"%{prj.name}/src/**.cpp" 
+		"%{prj.name}/Source/**.h", 
+		"%{prj.name}/Source/**.c", 
+		"%{prj.name}/Source/**.hpp", 
+		"%{prj.name}/Source/**.cpp" 
 	}
 
 	includedirs
@@ -116,15 +116,15 @@ project "Playground"
 
 	files
 	{
-		"%{prj.name}/src/**.h", 
-		"%{prj.name}/src/**.c", 
-		"%{prj.name}/src/**.hpp", 
-		"%{prj.name}/src/**.cpp" 	
+		"%{prj.name}/Source/**.h", 
+		"%{prj.name}/Source/**.c", 
+		"%{prj.name}/Source/**.hpp", 
+		"%{prj.name}/Source/**.cpp" 	
 	}
 
 	includedirs
 	{
-		"%{prj.name}/src",
+		"%{prj.name}/Source",
 		"ShadowWolfEngine/Source",
 		"ShadowWolfEngine/Dependencies",
 		"%{IncludeDir.glm}"

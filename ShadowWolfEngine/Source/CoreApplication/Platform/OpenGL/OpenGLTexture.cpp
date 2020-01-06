@@ -1,7 +1,7 @@
 #include "SWpch.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
-#include "Renderer/RendererAPI.h"
-#include "Renderer/Renderer.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLTexture.h"
+#include "CoreApplication/Renderer/RendererAPI.h"
+#include "CoreApplication/Renderer/Renderer.h"
 
 #include <Glad/glad.h>
 #include <stb/include/stb_image.h>

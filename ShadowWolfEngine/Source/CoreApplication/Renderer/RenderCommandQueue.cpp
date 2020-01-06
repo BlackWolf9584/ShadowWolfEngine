@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Renderer/RenderCommandQueue.h"
+#include "CoreApplication/Renderer/RenderCommandQueue.h"
 
 #define SW_RENDER_TRACE(...) SW_CORE_TRACE(__VA_ARGS__)
 

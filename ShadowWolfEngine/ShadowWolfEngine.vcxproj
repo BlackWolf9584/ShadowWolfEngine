@@ -140,6 +140,81 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CoreApplication\Core\Application.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Debug\Log.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\ApplicationEvent.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\Event.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\KeyEvent.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Events\MouseEvent.h" />
+    <ClInclude Include="Source\CoreApplication\Core\InputCore\Input.h" />
+    <ClInclude Include="Source\CoreApplication\Core\InputCore\KeyCodes.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Assert.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Base.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Buffer.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Layer.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\LayerStack.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Platform.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\TimeStep.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Window.h" />
+    <ClInclude Include="Source\CoreApplication\EntryPoint.h" />
+    <ClInclude Include="Source\CoreApplication\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OPenGLBuffer.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLFramebuffer.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLShaderUniform.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\Windows\WindowsInput.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\Windows\WindowsWindow.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Buffer.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Camera.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Framebuffer.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Material.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Mesh.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\RenderCommandQueue.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Renderer.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\RendererAPI.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Shader.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\ShaderUniform.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\Texture.h" />
+    <ClInclude Include="Source\CoreApplication\Renderer\VertexArray.h" />
+    <ClInclude Include="Source\Engine.h" />
+    <ClInclude Include="Source\SWpch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\CoreApplication\Core\Application.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Debug\Log.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\Base.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\Layer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\LayerStack.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\TimeStep.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\Window.cpp" />
+    <ClCompile Include="Source\CoreApplication\ImGui\ImGuiBuild.cpp" />
+    <ClCompile Include="Source\CoreApplication\ImGui\ImguiLayer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLFramebuffer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLShaderUniform.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\Windows\WindowsInput.cpp" />
+    <ClCompile Include="Source\CoreApplication\Platform\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Buffer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Camera.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Material.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Mesh.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\RenderCommandQueue.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Renderer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Shader.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\Texture.cpp" />
+    <ClCompile Include="Source\CoreApplication\Renderer\VertexArray.cpp" />
+    <ClCompile Include="Source\SWpch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="Dependencies\GLFW\GLFW.vcxproj">
       <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
     </ProjectReference>

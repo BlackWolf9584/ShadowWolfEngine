@@ -1,5 +1,5 @@
 #pragma once
-#include "Events/Event.h"
+#include "CoreApplication/Core/Events/Event.h"
 
 #include <sstream>
 

@@ -1,6 +1,6 @@
 #include "SWpch.h"
-#include "Renderer/Camera.h"
-#include "Core/InputCore/Input.h"
+#include "CoreApplication/Renderer/Camera.h"
+#include "CoreApplication/Core/InputCore/Input.h"
 
 #include <GLFW/glfw3.h>
 #include <glm/gtc/quaternion.hpp>

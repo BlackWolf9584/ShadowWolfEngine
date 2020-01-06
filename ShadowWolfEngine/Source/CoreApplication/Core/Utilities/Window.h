@@ -1,6 +1,6 @@
 #pragma once
-#include "Utilities/Base.h"
-#include "Events/Event.h"
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Events/Event.h"
 
 #include <functional>
 

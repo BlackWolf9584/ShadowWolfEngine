@@ -1,8 +1,8 @@
 #include "SWpch.h"
-#include "Platform/Windows/WindowsWindow.h"
-#include "Core/Events/ApplicationEvent.h"
-#include "Core/Events/KeyEvent.h"
-#include "Core/Events/MouseEvent.h"
+#include "CoreApplication/Platform/Windows/WindowsWindow.h"
+#include "CoreApplication/Core/Events/ApplicationEvent.h"
+#include "CoreApplication/Core/Events/KeyEvent.h"
+#include "CoreApplication/Core/Events/MouseEvent.h"
 
 #include <Glad/include/glad/glad.h>
 #include <ImGui/imgui.h>

@@ -1,9 +1,9 @@
 #pragma once
-#include "Core/Utilities/TimeStep.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Buffer.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Material.h"
+#include "CoreApplication/Core/Utilities/TimeStep.h"
+#include "CoreApplication/Renderer/VertexArray.h"
+#include "CoreApplication/Renderer/Buffer.h"
+#include "CoreApplication/Renderer/Shader.h"
+#include "CoreApplication/Renderer/Material.h"
 
 #include <vector>
 #include <glm/glm.hpp>

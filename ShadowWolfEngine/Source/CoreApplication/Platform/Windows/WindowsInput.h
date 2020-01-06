@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/InputCore/Input.h"
+#include "CoreApplication/Core/InputCore/Input.h"
 
 namespace SW
 {

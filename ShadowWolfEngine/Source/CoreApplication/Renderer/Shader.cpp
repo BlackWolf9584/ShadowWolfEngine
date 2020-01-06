@@ -1,7 +1,7 @@
 #include "SWpch.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Renderer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "CoreApplication/Renderer/Shader.h"
+#include "CoreApplication/Renderer/Renderer.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLShader.h"
 
 namespace SW
 {

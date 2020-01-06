@@ -1,6 +1,6 @@
 #pragma once
-#include "Renderer/RendererAPI.h"
-#include "Renderer/Texture.h"
+#include "CoreApplication/Renderer/RendererAPI.h"
+#include "CoreApplication/Renderer/Texture.h"
 
 namespace SW
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer/Renderer.h"
+#include "CoreApplication/Renderer/Renderer.h"
 
 namespace SW
 {

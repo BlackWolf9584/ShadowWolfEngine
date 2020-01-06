@@ -1,7 +1,7 @@
 #pragma once
-#include "Renderer/RendererAPI.h"
-#include "Renderer/Renderer.h"
-#include "Core/Debug/Log.h"
+#include "CoreApplication/Renderer/RendererAPI.h"
+#include "CoreApplication/Renderer/Renderer.h"
+#include "CoreApplication/Core/Debug/Log.h"
 
 #include <Glad/glad.h>
 

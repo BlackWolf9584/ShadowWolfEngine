@@ -1,6 +1,6 @@
 #include "SWpch.h"
-#include "Base.h"
-#include "Debug/Log.h"
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Debug/Log.h"
 
 #define SW_BUILD_ID "v0.1a"
 

@@ -1,5 +1,5 @@
 #include "SWpch.h"
-#include "Renderer/Mesh.h"
+#include "CoreApplication/Renderer/Mesh.h"
 
 #include <Glad/glad.h>
 #include <glm/ext/matrix_transform.hpp>

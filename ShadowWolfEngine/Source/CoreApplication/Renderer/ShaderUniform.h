@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Utilities/Base.h"
-#include "Core/Debug/Log.h"
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Debug/Log.h"
 
 #include <string>
 #include <vector>

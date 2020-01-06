@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Utilities/Window.h"
+#include "CoreApplication/Core/Utilities/Window.h"
 
 #include <GLFW/glfw3.h>
 

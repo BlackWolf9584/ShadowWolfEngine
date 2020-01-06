@@ -1,7 +1,7 @@
 #include "SWpch.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Renderer.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "CoreApplication/Renderer/VertexArray.h"
+#include "CoreApplication/Renderer/Renderer.h"
+#include "CoreApplication/Platform/OpenGL/OpenGLVertexArray.h"
 
 namespace SW
 {

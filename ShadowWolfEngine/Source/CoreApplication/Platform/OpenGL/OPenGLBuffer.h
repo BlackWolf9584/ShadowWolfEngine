@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Utilities/Buffer.h"
-#include "Renderer/Buffer.h"
+#include "CoreApplication/Core/Utilities/Buffer.h"
+#include "CoreApplication/Renderer/Buffer.h"
 
 namespace SW
 {

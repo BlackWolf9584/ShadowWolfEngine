@@ -1,8 +1,8 @@
 #pragma once
-#include "Core/Utilities/Base.h"
-#include "Core/Utilities/Buffer.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/ShaderUniform.h"
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Utilities/Buffer.h"
+#include "CoreApplication/Renderer/Renderer.h"
+#include "CoreApplication/Renderer/ShaderUniform.h"
 
 #include <string>
 #include "glm/glm.hpp"
