@@ -4,7 +4,7 @@
 #include <Windows.h>
 #endif
 
-//standard includes
+//std includes
 #include <memory>
 #include <vector>
 #include <string>
@@ -14,4 +14,7 @@
 #include <algorithm>
 #include <fstream>
 
-//Core includes here
+//Engine includes
+#include "Core/Utilities/Base.h"
+#include "Core/Debug/Log.h"
+#include "Core/Events/Event.h"
