@@ -5,6 +5,7 @@
 #endif
 
 //std includes
+#include <assert.h>
 #include <memory>
 #include <vector>
 #include <string>

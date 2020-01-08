@@ -1,8 +1,8 @@
 #pragma once
 #include "CoreApplication/Core/Utilities/Base.h"
 
-#include <spdlog/spdlog.h>
-#include <spdlog/logger.h>
+#include "spdlog/spdlog.h"
+#include "spdlog/logger.h"
 #include <spdlog/fmt/ostr.h>
 
 namespace SW

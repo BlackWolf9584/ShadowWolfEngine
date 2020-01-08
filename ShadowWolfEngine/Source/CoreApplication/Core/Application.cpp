@@ -4,11 +4,11 @@
 #include "CoreApplication/Renderer/Framebuffer.h"
 
 #include <GLFW/glfw3.h>
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include "GLFW/glfw3native.h"
-#include <Window.h>
+#include <Windows.h>
 
 namespace SW
 {

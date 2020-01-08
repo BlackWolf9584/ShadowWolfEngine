@@ -14,7 +14,7 @@
 #include <Assimp/DefaultLogger.hpp>
 #include <Assimp/LogStream.hpp>
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 namespace SW
 {
@@ -424,11 +424,11 @@ namespace SW
 		{
 			if (m_AnimationPlaying)
 			{
-				m_WorldTime += ts;
+				//m_WorldTime += ts;
 
-				float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
-				m_AnimationTime += ts * ticksPerSecond;
-				m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
+				//float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
+				//m_AnimationTime += ts * ticksPerSecond;
+				//m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
 			}
 
 			BoneTransform(m_AnimationTime);

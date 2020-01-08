@@ -50,22 +50,11 @@ project "ShadowWolfEngine"
 		"%{prj.name}/Source",
 		"%{prj.name}/Source/CoreApplication",
 		"%{prj.name}/Source/CoreApplication/Core",
-		"%{prj.name}/Source/CoreApplication/Core/Debug",
-		"%{prj.name}/Source/CoreApplication/Core/Events",
-		"%{prj.name}/Source/CoreApplication/Core/InputCore",
-		"%{prj.name}/Source/CoreApplication/Core/Utilities",
-		"%{prj.name}/Source/CoreApplication/ImGui",
-		"%{prj.name}/Source/CoreApplication/Platform",
-		"%{prj.name}/Source/CoreApplication/Platform/OpenGL",
-		"%{prj.name}/Source/CoreApplication/Platform/Windows",
-		"%{prj.name}/Source/CoreApplication/Platform/DirectX",
-		"%{prj.name}/Source/CoreApplication/Platform/Vulkan",
-		"%{prj.name}/Source/CoreApplication/Renderer",
-		"%{prj.name}/Dependencies",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{prj.name}/Dependencies/SPDLOG/include",
 		"%{prj.name}/Dependencies/Assimp/include",
 		"%{prj.name}/Dependencies/stb/include"
 	}
@@ -127,6 +116,7 @@ project "Playground"
 		"%{prj.name}/Source",
 		"ShadowWolfEngine/Source",
 		"ShadowWolfEngine/Dependencies",
+		"ShadowWolfEngine/Dependencies/SPDLOG/include",
 		"%{IncludeDir.glm}"
 	}
 

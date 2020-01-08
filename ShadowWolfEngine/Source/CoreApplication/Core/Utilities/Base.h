@@ -18,7 +18,7 @@ namespace SW
 
 #define SW_BIND_EVENT_FN(fn) std::bind(&##fn, this, std::placeholders::_1)
 
-#include "Assert.h"
+#include "SWAssert.h"
 
 //pointer wrappers
 namespace SW

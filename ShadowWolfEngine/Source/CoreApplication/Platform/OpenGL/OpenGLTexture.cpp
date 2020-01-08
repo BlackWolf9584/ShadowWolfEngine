@@ -4,7 +4,7 @@
 #include "CoreApplication/Renderer/Renderer.h"
 
 #include <Glad/glad.h>
-#include <stb/include/stb_image.h>
+#include <stb_image.h>
 
 namespace SW
 {

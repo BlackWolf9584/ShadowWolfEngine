@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Source\CoreApplication\Core\Debug;Source\CoreApplication\Core\Events;Source\CoreApplication\Core\InputCore;Source\CoreApplication\Core\Utilities;Source\CoreApplication\ImGui;Source\CoreApplication\Platform;Source\CoreApplication\Platform\OpenGL;Source\CoreApplication\Platform\Windows;Source\CoreApplication\Platform\DirectX;Source\CoreApplication\Platform\Vulkan;Source\CoreApplication\Renderer;Dependencies;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Source\CoreApplication\Core\Debug;Source\CoreApplication\Core\Events;Source\CoreApplication\Core\InputCore;Source\CoreApplication\Core\Utilities;Source\CoreApplication\ImGui;Source\CoreApplication\Platform;Source\CoreApplication\Platform\OpenGL;Source\CoreApplication\Platform\Windows;Source\CoreApplication\Platform\DirectX;Source\CoreApplication\Platform\Vulkan;Source\CoreApplication\Renderer;Dependencies;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -121,7 +121,7 @@
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Source\CoreApplication\Core\Debug;Source\CoreApplication\Core\Events;Source\CoreApplication\Core\InputCore;Source\CoreApplication\Core\Utilities;Source\CoreApplication\ImGui;Source\CoreApplication\Platform;Source\CoreApplication\Platform\OpenGL;Source\CoreApplication\Platform\Windows;Source\CoreApplication\Platform\DirectX;Source\CoreApplication\Platform\Vulkan;Source\CoreApplication\Renderer;Dependencies;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -148,12 +148,12 @@
     <ClInclude Include="Source\CoreApplication\Core\Events\MouseEvent.h" />
     <ClInclude Include="Source\CoreApplication\Core\InputCore\Input.h" />
     <ClInclude Include="Source\CoreApplication\Core\InputCore\KeyCodes.h" />
-    <ClInclude Include="Source\CoreApplication\Core\Utilities\Assert.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Base.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Buffer.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Layer.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\LayerStack.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Platform.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\SWAssert.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\TimeStep.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Window.h" />
     <ClInclude Include="Source\CoreApplication\EntryPoint.h" />

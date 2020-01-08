@@ -1,4 +1,5 @@
 #pragma once
+#include "SWpch.h"
 #include "CoreApplication/Core/Utilities/Layer.h"
 
 namespace SW

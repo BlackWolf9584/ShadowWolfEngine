@@ -1,5 +1,5 @@
 #pragma once
-#include <CoreApplication\Core\Utilities\Assert.h>
+#include <CoreApplication\Core\Utilities\SWAssert.h>
 #include <CoreApplication\Core\Utilities\Base.h>
 #include <CoreApplication\Core\Application.h>
 
