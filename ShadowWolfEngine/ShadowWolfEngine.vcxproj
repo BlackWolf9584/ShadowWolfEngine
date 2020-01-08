@@ -76,11 +76,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -96,7 +98,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -104,6 +106,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -120,7 +123,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -128,6 +131,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -158,7 +162,7 @@
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Window.h" />
     <ClInclude Include="Source\CoreApplication\EntryPoint.h" />
     <ClInclude Include="Source\CoreApplication\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OPenGLBuffer.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLShader.h" />

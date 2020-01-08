@@ -4,7 +4,7 @@
 #include "CoreApplication/Core/Events/KeyEvent.h"
 #include "CoreApplication/Core/Events/MouseEvent.h"
 
-#include <glad/glad.h>
+
 #include <imgui.h>
 
 namespace SW

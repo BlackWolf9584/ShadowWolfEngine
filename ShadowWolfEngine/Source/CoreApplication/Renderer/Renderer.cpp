@@ -12,8 +12,8 @@ namespace SW
 		s_Instance->m_ShaderLibrary = std::make_unique<ShaderLibrary>();
 		SW_RENDER({ RendererAPI::Init(); });
 
-		Renderer::GetShaderLibrary()->Load("");
-		Renderer::GetShaderLibrary()->Load("");
+		Renderer::GetShaderLibrary()->Load("Assets/shaders/PBR_Static.glsl");
+		Renderer::GetShaderLibrary()->Load("Assets/shaders/PBR_Anim.glsl");
 	}
 
 	void Renderer::Clear()

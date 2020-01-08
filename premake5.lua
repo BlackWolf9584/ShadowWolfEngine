@@ -8,7 +8,7 @@ workspace "ShadowWolf"
 		"Release",
 		"Dist"
 	}
-
+	
 	startproject "Playground"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
