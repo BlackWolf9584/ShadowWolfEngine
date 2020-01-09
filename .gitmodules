@@ -4,3 +4,6 @@
 [submodule "ShadowWolfEngine/Dependencies/imgui"]
 	path = ShadowWolfEngine/Dependencies/imgui
 	url = https://github.com/BlackWolf9584/imgui.git
+[submodule "ShadowWolfEngine/Dependencies/glfw"]
+	path = ShadowWolfEngine/Dependencies/glfw
+	url = https://github.com/glfw/glfw.git
