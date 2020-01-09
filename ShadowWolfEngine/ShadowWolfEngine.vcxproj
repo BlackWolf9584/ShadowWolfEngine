@@ -189,7 +189,6 @@
     <ClCompile Include="Source\CoreApplication\Core\Utilities\LayerStack.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Utilities\TimeStep.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Utilities\Window.cpp" />
-    <ClCompile Include="Source\CoreApplication\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="Source\CoreApplication\ImGui\ImguiLayer.cpp" />
     <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLFramebuffer.cpp" />

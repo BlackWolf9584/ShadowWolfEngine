@@ -10,6 +10,8 @@
 #include "CoreApplication/Core/Application.h"
 #include <GLFW/glfw3.h>
 
+#include "CoreApplication/Renderer/Renderer.h"
+
 namespace SW
 {
 	ImGuiLayer::ImGuiLayer()
@@ -100,4 +102,5 @@ namespace SW
 	void ImGuiLayer::OnImGuiRender()
 	{
 	}
+
 }

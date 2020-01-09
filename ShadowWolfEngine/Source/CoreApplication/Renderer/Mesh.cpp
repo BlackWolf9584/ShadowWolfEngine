@@ -69,7 +69,7 @@ namespace SW
 			SW_CORE_ERROR("Failed to load mesh file: {0}", filename);
 
 		m_IsAnimated = scene->mAnimations != nullptr;
-		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("") : Renderer::GetShaderLibrary()->Get("");
+		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("PBR_Anim") : Renderer::GetShaderLibrary()->Get("PBR_Static");
 		m_Material.reset(new SW::Material(m_MeshShader));
 		m_InverseTransform = glm::inverse(aiMatrix4x4ToGlm(scene->mRootNode->mTransformation));
 
@@ -424,11 +424,12 @@ namespace SW
 		{
 			if (m_AnimationPlaying)
 			{
-				//m_WorldTime += ts;
 
-				//float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
-				//m_AnimationTime += ts * ticksPerSecond;
-				//m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
+				m_WorldTime += ts;
+
+				float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
+				m_AnimationTime += ts * ticksPerSecond;
+				m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
 			}
 
 			BoneTransform(m_AnimationTime);

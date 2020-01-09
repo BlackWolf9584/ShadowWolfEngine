@@ -64,6 +64,7 @@ namespace SW
 
 	Ref<Shader>& ShaderLibrary::Get(const std::string& name)
 	{
+		printf("%s", name.c_str());
 		SW_CORE_ASSERT(m_Shaders.find(name) != m_Shaders.end());
 		return m_Shaders[name];
 	}

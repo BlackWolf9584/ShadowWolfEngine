@@ -139,12 +139,12 @@ project "Playground"
 
 		links
 		{
-			"ShadowWolfEngine/Dependencies/Assimp/bin/Debug/assimp-vc141-mtd.lib"
+			"ShadowWolfEngine/Dependencies/Assimp/win64/Debug/assimp-vc141-mtd.lib"
 		}
 
 		postbuildcommands 
 		{
-			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/bin/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
 		}
 				
 	filter "configurations:Release"
@@ -153,12 +153,12 @@ project "Playground"
 
 		links
 		{
-			"ShadowWolfEngine/Dependencies/Assimp/bin/Release/assimp-vc141-mt.lib"
+			"ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mt.lib"
 		}
 
 		postbuildcommands 
 		{
-			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/bin/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
 		}
 
 	filter "configurations:Dist"
@@ -167,10 +167,10 @@ project "Playground"
 
 		links
 		{
-			"ShadowWolfEngine/Dependencies/Assimp/bin/Release/assimp-vc141-mt.lib"
+			"ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mt.lib"
 		}
 
 		postbuildcommands 
 		{
-			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/bin/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
 		}

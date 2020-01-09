@@ -5,6 +5,13 @@ project "ImGui"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	includedirs
+	{
+		"%{wks.location}/%{IncludeDir.ImGui}",
+		"%{wks.location}/%{IncludeDir.GLFW}",
+		"%{wks.location}/%{IncludeDir.Glad}",
+	}
+
 	files
 	{
 		"imconfig.h",
@@ -16,7 +23,16 @@ project "ImGui"
 		"imstb_rectpack.h",
 		"imstb_textedit.h",
 		"imstb_truetype.h",
-		"imgui_demo.cpp"
+		"imgui_demo.cpp",
+		"examples/imgui_impl_glfw.h",
+		"examples/imgui_impl_glfw.cpp",
+		"examples/imgui_impl_opengl3.h",
+		"examples/imgui_impl_opengl3.cpp",
+	}
+
+	defines
+	{
+		"IMGUI_IMPL_OPENGL_LOADER_GLAD"
 	}
 
 	filter "system:windows"
