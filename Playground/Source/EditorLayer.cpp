@@ -538,7 +538,7 @@ namespace SW
 		auto [wx, wy] = Application::Get().GetWindow().GetWindowPos();
 		posX -= wx;
 		posY -= wy;
-		HZ_INFO("{0}, {1}", posX, posY);*/
+		SW_INFO("{0}, {1}", posX, posY);*/
 
 		auto viewportSize = ImGui::GetContentRegionAvail();
 		m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
