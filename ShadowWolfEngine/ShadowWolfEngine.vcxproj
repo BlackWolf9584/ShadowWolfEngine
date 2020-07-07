@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\entt;Dependencies\FastNoise;Dependencies\mono\include;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -88,7 +88,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Dependencies\mono\lib\debug\mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\entt;Dependencies\FastNoise;Dependencies\mono\include;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -112,7 +112,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Dependencies\mono\lib\debug\mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -121,7 +121,7 @@
       <PrecompiledHeaderFile>SWpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SW_PLATFORM_WINDOWS;SW_BUILD_DLL;SW_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Source\CoreApplication;Source\CoreApplication\Core;Dependencies\GLFW\include;Dependencies\Glad\include;Dependencies\glm;Dependencies\ImGui;Dependencies\entt;Dependencies\FastNoise;Dependencies\mono\include;Dependencies\SPDLOG\include;Dependencies\Assimp\include;Dependencies\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -136,7 +136,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Dependencies\mono\lib\debug\mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -148,23 +148,31 @@
     <ClInclude Include="Source\CoreApplication\Core\Events\MouseEvent.h" />
     <ClInclude Include="Source\CoreApplication\Core\InputCore\Input.h" />
     <ClInclude Include="Source\CoreApplication\Core\InputCore\KeyCodes.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Math\AABB.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Math\Mat4.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Math\Noise.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Math\Ray.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Base.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Buffer.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Layer.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\LayerStack.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Platform.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Ref.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\SWAssert.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\TimeStep.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\Timer.h" />
+    <ClInclude Include="Source\CoreApplication\Core\Utilities\UUID.h" />
     <ClInclude Include="Source\CoreApplication\Core\Utilities\Window.h" />
+    <ClInclude Include="Source\CoreApplication\Editor\EditorComponents\EditorCamera.h" />
+    <ClInclude Include="Source\CoreApplication\Editor\Panels\SceneHierarchyPanel.h" />
     <ClInclude Include="Source\CoreApplication\EntryPoint.h" />
     <ClInclude Include="Source\CoreApplication\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OPenGLBuffer.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLVertexArray.h" />
-    <ClInclude Include="Source\CoreApplication\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="Source\CoreApplication\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="Source\CoreApplication\Renderer\Buffer.h" />
     <ClInclude Include="Source\CoreApplication\Renderer\Camera.h" />
@@ -178,17 +186,30 @@
     <ClInclude Include="Source\CoreApplication\Renderer\ShaderUniform.h" />
     <ClInclude Include="Source\CoreApplication\Renderer\Texture.h" />
     <ClInclude Include="Source\CoreApplication\Renderer\VertexArray.h" />
+    <ClInclude Include="Source\CoreApplication\Scene\Components.h" />
+    <ClInclude Include="Source\CoreApplication\Scene\Entity.h" />
+    <ClInclude Include="Source\CoreApplication\Scene\Scene.h" />
+    <ClInclude Include="Source\CoreApplication\Scene\SceneCamera.h" />
+    <ClInclude Include="Source\CoreApplication\Scene\SceneSerializer.h" />
+    <ClInclude Include="Source\CoreApplication\Script\ScriptEngine.h" />
+    <ClInclude Include="Source\CoreApplication\Script\ScriptEngineRegistry.h" />
+    <ClInclude Include="Source\CoreApplication\Script\ScriptWrappers.h" />
     <ClInclude Include="Source\Engine.h" />
     <ClInclude Include="Source\SWpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\CoreApplication\Core\Application.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Debug\Log.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Math\Mat4.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Math\Noise.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Utilities\Base.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Utilities\Layer.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Utilities\LayerStack.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Utilities\TimeStep.cpp" />
+    <ClCompile Include="Source\CoreApplication\Core\Utilities\UUID.cpp" />
     <ClCompile Include="Source\CoreApplication\Core\Utilities\Window.cpp" />
+    <ClCompile Include="Source\CoreApplication\Editor\EditorComponents\EditorCamera.cpp" />
+    <ClCompile Include="Source\CoreApplication\Editor\Panels\SceneHierarchyPanel.cpp" />
     <ClCompile Include="Source\CoreApplication\ImGui\ImguiLayer.cpp" />
     <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="Source\CoreApplication\Platform\OpenGL\OpenGLFramebuffer.cpp" />
@@ -209,6 +230,13 @@
     <ClCompile Include="Source\CoreApplication\Renderer\Shader.cpp" />
     <ClCompile Include="Source\CoreApplication\Renderer\Texture.cpp" />
     <ClCompile Include="Source\CoreApplication\Renderer\VertexArray.cpp" />
+    <ClCompile Include="Source\CoreApplication\Scene\Entity.cpp" />
+    <ClCompile Include="Source\CoreApplication\Scene\Scene.cpp" />
+    <ClCompile Include="Source\CoreApplication\Scene\SceneCamera.cpp" />
+    <ClCompile Include="Source\CoreApplication\Scene\SceneSerializer.cpp" />
+    <ClCompile Include="Source\CoreApplication\Script\ScriptEngine.cpp" />
+    <ClCompile Include="Source\CoreApplication\Script\ScriptEngineRegistry.cpp" />
+    <ClCompile Include="Source\CoreApplication\Script\ScriptWrappers.cpp" />
     <ClCompile Include="Source\SWpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

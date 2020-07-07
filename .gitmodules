@@ -7,3 +7,6 @@
 [submodule "ShadowWolfEngine/Dependencies/GLFW"]
 	path = ShadowWolfEngine/Dependencies/GLFW
 	url = https://github.com/glfw/glfw.git
+[submodule "ShadowWolfEngine/Dependencies/FastNoise"]
+	path = ShadowWolfEngine/Dependencies/FastNoise
+	url = https://github.com/Auburns/FastNoise.git

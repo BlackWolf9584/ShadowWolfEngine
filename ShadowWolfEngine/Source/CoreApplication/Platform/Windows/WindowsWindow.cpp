@@ -4,7 +4,6 @@
 #include "CoreApplication/Core/Events/KeyEvent.h"
 #include "CoreApplication/Core/Events/MouseEvent.h"
 
-
 #include <imgui.h>
 
 namespace SW
@@ -50,10 +49,10 @@ namespace SW
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		glfwMaximizeWindow(m_Window);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		SW_CORE_ASSERT(status, "Failed to initialize Glad!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
@@ -82,19 +81,19 @@ namespace SW
 				{
 				case GLFW_PRESS:
 				{
-					KeyPressedEvent event(key, 0);
+					KeyPressedEvent event((KeyCode)key, 0);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					KeyReleasedEvent event(key);
+					KeyReleasedEvent event((KeyCode)key);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
-					KeyPressedEvent event(key, 1);
+					KeyPressedEvent event((KeyCode)key, 1);
 					data.EventCallback(event);
 					break;
 				}
@@ -105,7 +104,7 @@ namespace SW
 			{
 				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				KeyTypedEvent event((int)codepoint);
+				KeyTypedEvent event((KeyCode)codepoint);
 				data.EventCallback(event);
 			});
 
@@ -154,6 +153,14 @@ namespace SW
 		m_ImGuiMouseCursors[ImGuiMouseCursor_ResizeNESW] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);  // FIXME: GLFW doesn't have this.
 		m_ImGuiMouseCursors[ImGuiMouseCursor_ResizeNWSE] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);  // FIXME: GLFW doesn't have this.
 		m_ImGuiMouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+
+		// Update window size to actual size
+		{
+			int width, height;
+			glfwGetWindowSize(m_Window, &width, &height);
+			m_Data.Width = width;
+			m_Data.Height = height;
+		}
 	}
 
 	void WindowsWindow::Shutdown()

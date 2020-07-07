@@ -14,6 +14,7 @@ namespace SW
 {
 #define BIND_EVENT_FN(fn) std::bind(&Application::##fn, this, std::placeholders::_1)
 
+
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application(const ApplicationProps& props)
@@ -22,18 +23,20 @@ namespace SW
 
 		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(props.Name, props.WindowWidth, props.WindowHeight)));
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		m_Window->SetVSync(false);
+		m_Window->SetVSync(true);
 
 		m_ImGuiLayer = new ImGuiLayer("ImGui");
 		PushOverlay(m_ImGuiLayer);
 
+		ScriptEngine::Init("assets/scripts/TestApp.dll");
+
 		Renderer::Init();
-		Renderer::Get().WaitAndRender();
+		Renderer::WaitAndRender();
 	}
 
 	Application::~Application()
 	{
-
+		ScriptEngine::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -78,9 +81,9 @@ namespace SW
 
 				// Render ImGui on render thread
 				Application* app = this;
-				SW_RENDER_1(app, { app->RenderImGui(); });
+				Renderer::Submit([app]() { app->RenderImGui(); });
 
-				Renderer::Get().WaitAndRender();
+				Renderer::WaitAndRender();
 			}
 			m_Window->OnUpdate();
 
@@ -114,10 +117,11 @@ namespace SW
 			return false;
 		}
 		m_Minimized = false;
-		SW_RENDER_2(width, height, { glViewport(0, 0, width, height); });
+		Renderer::Submit([=]() { glViewport(0, 0, width, height); });
 		auto& fbs = FramebufferPool::GetGlobal()->GetAll();
 		for (auto& fb : fbs)
 			fb->Resize(width, height);
+
 		return false;
 	}
 
@@ -127,7 +131,7 @@ namespace SW
 		return true;
 	}
 
-	std::string Application::OpenFile(const std::string& filter) const
+	std::string Application::OpenFile(const char* filter) const
 	{
 		OPENFILENAMEA ofn;       // common dialog box structure
 		CHAR szFile[260] = { 0 };       // if using TCHAR macros
@@ -138,14 +142,33 @@ namespace SW
 		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)m_Window->GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
-		ofn.lpstrFilter = "All\0*.*\0";
+		ofn.lpstrFilter = filter;
 		ofn.nFilterIndex = 1;
-		ofn.lpstrFileTitle = NULL;
-		ofn.nMaxFileTitle = 0;
-		ofn.lpstrInitialDir = NULL;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
 		if (GetOpenFileNameA(&ofn) == TRUE)
+		{
+			return ofn.lpstrFile;
+		}
+		return std::string();
+	}
+
+	std::string Application::SaveFile(const char* filter) const
+	{
+		OPENFILENAMEA ofn;       // common dialog box structure
+		CHAR szFile[260] = { 0 };       // if using TCHAR macros
+
+		// Initialize OPENFILENAME
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)m_Window->GetNativeWindow());
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = sizeof(szFile);
+		ofn.lpstrFilter = filter;
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+		if (GetSaveFileNameA(&ofn) == TRUE)
 		{
 			return ofn.lpstrFile;
 		}
@@ -156,4 +179,5 @@ namespace SW
 	{
 		return (float)glfwGetTime();
 	}
+
 }

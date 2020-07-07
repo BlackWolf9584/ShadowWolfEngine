@@ -15,7 +15,7 @@
 #include "CoreApplication/Core/Events/MouseEvent.h"
 
 //#include <imgui.h>
-#include "/ShadowWolfEngine/ShadowWolfEngine/Dependencies/ImGui/imgui.h"
+#include "../Dependencies/ImGui/imgui.h"
 
 //Renderer API includes
 #include "CoreApplication/Renderer/Renderer.h"

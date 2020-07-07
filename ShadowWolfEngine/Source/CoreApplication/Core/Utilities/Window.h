@@ -21,7 +21,7 @@ namespace SW
 	};
 
 	// Interface representing a desktop system based Window
-	class Window
+	class Window : public RefCounted
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
@@ -30,8 +30,9 @@ namespace SW
 
 		virtual void OnUpdate() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
+		virtual std::pair<uint32_t, uint32_t> GetSize() const = 0;
 		virtual std::pair<float, float> GetWindowPos() const = 0;
 
 
@@ -44,4 +45,5 @@ namespace SW
 
 		static Window* Create(const WindowProps& props = WindowProps());
 	};
+
 }

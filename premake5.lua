@@ -19,11 +19,20 @@ IncludeDir["GLFW"] = "ShadowWolfEngine/Dependencies/GLFW/include"
 IncludeDir["Glad"] = "ShadowWolfEngine/Dependencies/Glad/include"
 IncludeDir["ImGui"] = "ShadowWolfEngine/Dependencies/ImGui"
 IncludeDir["glm"] = "ShadowWolfEngine/Dependencies/glm"
+IncludeDir["entt"] = "ShadowWolfEngine/Dependencies/entt"
+IncludeDir["FastNoise"] = "ShadowWolfEngine/Dependencies/FastNoise"
+IncludeDir["mono"] = "ShadowWolfEngine/Dependencies/mono/include"
 
+LibraryDir = {}
+LibraryDir["mono"] = "Dependencies/mono/lib/debug/mono-2.0-sgen.lib"
+
+group "Dependencies"
 include "ShadowWolfEngine/Dependencies/GLFW"
 include "ShadowWolfEngine/Dependencies/Glad"
 include "ShadowWolfEngine/Dependencies/ImGui"
+group ""
 
+group "Core"
 project "ShadowWolfEngine"
 	location "ShadowWolfEngine"
 	kind "StaticLib"
@@ -42,7 +51,14 @@ project "ShadowWolfEngine"
 		"%{prj.name}/Source/**.h", 
 		"%{prj.name}/Source/**.c", 
 		"%{prj.name}/Source/**.hpp", 
-		"%{prj.name}/Source/**.cpp" 
+		"%{prj.name}/Source/**.cpp",
+		
+		"%{prj.name}/vendor/FastNoise/**.cpp",
+
+		"%{prj.name}/vendor/yaml-cpp/src/**.cpp",
+		"%{prj.name}/vendor/yaml-cpp/src/**.h",
+		"%{prj.name}/vendor/yaml-cpp/include/**.h"
+
 	}
 
 	includedirs
@@ -54,6 +70,9 @@ project "ShadowWolfEngine"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.FastNoise}",
+		"%{IncludeDir.mono}",
 		"%{prj.name}/Dependencies/SPDLOG/include",
 		"%{prj.name}/Dependencies/Assimp/include",
 		"%{prj.name}/Dependencies/stb/include"
@@ -64,8 +83,12 @@ project "ShadowWolfEngine"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"opengl32.lib"
+		"opengl32.lib",
+		"%{LibraryDir.mono}"
 	}
+
+	filter "files:ShadowWolfEngine/Dependencies/FastNoise/**.cpp or files:ShadowWolfEngine/Dependencies/yaml-cpp/src/**.cpp"
+	flags {"NoPCH"}
 
 	filter "system:windows"
 		systemversion "latest"
@@ -88,6 +111,21 @@ project "ShadowWolfEngine"
 		defines "SW_DIST"
 		optimize "On"
 
+project "ShadowWolf-ScriptCore"
+	location "ShadowWolf-ScriptCore"
+	kind "SharedLib"
+	language "C#"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs", 
+	}
+group ""
+
+group "Tools"
 project "Playground"
 	location "Playground"
 	kind "ConsoleApp"
@@ -117,6 +155,7 @@ project "Playground"
 		"ShadowWolfEngine/Source",
 		"ShadowWolfEngine/Dependencies",
 		"ShadowWolfEngine/Dependencies/SPDLOG/include",
+		"%{IncludeDir.entt}",
 		"%{IncludeDir.glm}"
 	}
 
@@ -144,7 +183,8 @@ project "Playground"
 
 		postbuildcommands 
 		{
-			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../ShadowWolfEngine/Dependencies/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
 		}
 				
 	filter "configurations:Release"
@@ -158,7 +198,8 @@ project "Playground"
 
 		postbuildcommands 
 		{
-			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../ShadowWolfEngine/Dependencies/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
 		}
 
 	filter "configurations:Dist"
@@ -172,5 +213,50 @@ project "Playground"
 
 		postbuildcommands 
 		{
-			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../ShadowWolfEngine/Dependencies/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
 		}
+group ""
+
+workspace "Playground"
+	architecture "x64"
+	targetdir "build"
+
+	configurations 
+	{
+		"Debug",
+		"Release",
+		"Dist"
+	}
+
+project "ShadowWolf-ScriptCore"
+	location "ShadowWolf-ScriptCore"
+	kind "SharedLib"
+	language "C#"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs", 
+	}
+
+project "TestApp"
+	location "TestApp"
+	kind "SharedLib"
+	language "C#"
+
+	targetdir ("Hazelnut/assets/scripts")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs", 
+	}
+
+	links
+	{
+		"ShadowWolfEngine-ScriptCore"
+	}
+group ""

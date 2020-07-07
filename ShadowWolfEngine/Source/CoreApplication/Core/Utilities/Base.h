@@ -1,4 +1,6 @@
 #pragma once
+#include "Ref.h"
+
 #include <memory>
 
 namespace SW
@@ -24,10 +26,13 @@ namespace SW
 namespace SW
 {
 	template<typename T>
-		using Scope = std::unique_ptr<T>;
+	using Scope = std::unique_ptr<T>;
+	template<typename T, typename ... Args>
+	constexpr Scope<T> CreateScope(Args&& ... args)
+	{
+		return std::make_unique<T>(std::forward<Args>(args)...);
+	}
 
-	template<typename T>
-		using Ref = std::shared_ptr<T>;
+	using byte = uint8_t;
 
-	using byte = unsigned char;
 }
