@@ -1,6 +1,5 @@
 # Binaries
 **/bin/
-!thirdparty/bin/premake/
 bin-int/
 
 # Visual Studio files and folder
