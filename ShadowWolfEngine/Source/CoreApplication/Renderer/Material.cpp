@@ -9,7 +9,7 @@ namespace SW
 
 	Ref<Material> Material::Create(const Ref<Shader>& shader)
 	{
-		return std::make_shared<Material>(shader);
+		return Ref<Material>::Create(shader);
 	}
 
 	Material::Material(const Ref<Shader>& shader)
@@ -17,6 +17,9 @@ namespace SW
 	{
 		m_Shader->AddShaderReloadedCallback(std::bind(&Material::OnShaderReloaded, this));
 		AllocateStorage();
+
+		m_MaterialFlags |= (uint32_t)MaterialFlag::DepthTest;
+		m_MaterialFlags |= (uint32_t)MaterialFlag::Blend;
 	}
 
 	Material::~Material()
@@ -25,17 +28,24 @@ namespace SW
 
 	void Material::AllocateStorage()
 	{
-		const auto& vsBuffer = m_Shader->GetVSMaterialUniformBuffer();
-		m_VSUniformStorageBuffer.Allocate(vsBuffer.GetSize());
-		m_VSUniformStorageBuffer.ZeroInitialize();
+		if (m_Shader->HasVSMaterialUniformBuffer())
+		{
+			const auto& vsBuffer = m_Shader->GetVSMaterialUniformBuffer();
+			m_VSUniformStorageBuffer.Allocate(vsBuffer.GetSize());
+			m_VSUniformStorageBuffer.ZeroInitialize();
+		}
 
-		const auto& psBuffer = m_Shader->GetPSMaterialUniformBuffer();
-		m_PSUniformStorageBuffer.Allocate(psBuffer.GetSize());
-		m_PSUniformStorageBuffer.ZeroInitialize();
+		if (m_Shader->HasPSMaterialUniformBuffer())
+		{
+			const auto& psBuffer = m_Shader->GetPSMaterialUniformBuffer();
+			m_PSUniformStorageBuffer.Allocate(psBuffer.GetSize());
+			m_PSUniformStorageBuffer.ZeroInitialize();
+		}
 	}
 
 	void Material::OnShaderReloaded()
 	{
+		return;
 		AllocateStorage();
 
 		for (auto mi : m_MaterialInstances)
@@ -89,7 +99,7 @@ namespace SW
 		return m_VSUniformStorageBuffer;
 	}
 
-	void Material::Bind() const
+	void Material::Bind()
 	{
 		m_Shader->Bind();
 
@@ -102,7 +112,7 @@ namespace SW
 		BindTextures();
 	}
 
-	void Material::BindTextures() const
+	void Material::BindTextures()
 	{
 		for (size_t i = 0; i < m_Textures.size(); i++)
 		{
@@ -118,11 +128,11 @@ namespace SW
 
 	Ref<MaterialInstance> MaterialInstance::Create(const Ref<Material>& material)
 	{
-		return std::make_shared<MaterialInstance>(material);
+		return Ref<MaterialInstance>::Create(material);
 	}
 
-	MaterialInstance::MaterialInstance(const Ref<Material>& material)
-		: m_Material(material)
+	MaterialInstance::MaterialInstance(const Ref<Material>& material, const std::string& name)
+		: m_Material(material), m_Name(name)
 	{
 		m_Material->m_MaterialInstances.insert(this);
 		AllocateStorage();
@@ -141,13 +151,31 @@ namespace SW
 
 	void MaterialInstance::AllocateStorage()
 	{
-		const auto& vsBuffer = m_Material->m_Shader->GetVSMaterialUniformBuffer();
-		m_VSUniformStorageBuffer.Allocate(vsBuffer.GetSize());
-		memcpy(m_VSUniformStorageBuffer.Data, m_Material->m_VSUniformStorageBuffer.Data, vsBuffer.GetSize());
+		if (m_Material->m_Shader->HasVSMaterialUniformBuffer())
+		{
+			const auto& vsBuffer = m_Material->m_Shader->GetVSMaterialUniformBuffer();
+			m_VSUniformStorageBuffer.Allocate(vsBuffer.GetSize());
+			memcpy(m_VSUniformStorageBuffer.Data, m_Material->m_VSUniformStorageBuffer.Data, vsBuffer.GetSize());
+		}
 
-		const auto& psBuffer = m_Material->m_Shader->GetPSMaterialUniformBuffer();
-		m_PSUniformStorageBuffer.Allocate(psBuffer.GetSize());
-		memcpy(m_PSUniformStorageBuffer.Data, m_Material->m_PSUniformStorageBuffer.Data, psBuffer.GetSize());
+		if (m_Material->m_Shader->HasPSMaterialUniformBuffer())
+		{
+			const auto& psBuffer = m_Material->m_Shader->GetPSMaterialUniformBuffer();
+			m_PSUniformStorageBuffer.Allocate(psBuffer.GetSize());
+			memcpy(m_PSUniformStorageBuffer.Data, m_Material->m_PSUniformStorageBuffer.Data, psBuffer.GetSize());
+		}
+	}
+
+	void MaterialInstance::SetFlag(MaterialFlag flag, bool value)
+	{
+		if (value)
+		{
+			m_Material->m_MaterialFlags |= (uint32_t)flag;
+		}
+		else
+		{
+			m_Material->m_MaterialFlags &= ~(uint32_t)flag;
+		}
 	}
 
 	void MaterialInstance::OnMaterialValueUpdated(ShaderUniformDeclaration* decl)
@@ -172,8 +200,10 @@ namespace SW
 		return m_VSUniformStorageBuffer;
 	}
 
-	void MaterialInstance::Bind() const
+	void MaterialInstance::Bind()
 	{
+		m_Material->m_Shader->Bind();
+
 		if (m_VSUniformStorageBuffer)
 			m_Material->m_Shader->SetVSMaterialUniformBuffer(m_VSUniformStorageBuffer);
 
@@ -188,4 +218,5 @@ namespace SW
 				texture->Bind(i);
 		}
 	}
+
 }

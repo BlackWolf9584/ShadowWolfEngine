@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine.h"
 #include "CoreApplication/ImGui/ImGuiLayer.h"
+#include "CoreApplication/Editor/EditorComponents/EditorCamera.h"
+#include "CoreApplication/Editor/Panels/SceneHierarchyPanel.h"
 
 #include "ImGui/imgui_internal.h"
 #include <glm/glm.hpp>
@@ -18,7 +20,7 @@ namespace SW
 	public:
 		enum class PropertyFlag
 		{
-			None = 0, ColorProperty = 1
+			None = 0, ColorProperty = 1, DragProperty = 2, SliderProperty = 4
 		};
 	public:
 		EditorLayer();
@@ -29,30 +31,55 @@ namespace SW
 		virtual void OnUpdate(TimeStep ts) override;
 
 		virtual void OnImGuiRender() override;
-		virtual void OnEvent(Event& event) override;
+		virtual void OnEvent(Event& e) override;
+		bool OnKeyPressedEvent(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		// ImGui UI helpers
-		void Property(const std::string& name, bool& value);
-		void Property(const std::string& name, float& value, float min = -1.0f, float max = 1.0f, PropertyFlag flags = PropertyFlag::None);
-		void Property(const std::string& name, glm::vec3& value, PropertyFlag flags);
-		void Property(const std::string& name, glm::vec3& value, float min = -1.0f, float max = 1.0f, PropertyFlag flags = PropertyFlag::None);
-		void Property(const std::string& name, glm::vec4& value, PropertyFlag flags);
-		void Property(const std::string& name, glm::vec4& value, float min = -1.0f, float max = 1.0f, PropertyFlag flags = PropertyFlag::None);
-	private:
-		Ref<Shader> m_QuadShader;
-		Ref<Shader> m_HDRShader;
-		Ref<Shader> m_GridShader;
-		Ref<Mesh> m_Mesh;
-		Ref<Mesh> m_SphereMesh, m_PlaneMesh;
-		Ref<Texture2D> m_BRDFLUT;
+		bool Property(const std::string& name, bool& value);
+		bool Property(const std::string& name, float& value, float min = -1.0f, float max = 1.0f, PropertyFlag flags = PropertyFlag::None);
+		bool Property(const std::string& name, glm::vec2& value, PropertyFlag flags);
+		bool Property(const std::string& name, glm::vec2& value, float min = -1.0f, float max = 1.0f, PropertyFlag flags = PropertyFlag::None);
+		bool Property(const std::string& name, glm::vec3& value, PropertyFlag flags);
+		bool Property(const std::string& name, glm::vec3& value, float min = -1.0f, float max = 1.0f, PropertyFlag flags = PropertyFlag::None);
+		bool Property(const std::string& name, glm::vec4& value, PropertyFlag flags);
+		bool Property(const std::string& name, glm::vec4& value, float min = -1.0f, float max = 1.0f, PropertyFlag flags = PropertyFlag::None);
 
-		Ref<MaterialInstance> m_MeshMaterial;
-		Ref<MaterialInstance> m_GridMaterial;
+		void ShowBoundingBoxes(bool show, bool onTop = false);
+		void SelectEntity(Entity entity);
+	private:
+		std::pair<float, float> GetMouseViewportSpace();
+		std::pair<glm::vec3, glm::vec3> CastRay(float mx, float my);
+
+		struct SelectedSubmesh
+		{
+			SW::Entity Entity;
+			Submesh* Mesh = nullptr;
+			float Distance = 0.0f;
+		};
+
+		void OnSelected(const SelectedSubmesh& selectionContext);
+		void OnEntityDeleted(Entity e);
+		Ray CastMouseRay();
+
+		void OnScenePlay();
+		void OnSceneStop();
+
+		void UpdateWindowTitle(const std::string& sceneName);
+	private:
+		Scope<SceneHierarchyPanel> m_SceneHierarchyPanel;
+
+		Ref<Scene> m_RuntimeScene, m_EditorScene;
+		bool m_ReloadScriptOnPlay = false;
+
+		EditorCamera m_EditorCamera;
+
+		Ref<Shader> m_BrushShader;
+		Ref<Material> m_SphereBaseMaterial;
+
+		Ref<Material> m_MeshMaterial;
 		std::vector<Ref<MaterialInstance>> m_MetalSphereMaterialInstances;
 		std::vector<Ref<MaterialInstance>> m_DielectricSphereMaterialInstances;
-
-		float m_GridScale = 16.025f, m_GridSize = 0.025f;
-		float m_MeshScale = 1.0f;
 
 		struct AlbedoInput
 		{
@@ -80,41 +107,53 @@ namespace SW
 
 		struct RoughnessInput
 		{
-			float Value = 0.5f;
+			float Value = 0.2f;
 			Ref<Texture2D> TextureMap;
 			bool UseTexture = false;
 		};
 		RoughnessInput m_RoughnessInput;
 
-		std::unique_ptr<Framebuffer> m_Framebuffer, m_FinalPresentBuffer;
-
-		Ref<VertexArray> m_FullscreenQuadVertexArray;
-		Ref<TextureCube> m_EnvironmentCubeMap, m_EnvironmentIrradiance;
-
-		Camera m_Camera;
-
-		struct Light
-		{
-			glm::vec3 Direction;
-			glm::vec3 Radiance;
-		};
-		Light m_Light;
-		float m_LightMultiplier = 0.3f;
-
 		// PBR params
-		float m_Exposure = 1.0f;
-
 		bool m_RadiancePrefilter = false;
 
 		float m_EnvMapRotation = 0.0f;
 
-		enum class Scene : uint32_t
+		enum class SceneType : uint32_t
 		{
 			Spheres = 0, Model = 1
 		};
-		Scene m_Scene;
+		SceneType m_SceneType;
 
 		// Editor resources
 		Ref<Texture2D> m_CheckerboardTex;
+		Ref<Texture2D> m_PlayButtonTex;
+
+		glm::vec2 m_ViewportBounds[2];
+		int m_GizmoType = -1; // -1 = no gizmo
+		float m_SnapValue = 0.5f;
+		bool m_AllowViewportCameraEvents = false;
+		bool m_DrawOnTopBoundingBoxes = false;
+
+		bool m_UIShowBoundingBoxes = false;
+		bool m_UIShowBoundingBoxesOnTop = false;
+
+		bool m_ViewportPanelMouseOver = false;
+		bool m_ViewportPanelFocused = false;
+
+		enum class SceneState
+		{
+			Edit = 0, Play = 1, Pause = 2
+		};
+		SceneState m_SceneState = SceneState::Edit;
+
+		enum class SelectionMode
+		{
+			None = 0, Entity = 1, SubMesh = 2
+		};
+
+		SelectionMode m_SelectionMode = SelectionMode::Entity;
+		std::vector<SelectedSubmesh> m_SelectionContext;
+		glm::mat4* m_RelativeTransform = nullptr;
+		glm::mat4* m_CurrentlySelectedTransform = nullptr;
 	};
 }

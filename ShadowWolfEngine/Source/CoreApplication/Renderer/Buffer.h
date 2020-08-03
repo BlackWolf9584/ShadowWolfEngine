@@ -5,13 +5,13 @@ namespace SW
 {
 	enum class ShaderDataType
 	{
-		None = 0, 
+		None = 0,
 		Float, 
-		Float2,
-		Float3,
+		Float2, 
+		Float3, 
 		Float4,
-		Mat3, 
-		Mat4, 
+		Mat3,
+		Mat4,
 		Int,
 		Int2,
 		Int3,
@@ -117,7 +117,7 @@ namespace SW
 		None = 0, Static = 1, Dynamic = 2
 	};
 
-	class VertexBuffer
+	class VertexBuffer : public RefCounted
 	{
 	public:
 		virtual ~VertexBuffer() {}
@@ -135,7 +135,7 @@ namespace SW
 		static Ref<VertexBuffer> Create(uint32_t size, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
 	};
 
-	class IndexBuffer
+	class IndexBuffer : public RefCounted
 	{
 	public:
 		virtual ~IndexBuffer() {}
@@ -148,6 +148,8 @@ namespace SW
 		virtual unsigned int GetSize() const = 0;
 		virtual RendererID GetRendererID() const = 0;
 
+		static Ref<IndexBuffer> Create(uint32_t size);
 		static Ref<IndexBuffer> Create(void* data, uint32_t size = 0);
 	};
+
 }

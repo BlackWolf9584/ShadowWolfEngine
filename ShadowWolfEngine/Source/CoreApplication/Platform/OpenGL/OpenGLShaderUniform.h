@@ -8,9 +8,7 @@ namespace SW
 	public:
 		enum class Type
 		{
-			NONE, 
-			TEXTURE2D, 
-			TEXTURECUBE
+			NONE, TEXTURE2D, TEXTURECUBE
 		};
 	private:
 		friend class OpenGLShader;
@@ -40,15 +38,7 @@ namespace SW
 	public:
 		enum class Type
 		{
-			NONE, 
-			FLOAT32,
-			VEC2,
-			VEC3, 
-			VEC4, 
-			MAT3, 
-			MAT4, 
-			INT32, 
-			STRUCT
+			NONE, FLOAT32, VEC2, VEC3, VEC4, MAT3, MAT4, INT32, STRUCT
 		};
 	private:
 		std::string m_Name;
@@ -115,4 +105,5 @@ namespace SW
 
 		ShaderUniformDeclaration* FindUniform(const std::string& name);
 	};
+
 }

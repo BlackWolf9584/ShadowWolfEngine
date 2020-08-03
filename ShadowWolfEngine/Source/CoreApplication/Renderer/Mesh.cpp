@@ -1,5 +1,6 @@
 #include "SWpch.h"
 #include "CoreApplication/Renderer/Mesh.h"
+#include "Renderer/Renderer.h"
 
 #include <Glad/glad.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -15,9 +16,28 @@
 #include <Assimp/LogStream.hpp>
 
 #include <imgui.h>
+#include <filesystem>
 
 namespace SW
 {
+#define MESH_DEBUG_LOG 0
+#if MESH_DEBUG_LOG
+#define SW_MESH_LOG(...) SW_CORE_TRACE(__VA_ARGS__)
+#else
+#define SW_MESH_LOG(...)
+#endif
+
+	glm::mat4 Mat4FromAssimpMat4(const aiMatrix4x4& matrix)
+	{
+		glm::mat4 result;
+		//the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
+		result[0][0] = matrix.a1; result[1][0] = matrix.a2; result[2][0] = matrix.a3; result[3][0] = matrix.a4;
+		result[0][1] = matrix.b1; result[1][1] = matrix.b2; result[2][1] = matrix.b3; result[3][1] = matrix.b4;
+		result[0][2] = matrix.c1; result[1][2] = matrix.c2; result[2][2] = matrix.c3; result[3][2] = matrix.c4;
+		result[0][3] = matrix.d1; result[1][3] = matrix.d2; result[2][3] = matrix.d3; result[3][3] = matrix.d4;
+		return result;
+	}
+
 	static const uint32_t s_MeshImportFlags =
 		aiProcess_CalcTangentSpace |        // Create binormals/tangents just in case
 		aiProcess_Triangulate |             // Make sure we're triangles
@@ -44,17 +64,6 @@ namespace SW
 		}
 	};
 
-	static glm::mat4 aiMatrix4x4ToGlm(const aiMatrix4x4& from)
-	{
-		glm::mat4 to;
-		//the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
-		to[0][0] = from.a1; to[1][0] = from.a2; to[2][0] = from.a3; to[3][0] = from.a4;
-		to[0][1] = from.b1; to[1][1] = from.b2; to[2][1] = from.b3; to[3][1] = from.b4;
-		to[0][2] = from.c1; to[1][2] = from.c2; to[2][2] = from.c3; to[3][2] = from.c4;
-		to[0][3] = from.d1; to[1][3] = from.d2; to[2][3] = from.d3; to[3][3] = from.d4;
-		return to;
-	}
-
 	Mesh::Mesh(const std::string& filename)
 		: m_FilePath(filename)
 	{
@@ -68,10 +77,13 @@ namespace SW
 		if (!scene || !scene->HasMeshes())
 			SW_CORE_ERROR("Failed to load mesh file: {0}", filename);
 
+		m_Scene = scene;
+
 		m_IsAnimated = scene->mAnimations != nullptr;
 		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("PBR_Anim") : Renderer::GetShaderLibrary()->Get("PBR_Static");
-		m_Material.reset(new SW::Material(m_MeshShader));
-		m_InverseTransform = glm::inverse(aiMatrix4x4ToGlm(scene->mRootNode->mTransformation));
+		m_BaseMaterial = Ref<Material>::Create(m_MeshShader);
+		// m_MaterialInstance = Ref<MaterialInstance>::Create(m_BaseMaterial);
+		m_InverseTransform = glm::inverse(Mat4FromAssimpMat4(scene->mRootNode->mTransformation));
 
 		uint32_t vertexCount = 0;
 		uint32_t indexCount = 0;
@@ -81,12 +93,12 @@ namespace SW
 		{
 			aiMesh* mesh = scene->mMeshes[m];
 
-			Submesh submesh;
+			Submesh& submesh = m_Submeshes.emplace_back();
 			submesh.BaseVertex = vertexCount;
 			submesh.BaseIndex = indexCount;
 			submesh.MaterialIndex = mesh->mMaterialIndex;
 			submesh.IndexCount = mesh->mNumFaces * 3;
-			m_Submeshes.push_back(submesh);
+			submesh.MeshName = mesh->mName.C_Str();
 
 			vertexCount += mesh->mNumVertices;
 			indexCount += submesh.IndexCount;
@@ -117,11 +129,20 @@ namespace SW
 			}
 			else
 			{
+				auto& aabb = submesh.BoundingBox;
+				aabb.Min = { FLT_MAX, FLT_MAX, FLT_MAX };
+				aabb.Max = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
 				for (size_t i = 0; i < mesh->mNumVertices; i++)
 				{
 					Vertex vertex;
 					vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 					vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+					aabb.Min.x = glm::min(vertex.Position.x, aabb.Min.x);
+					aabb.Min.y = glm::min(vertex.Position.y, aabb.Min.y);
+					aabb.Min.z = glm::min(vertex.Position.z, aabb.Min.z);
+					aabb.Max.x = glm::max(vertex.Position.x, aabb.Max.x);
+					aabb.Max.y = glm::max(vertex.Position.y, aabb.Max.y);
+					aabb.Max.z = glm::max(vertex.Position.z, aabb.Max.z);
 
 					if (mesh->HasTangentsAndBitangents())
 					{
@@ -140,15 +161,17 @@ namespace SW
 			for (size_t i = 0; i < mesh->mNumFaces; i++)
 			{
 				SW_CORE_ASSERT(mesh->mFaces[i].mNumIndices == 3, "Must have 3 indices.");
-				m_Indices.push_back({ mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] });
+				Index index = { mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] };
+				m_Indices.push_back(index);
+
+				if (!m_IsAnimated)
+					m_TriangleCache[m].emplace_back(m_StaticVertices[index.V1 + submesh.BaseVertex], m_StaticVertices[index.V2 + submesh.BaseVertex], m_StaticVertices[index.V3 + submesh.BaseVertex]);
 			}
+
 
 		}
 
-		SW_CORE_TRACE("NODES:");
-		SW_CORE_TRACE("-----------------------------");
 		TraverseNodes(scene->mRootNode);
-		SW_CORE_TRACE("-----------------------------");
 
 		// Bones
 		if (m_IsAnimated)
@@ -171,12 +194,12 @@ namespace SW
 						m_BoneCount++;
 						BoneInfo bi;
 						m_BoneInfo.push_back(bi);
-						m_BoneInfo[boneIndex].BoneOffset = aiMatrix4x4ToGlm(bone->mOffsetMatrix);
+						m_BoneInfo[boneIndex].BoneOffset = Mat4FromAssimpMat4(bone->mOffsetMatrix);
 						m_BoneMapping[boneName] = boneIndex;
 					}
 					else
 					{
-						SW_CORE_TRACE("Found existing bone in map");
+						SW_MESH_LOG("Found existing bone in map");
 						boneIndex = m_BoneMapping[boneName];
 					}
 
@@ -188,6 +211,253 @@ namespace SW
 					}
 				}
 			}
+		}
+
+		// Materials
+		if (scene->HasMaterials())
+		{
+			SW_MESH_LOG("---- Materials - {0} ----", filename);
+
+			m_Textures.resize(scene->mNumMaterials);
+			m_Materials.resize(scene->mNumMaterials);
+			for (uint32_t i = 0; i < scene->mNumMaterials; i++)
+			{
+				auto aiMaterial = scene->mMaterials[i];
+				auto aiMaterialNameGetName();
+
+				auto mi = Ref<MaterialInstance>::Create(m_BaseMaterial, m_MaterialName);
+				m_Materials[i] = mi;
+
+				SW_MESH_LOG("  {0} (Index = {1})", aiMaterialName.data, i);
+				aiString aiTexPath;
+				uint32_t textureCount = aiMaterial->GetTextureCount(aiTextureType_DIFFUSE);
+				SW_MESH_LOG("    TextureCount = {0}", textureCount);
+
+				aiColor3D aiColor;
+				aiMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor);
+
+				float shininess, metalness;
+				aiMaterial->Get(AI_MATKEY_SHININESS, shininess);
+				aiMaterial->Get(AI_MATKEY_REFLECTIVITY, metalness);
+
+				metalness = 0.0f;
+
+				// float roughness = 1.0f - shininess * 0.01f;
+				// roughness *= roughness;
+				float roughness = 1.0f - glm::sqrt(shininess / 100.0f);
+				SW_MESH_LOG("    COLOR = {0}, {1}, {2}", aiColor.r, aiColor.g, aiColor.b);
+				SW_MESH_LOG("    ROUGHNESS = {0}", roughness);
+				bool hasAlbedoMap = aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &aiTexPath) == AI_SUCCESS;
+				if (hasAlbedoMap)
+				{
+					// TODO: Temp - this should be handled by Shadow Wolf's filesystem
+					std::filesystem::path path = filename;
+					auto parentPath = path.parent_path();
+					parentPath /= std::string(aiTexPath.data);
+					std::string texturePath = parentPath.string();
+					SW_MESH_LOG("    Albedo map path = {0}", texturePath);
+					auto texture = Texture2D::Create(texturePath, true);
+					if (texture->Loaded())
+					{
+						m_Textures[i] = texture;
+						mi->Set("u_AlbedoTexture", m_Textures[i]);
+						mi->Set("u_AlbedoTexToggle", 1.0f);
+					}
+					else
+					{
+						SW_CORE_ERROR("Could not load texture: {0}", texturePath);
+						// Fallback to albedo color
+						mi->Set("u_AlbedoColor", glm::vec3{ aiColor.r, aiColor.g, aiColor.b });
+					}
+				}
+				else
+				{
+					mi->Set("u_AlbedoColor", glm::vec3{ aiColor.r, aiColor.g, aiColor.b });
+					SW_MESH_LOG("    No albedo map");
+				}
+
+				// Normal maps
+				mi->Set("u_NormalTexToggle", 0.0f);
+				if (aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &aiTexPath) == AI_SUCCESS)
+				{
+					// TODO: Temp - this should be handled by Shadow Wolf's filesystem
+					std::filesystem::path path = filename;
+					auto parentPath = path.parent_path();
+					parentPath /= std::string(aiTexPath.data);
+					std::string texturePath = parentPath.string();
+					SW_MESH_LOG("    Normal map path = {0}", texturePath);
+					auto texture = Texture2D::Create(texturePath);
+					if (texture->Loaded())
+					{
+						mi->Set("u_NormalTexture", texture);
+						mi->Set("u_NormalTexToggle", 1.0f);
+					}
+					else
+					{
+						SW_CORE_ERROR("    Could not load texture: {0}", texturePath);
+					}
+				}
+				else
+				{
+					SW_MESH_LOG("    No normal map");
+				}
+
+				// Roughness map
+				// mi->Set("u_Roughness", 1.0f);
+				// mi->Set("u_RoughnessTexToggle", 0.0f);
+				if (aiMaterial->GetTexture(aiTextureType_SHININESS, 0, &aiTexPath) == AI_SUCCESS)
+				{
+					// TODO: Temp - this should be handled by Shadow Wolf's filesystem
+					std::filesystem::path path = filename;
+					auto parentPath = path.parent_path();
+					parentPath /= std::string(aiTexPath.data);
+					std::string texturePath = parentPath.string();
+					SW_MESH_LOG("    Roughness map path = {0}", texturePath);
+					auto texture = Texture2D::Create(texturePath);
+					if (texture->Loaded())
+					{
+						mi->Set("u_RoughnessTexture", texture);
+						mi->Set("u_RoughnessTexToggle", 1.0f);
+					}
+					else
+					{
+						SW_CORE_ERROR("    Could not load texture: {0}", texturePath);
+					}
+				}
+				else
+				{
+					SW_MESH_LOG("    No roughness map");
+					mi->Set("u_Roughness", roughness);
+				}
+
+#if 0
+				// Metalness map (or is it??)
+				if (aiMaterial->Get("$raw.ReflectionFactor|file", aiPTI_String, 0, aiTexPath) == AI_SUCCESS)
+				{
+					// TODO: Temp - this should be handled by Shadow Wolf's filesystem
+					std::filesystem::path path = filename;
+					auto parentPath = path.parent_path();
+					parentPath /= std::string(aiTexPath.data);
+					std::string texturePath = parentPath.string();
+
+					auto texture = Texture2D::Create(texturePath);
+					if (texture->Loaded())
+					{
+						HZ_MESH_LOG("    Metalness map path = {0}", texturePath);
+						mi->Set("u_MetalnessTexture", texture);
+						mi->Set("u_MetalnessTexToggle", 1.0f);
+					}
+					else
+					{
+						SW_CORE_ERROR("Could not load texture: {0}", texturePath);
+					}
+				}
+				else
+				{
+					SW_MESH_LOG("    No metalness texture");
+					mi->Set("u_Metalness", metalness);
+				}
+#endif
+
+				bool metalnessTextureFound = false;
+				for (uint32_t i = 0; i < aiMaterial->mNumProperties; i++)
+				{
+					auto prop = aiMaterial->mProperties[i];
+
+#if DEBUG_PRINT_ALL_PROPS
+					SW_MESH_LOG("Material Property:");
+					SW_MESH_LOG("  Name = {0}", prop->mKey.data);
+					// SW_MESH_LOG("  Type = {0}", prop->mType);
+					// SW_MESH_LOG("  Size = {0}", prop->mDataLength);
+					float data = *(float*)prop->mData;
+					SW_MESH_LOG("  Value = {0}", data);
+
+					switch (prop->mSemantic)
+					{
+					case aiTextureType_NONE:
+						SW_MESH_LOG("  Semantic = aiTextureType_NONE");
+						break;
+					case aiTextureType_DIFFUSE:
+						SW_MESH_LOG("  Semantic = aiTextureType_DIFFUSE");
+						break;
+					case aiTextureType_SPECULAR:
+						SW_MESH_LOG("  Semantic = aiTextureType_SPECULAR");
+						break;
+					case aiTextureType_AMBIENT:
+						SW_MESH_LOG("  Semantic = aiTextureType_AMBIENT");
+						break;
+					case aiTextureType_EMISSIVE:
+						SW_MESH_LOG("  Semantic = aiTextureType_EMISSIVE");
+						break;
+					case aiTextureType_HEIGHT:
+						SW_MESH_LOG("  Semantic = aiTextureType_HEIGHT");
+						break;
+					case aiTextureType_NORMALS:
+						SW_MESH_LOG("  Semantic = aiTextureType_NORMALS");
+						break;
+					case aiTextureType_SHININESS:
+						SW_MESH_LOG("  Semantic = aiTextureType_SHININESS");
+						break;
+					case aiTextureType_OPACITY:
+						SW_MESH_LOG("  Semantic = aiTextureType_OPACITY");
+						break;
+					case aiTextureType_DISPLACEMENT:
+						SW_MESH_LOG("  Semantic = aiTextureType_DISPLACEMENT");
+						break;
+					case aiTextureType_LIGHTMAP:
+						SW_MESH_LOG("  Semantic = aiTextureType_LIGHTMAP");
+						break;
+					case aiTextureType_REFLECTION:
+						SW_MESH_LOG("  Semantic = aiTextureType_REFLECTION");
+						break;
+					case aiTextureType_UNKNOWN:
+						SW_MESH_LOG("  Semantic = aiTextureType_UNKNOWN");
+						break;
+					}
+#endif
+
+					if (prop->mType == aiPTI_String)
+					{
+						uint32_t strLength = *(uint32_t*)prop->mData;
+						std::string str(prop->mData + 4, strLength);
+
+						std::string key = prop->mKey.data;
+						if (key == "$raw.ReflectionFactor|file")
+						{
+							metalnessTextureFound = true;
+
+							// TODO: Temp - this should be handled by Hazel's filesystem
+							std::filesystem::path path = filename;
+							auto parentPath = path.parent_path();
+							parentPath /= str;
+							std::string texturePath = parentPath.string();
+							SW_MESH_LOG("    Metalness map path = {0}", texturePath);
+							auto texture = Texture2D::Create(texturePath);
+							if (texture->Loaded())
+							{
+								mi->Set("u_MetalnessTexture", texture);
+								mi->Set("u_MetalnessTexToggle", 1.0f);
+							}
+							else
+							{
+								SW_CORE_ERROR("    Could not load texture: {0}", texturePath);
+								mi->Set("u_Metalness", metalness);
+								mi->Set("u_MetalnessTexToggle", 0.0f);
+							}
+							break;
+						}
+					}
+				}
+
+				if (!metalnessTextureFound)
+				{
+					SW_MESH_LOG("    No metalness map");
+
+					mi->Set("u_Metalness", metalness);
+					mi->Set("u_MetalnessTexToggle", 0.0f);
+				}
+			}
+			SW_MESH_LOG("------------------------");
 		}
 
 		m_VertexArray = VertexArray::Create();
@@ -220,30 +490,53 @@ namespace SW
 
 		auto ib = IndexBuffer::Create(m_Indices.data(), m_Indices.size() * sizeof(Index));
 		m_VertexArray->SetIndexBuffer(ib);
-		m_Scene = scene;
 	}
 
 	Mesh::~Mesh()
 	{
 	}
 
-	void Mesh::TraverseNodes(aiNode* node, int level)
+	void Mesh::OnUpdate(TimeStep ts)
 	{
-		std::string levelText;
-		for (int i = 0; i < level; i++)
-			levelText += "-";
-		SW_CORE_TRACE("{0}Node name: {1}", levelText, std::string(node->mName.data));
+		if (m_IsAnimated)
+		{
+			if (m_AnimationPlaying)
+			{
+				m_WorldTime += ts;
+
+				float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
+				m_AnimationTime += ts * ticksPerSecond;
+				m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
+			}
+
+			// TODO: We only need to recalc bones if rendering has been requested at the current animation frame
+			BoneTransform(m_AnimationTime);
+		}
+	}
+
+	static std::string LevelToSpaces(uint32_t level)
+	{
+		std::string result = "";
+		for (uint32_t i = 0; i < level; i++)
+			result += "--";
+		return result;
+	}
+
+	void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
+	{
+		glm::mat4 transform = parentTransform * Mat4FromAssimpMat4(node->mTransformation);
 		for (uint32_t i = 0; i < node->mNumMeshes; i++)
 		{
 			uint32_t mesh = node->mMeshes[i];
-			m_Submeshes[mesh].Transform = aiMatrix4x4ToGlm(node->mTransformation);
+			auto& submesh = m_Submeshes[mesh];
+			submesh.NodeName = node->mName.C_Str();
+			submesh.Transform = transform;
 		}
 
+		// HZ_MESH_LOG("{0} {1}", LevelToSpaces(level), node->mName.C_Str());
+
 		for (uint32_t i = 0; i < node->mNumChildren; i++)
-		{
-			aiNode* child = node->mChildren[i];
-			TraverseNodes(child, level + 1);
-		}
+			TraverseNodes(node->mChildren[i], transform, level + 1);
 	}
 
 	uint32_t Mesh::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
@@ -300,9 +593,8 @@ namespace SW
 		SW_CORE_ASSERT(NextPositionIndex < nodeAnim->mNumPositionKeys);
 		float DeltaTime = (float)(nodeAnim->mPositionKeys[NextPositionIndex].mTime - nodeAnim->mPositionKeys[PositionIndex].mTime);
 		float Factor = (animationTime - (float)nodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
-		if (Factor < 0.0f)
-			Factor = 0.0f;
 		SW_CORE_ASSERT(Factor <= 1.0f, "Factor must be below 1.0f");
+		Factor = glm::clamp(Factor, 0.0f, 1.0f);
 		const aiVector3D& Start = nodeAnim->mPositionKeys[PositionIndex].mValue;
 		const aiVector3D& End = nodeAnim->mPositionKeys[NextPositionIndex].mValue;
 		aiVector3D Delta = End - Start;
@@ -325,9 +617,8 @@ namespace SW
 		SW_CORE_ASSERT(NextRotationIndex < nodeAnim->mNumRotationKeys);
 		float DeltaTime = (float)(nodeAnim->mRotationKeys[NextRotationIndex].mTime - nodeAnim->mRotationKeys[RotationIndex].mTime);
 		float Factor = (animationTime - (float)nodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
-		if (Factor < 0.0f)
-			Factor = 0.0f;
 		SW_CORE_ASSERT(Factor <= 1.0f, "Factor must be below 1.0f");
+		Factor = glm::clamp(Factor, 0.0f, 1.0f);
 		const aiQuaternion& StartRotationQ = nodeAnim->mRotationKeys[RotationIndex].mValue;
 		const aiQuaternion& EndRotationQ = nodeAnim->mRotationKeys[NextRotationIndex].mValue;
 		auto q = aiQuaternion();
@@ -351,9 +642,8 @@ namespace SW
 		SW_CORE_ASSERT(nextIndex < nodeAnim->mNumScalingKeys);
 		float deltaTime = (float)(nodeAnim->mScalingKeys[nextIndex].mTime - nodeAnim->mScalingKeys[index].mTime);
 		float factor = (animationTime - (float)nodeAnim->mScalingKeys[index].mTime) / deltaTime;
-		if (factor < 0.0f)
-			factor = 0.0f;
 		SW_CORE_ASSERT(factor <= 1.0f, "Factor must be below 1.0f");
+		factor = glm::clamp(factor, 0.0f, 1.0f);
 		const auto& start = nodeAnim->mScalingKeys[index].mValue;
 		const auto& end = nodeAnim->mScalingKeys[nextIndex].mValue;
 		auto delta = end - start;
@@ -361,11 +651,11 @@ namespace SW
 		return { aiVec.x, aiVec.y, aiVec.z };
 	}
 
-	void Mesh::ReadNodeHierarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& ParentTransform)
+	void Mesh::ReadNodeHierarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& parentTransform)
 	{
 		std::string name(pNode->mName.data);
 		const aiAnimation* animation = m_Scene->mAnimations[0];
-		glm::mat4 nodeTransform(aiMatrix4x4ToGlm(pNode->mTransformation));
+		glm::mat4 nodeTransform(Mat4FromAssimpMat4(pNode->mTransformation));
 		const aiNodeAnim* nodeAnim = FindNodeAnim(animation, name);
 
 		if (nodeAnim)
@@ -382,7 +672,7 @@ namespace SW
 			nodeTransform = translationMatrix * rotationMatrix * scaleMatrix;
 		}
 
-		glm::mat4 transform = ParentTransform * nodeTransform;
+		glm::mat4 transform = parentTransform * nodeTransform;
 
 		if (m_BoneMapping.find(name) != m_BoneMapping.end())
 		{
@@ -413,95 +703,24 @@ namespace SW
 			m_BoneTransforms[i] = m_BoneInfo[i].FinalTransformation;
 	}
 
-	void Mesh::Render(TimeStep ts, Ref<MaterialInstance> materialInstance)
-	{
-		Render(ts, glm::mat4(1.0f), materialInstance);
-	}
-
-	void Mesh::Render(TimeStep ts, const glm::mat4& transform, Ref<MaterialInstance> materialInstance)
-	{
-		if (m_IsAnimated)
-		{
-			if (m_AnimationPlaying)
-			{
-
-				m_WorldTime += ts;
-
-				float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
-				m_AnimationTime += ts * ticksPerSecond;
-				m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
-			}
-
-			BoneTransform(m_AnimationTime);
-		}
-
-		if (materialInstance)
-			materialInstance->Bind();
-
-		// TODO: Sort this out
-		m_VertexArray->Bind();
-
-		bool materialOverride = !!materialInstance;
-
-		// TODO: replace with render API calls
-		SW_RENDER_S2(transform, materialOverride, {
-			for (Submesh& submesh : self->m_Submeshes)
-			{
-				if (self->m_IsAnimated)
-				{
-					for (size_t i = 0; i < self->m_BoneTransforms.size(); i++)
-					{
-						std::string uniformName = std::string("u_BoneTransforms[") + std::to_string(i) + std::string("]");
-						self->m_MeshShader->SetMat4FromRenderThread(uniformName, self->m_BoneTransforms[i]);
-					}
-				}
-
-				if (!materialOverride)
-					self->m_MeshShader->SetMat4FromRenderThread("u_ModelMatrix", transform * submesh.Transform);
-				glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
-			}
-			});
-	}
-
-	void Mesh::OnImGuiRender()
-	{
-		ImGui::Begin("Mesh Debug");
-		if (ImGui::CollapsingHeader(m_FilePath.c_str()))
-		{
-			if (m_IsAnimated)
-			{
-				if (ImGui::CollapsingHeader("Animation"))
-				{
-					if (ImGui::Button(m_AnimationPlaying ? "Pause" : "Play"))
-						m_AnimationPlaying = !m_AnimationPlaying;
-
-					ImGui::SliderFloat("##AnimationTime", &m_AnimationTime, 0.0f, (float)m_Scene->mAnimations[0]->mDuration);
-					ImGui::DragFloat("Time Scale", &m_TimeMultiplier, 0.05f, 0.0f, 10.0f);
-				}
-			}
-		}
-
-		ImGui::End();
-	}
-
 	void Mesh::DumpVertexBuffer()
 	{
 		// TODO: Convert to ImGui
-		SW_CORE_TRACE("------------------------------------------------------");
-		SW_CORE_TRACE("Vertex Buffer Dump");
-		SW_CORE_TRACE("Mesh: {0}", m_FilePath);
+		SW_MESH_LOG("------------------------------------------------------");
+		SW_MESH_LOG("Vertex Buffer Dump");
+		SW_MESH_LOG("Mesh: {0}", m_FilePath);
 		if (m_IsAnimated)
 		{
 			for (size_t i = 0; i < m_AnimatedVertices.size(); i++)
 			{
 				auto& vertex = m_AnimatedVertices[i];
-				SW_CORE_TRACE("Vertex: {0}", i);
-				SW_CORE_TRACE("Position: {0}, {1}, {2}", vertex.Position.x, vertex.Position.y, vertex.Position.z);
-				SW_CORE_TRACE("Normal: {0}, {1}, {2}", vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
-				SW_CORE_TRACE("Binormal: {0}, {1}, {2}", vertex.Binormal.x, vertex.Binormal.y, vertex.Binormal.z);
-				SW_CORE_TRACE("Tangent: {0}, {1}, {2}", vertex.Tangent.x, vertex.Tangent.y, vertex.Tangent.z);
-				SW_CORE_TRACE("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
-				SW_CORE_TRACE("--");
+				SW_MESH_LOG("Vertex: {0}", i);
+				SW_MESH_LOG("Position: {0}, {1}, {2}", vertex.Position.x, vertex.Position.y, vertex.Position.z);
+				SW_MESH_LOG("Normal: {0}, {1}, {2}", vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
+				SW_MESH_LOG("Binormal: {0}, {1}, {2}", vertex.Binormal.x, vertex.Binormal.y, vertex.Binormal.z);
+				SW_MESH_LOG("Tangent: {0}, {1}, {2}", vertex.Tangent.x, vertex.Tangent.y, vertex.Tangent.z);
+				SW_MESH_LOG("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
+				SW_MESH_LOG("--");
 			}
 		}
 		else
@@ -509,15 +728,16 @@ namespace SW
 			for (size_t i = 0; i < m_StaticVertices.size(); i++)
 			{
 				auto& vertex = m_StaticVertices[i];
-				SW_CORE_TRACE("Vertex: {0}", i);
-				SW_CORE_TRACE("Position: {0}, {1}, {2}", vertex.Position.x, vertex.Position.y, vertex.Position.z);
-				SW_CORE_TRACE("Normal: {0}, {1}, {2}", vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
-				SW_CORE_TRACE("Binormal: {0}, {1}, {2}", vertex.Binormal.x, vertex.Binormal.y, vertex.Binormal.z);
-				SW_CORE_TRACE("Tangent: {0}, {1}, {2}", vertex.Tangent.x, vertex.Tangent.y, vertex.Tangent.z);
-				SW_CORE_TRACE("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
-				SW_CORE_TRACE("--");
+				SW_MESH_LOG("Vertex: {0}", i);
+				SW_MESH_LOG("Position: {0}, {1}, {2}", vertex.Position.x, vertex.Position.y, vertex.Position.z);
+				SW_MESH_LOG("Normal: {0}, {1}, {2}", vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
+				SW_MESH_LOG("Binormal: {0}, {1}, {2}", vertex.Binormal.x, vertex.Binormal.y, vertex.Binormal.z);
+				SW_MESH_LOG("Tangent: {0}, {1}, {2}", vertex.Tangent.x, vertex.Tangent.y, vertex.Tangent.z);
+				SW_MESH_LOG("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
+				SW_MESH_LOG("--");
 			}
 		}
-		SW_CORE_TRACE("------------------------------------------------------");
+		SW_MESH_LOG("------------------------------------------------------");
 	}
+
 }

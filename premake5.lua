@@ -53,11 +53,11 @@ project "ShadowWolfEngine"
 		"%{prj.name}/Source/**.hpp", 
 		"%{prj.name}/Source/**.cpp",
 		
-		"%{prj.name}/vendor/FastNoise/**.cpp",
+		"%{prj.name}/Dependencies/FastNoise/**.cpp",
 
-		"%{prj.name}/vendor/yaml-cpp/src/**.cpp",
-		"%{prj.name}/vendor/yaml-cpp/src/**.h",
-		"%{prj.name}/vendor/yaml-cpp/include/**.h"
+		"%{prj.name}/Dependencies/yaml-cpp/src/**.cpp",
+		"%{prj.name}/Dependencies/yaml-cpp/src/**.h",
+		"%{prj.name}/Dependencies/yaml-cpp/include/**.h"
 
 	}
 
@@ -75,7 +75,8 @@ project "ShadowWolfEngine"
 		"%{IncludeDir.mono}",
 		"%{prj.name}/Dependencies/SPDLOG/include",
 		"%{prj.name}/Dependencies/Assimp/include",
-		"%{prj.name}/Dependencies/stb/include"
+		"%{prj.name}/Dependencies/stb/include",
+		"%{prj.name}/Dependencies/yaml-cpp/include"
 	}
 
 	links
@@ -247,7 +248,7 @@ project "TestApp"
 	kind "SharedLib"
 	language "C#"
 
-	targetdir ("Hazelnut/assets/scripts")
+	targetdir ("Playground/assets/scripts")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files 
@@ -257,6 +258,6 @@ project "TestApp"
 
 	links
 	{
-		"ShadowWolfEngine-ScriptCore"
+		"ShadowWolf-ScriptCore"
 	}
 group ""

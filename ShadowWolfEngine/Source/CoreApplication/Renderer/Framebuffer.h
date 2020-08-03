@@ -1,6 +1,8 @@
 #pragma once
 #include "CoreApplication/Renderer/RendererAPI.h"
 
+#include <glm/glm.hpp>
+
 namespace SW
 {
 	enum class FramebufferFormat
@@ -10,22 +12,36 @@ namespace SW
 		RGBA16F = 2
 	};
 
-	class Framebuffer
+	struct FramebufferSpecification
+	{
+		uint32_t Width = 1280;
+		uint32_t Height = 720;
+		glm::vec4 ClearColor;
+		FramebufferFormat Format;
+		uint32_t Samples = 1; // multisampling
+
+		// SwapChainTarget = screen buffer (i.e. no framebuffer)
+		bool SwapChainTarget = false;
+	};
+
+	class Framebuffer : public RefCounted
 	{
 	public:
-		static Framebuffer* Create(uint32_t width, uint32_t height, FramebufferFormat format);
-
 		virtual ~Framebuffer() {}
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void Resize(uint32_t width, uint32_t height) = 0;
+		virtual void Resize(uint32_t width, uint32_t height, bool forceRecreate = false) = 0;
 
 		virtual void BindTexture(uint32_t slot = 0) const = 0;
 
 		virtual RendererID GetRendererID() const = 0;
 		virtual RendererID GetColorAttachmentRendererID() const = 0;
 		virtual RendererID GetDepthAttachmentRendererID() const = 0;
+
+		virtual const FramebufferSpecification& GetSpecification() const = 0;
+
+		static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
 	};
 
 	class FramebufferPool final
@@ -35,14 +51,16 @@ namespace SW
 		~FramebufferPool();
 
 		std::weak_ptr<Framebuffer> AllocateBuffer();
-		void Add(Framebuffer* framebuffer);
+		void Add(const Ref<Framebuffer>& framebuffer);
 
-		const std::vector<Framebuffer*>& GetAll() const { return m_Pool; }
+		std::vector<Ref<Framebuffer>>& GetAll() { return m_Pool; }
+		const std::vector<Ref<Framebuffer>>& GetAll() const { return m_Pool; }
 
 		inline static FramebufferPool* GetGlobal() { return s_Instance; }
 	private:
-		std::vector<Framebuffer*> m_Pool;
+		std::vector<Ref<Framebuffer>> m_Pool;
 
 		static FramebufferPool* s_Instance;
 	};
+
 }

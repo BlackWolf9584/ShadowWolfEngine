@@ -9,9 +9,7 @@ namespace SW
 {
 	enum class ShaderDomain
 	{
-		None = 0,
-		Vertex = 0, 
-		Pixel = 1
+		None = 0, Vertex = 0, Pixel = 1
 	};
 
 	class ShaderUniformDeclaration
@@ -32,7 +30,7 @@ namespace SW
 
 	typedef std::vector<ShaderUniformDeclaration*> ShaderUniformList;
 
-	class ShaderUniformBufferDeclaration
+	class ShaderUniformBufferDeclaration : public RefCounted
 	{
 	public:
 		virtual const std::string& GetName() const = 0;

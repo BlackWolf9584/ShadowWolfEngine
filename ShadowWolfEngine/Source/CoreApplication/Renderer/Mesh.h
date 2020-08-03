@@ -4,6 +4,7 @@
 #include "CoreApplication/Renderer/Buffer.h"
 #include "CoreApplication/Renderer/Shader.h"
 #include "CoreApplication/Renderer/Material.h"
+#include "CoreApplication/Core/Math/AABB.h"
 
 #include <vector>
 #include <glm/glm.hpp>
@@ -100,6 +101,14 @@ namespace SW
 		}
 	};
 
+	struct Triangle
+	{
+		Vertex V0, V1, V2;
+
+		Triangle(const Vertex& v0, const Vertex& v1, const Vertex& v2)
+			: V0(v0), V1(v1), V2(v2) {}
+	};
+
 	class Submesh
 	{
 	public:
@@ -109,26 +118,34 @@ namespace SW
 		uint32_t IndexCount;
 
 		glm::mat4 Transform;
+		AABB BoundingBox;
+
+		std::string NodeName, MeshName;
 	};
 
-	class Mesh
+	class Mesh : public RefCounted
 	{
 	public:
 		Mesh(const std::string& filename);
 		~Mesh();
 
-		void Render(TimeStep ts, Ref<MaterialInstance> materialInstance = Ref<MaterialInstance>());
-		void Render(TimeStep ts, const glm::mat4& transform = glm::mat4(1.0f), Ref<MaterialInstance> materialInstance = Ref<MaterialInstance>());
-		void OnImGuiRender();
+		void OnUpdate(TimeStep ts);
 		void DumpVertexBuffer();
 
-		inline Ref<Shader> GetMeshShader() { return m_MeshShader; }
-		inline Ref<Material> GetMaterial() { return m_Material; }
-		inline const std::string& GetFilePath() const { return m_FilePath; }
+		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
+		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
+
+		Ref<Shader> GetMeshShader() { return m_MeshShader; }
+		Ref<Material> GetMaterial() { return m_BaseMaterial; }
+		std::vector<Ref<MaterialInstance>> GetMaterials() { return m_Materials; }
+		const std::vector<Ref<Texture2D>>& GetTextures() const { return m_Textures; }
+		const std::string& GetFilePath() const { return m_FilePath; }
+
+		const std::vector<Triangle> GetTriangleCache(uint32_t index) const { return m_TriangleCache.at(index); }
 	private:
 		void BoneTransform(float time);
 		void ReadNodeHierarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& ParentTransform);
-		void TraverseNodes(aiNode* node, int level = 0);
+		void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
 
 		const aiNodeAnim* FindNodeAnim(const aiAnimation* animation, const std::string& nodeName);
 		uint32_t FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
@@ -158,7 +175,13 @@ namespace SW
 
 		// Materials
 		Ref<Shader> m_MeshShader;
-		Ref<Material> m_Material;
+		Ref<Material> m_BaseMaterial;
+		std::vector<Ref<Texture2D>> m_Textures;
+		std::vector<Ref<Texture2D>> m_NormalMaps;
+		std::vector<Ref<MaterialInstance>> m_Materials;
+		std::vector<Ref<MaterialInstance>> m_MaterialName;
+
+		std::unordered_map<uint32_t, std::vector<Triangle>> m_TriangleCache;
 
 		// Animation
 		bool m_IsAnimated = false;
@@ -168,5 +191,9 @@ namespace SW
 		bool m_AnimationPlaying = true;
 
 		std::string m_FilePath;
+
+		friend class Renderer;
+		friend class SceneHierarchyPanel;
 	};
+
 }

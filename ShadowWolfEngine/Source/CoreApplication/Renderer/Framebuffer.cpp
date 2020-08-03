@@ -4,14 +4,14 @@
 
 namespace SW
 {
-	SW::Framebuffer* Framebuffer::Create(uint32_t width, uint32_t height, FramebufferFormat format)
+	Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 	{
-		SW::Framebuffer* result = nullptr;
+		Ref<Framebuffer> result = nullptr;
 
 		switch (RendererAPI::Current())
 		{
 		case RendererAPIType::None:		return nullptr;
-		case RendererAPIType::OpenGL:	result = new OpenGLFramebuffer(width, height, format);
+		case RendererAPIType::OpenGL:	result = Ref<OpenGLFramebuffer>::Create(spec);
 		}
 		FramebufferPool::GetGlobal()->Add(result);
 		return result;
@@ -35,8 +35,9 @@ namespace SW
 		return std::weak_ptr<Framebuffer>();
 	}
 
-	void FramebufferPool::Add(Framebuffer* framebuffer)
+	void FramebufferPool::Add(const Ref<Framebuffer>& framebuffer)
 	{
 		m_Pool.push_back(framebuffer);
 	}
+
 }

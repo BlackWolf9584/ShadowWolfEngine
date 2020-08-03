@@ -7,7 +7,7 @@ namespace SW
 {
 	RenderCommandQueue::RenderCommandQueue()
 	{
-		m_CommandBuffer = new unsigned char[10 * 1024 * 1024]; // 10mb buffer
+		m_CommandBuffer = new uint8_t[10 * 1024 * 1024]; // 10mb buffer
 		m_CommandBufferPtr = m_CommandBuffer;
 		memset(m_CommandBuffer, 0, 10 * 1024 * 1024);
 	}
@@ -17,14 +17,14 @@ namespace SW
 		delete[] m_CommandBuffer;
 	}
 
-	void* RenderCommandQueue::Allocate(RenderCommandFn fn, unsigned int size)
+	void* RenderCommandQueue::Allocate(RenderCommandFn fn, uint32_t size)
 	{
 		// TODO: alignment
 		*(RenderCommandFn*)m_CommandBufferPtr = fn;
 		m_CommandBufferPtr += sizeof(RenderCommandFn);
 
-		*(int*)m_CommandBufferPtr = size;
-		m_CommandBufferPtr += sizeof(unsigned int);
+		*(uint32_t*)m_CommandBufferPtr = size;
+		m_CommandBufferPtr += sizeof(uint32_t);
 
 		void* memory = m_CommandBufferPtr;
 		m_CommandBufferPtr += size;
@@ -39,13 +39,13 @@ namespace SW
 
 		byte* buffer = m_CommandBuffer;
 
-		for (unsigned int i = 0; i < m_CommandCount; i++)
+		for (uint32_t i = 0; i < m_CommandCount; i++)
 		{
 			RenderCommandFn function = *(RenderCommandFn*)buffer;
 			buffer += sizeof(RenderCommandFn);
 
-			unsigned int size = *(unsigned int*)buffer;
-			buffer += sizeof(unsigned int);
+			uint32_t size = *(uint32_t*)buffer;
+			buffer += sizeof(uint32_t);
 			function(buffer);
 			buffer += size;
 		}
@@ -53,4 +53,5 @@ namespace SW
 		m_CommandBufferPtr = m_CommandBuffer;
 		m_CommandCount = 0;
 	}
+
 }

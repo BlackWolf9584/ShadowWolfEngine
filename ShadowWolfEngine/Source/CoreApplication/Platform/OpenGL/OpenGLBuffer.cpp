@@ -1,10 +1,12 @@
 #include "SWpch.h"
 #include "CoreApplication/Platform/OpenGL/OpenGLBuffer.h"
+#include "CoreApplication/Renderer/Renderer.h"
 
 #include <Glad/glad.h>
 
 namespace SW
 {
+
 	//////////////////////////////////////////////////////////////////////////////////
 	// VertexBuffer
 	//////////////////////////////////////////////////////////////////////////////////
@@ -25,25 +27,30 @@ namespace SW
 	{
 		m_LocalData = Buffer::Copy(data, size);
 
-		SW_RENDER_S({
-			glCreateBuffers(1, &self->m_RendererID);
-			glNamedBufferData(self->m_RendererID, self->m_Size, self->m_LocalData.Data, OpenGLUsage(self->m_Usage));
+		Ref<OpenGLVertexBuffer> instance = this;
+		Renderer::Submit([instance]() mutable
+			{
+				glCreateBuffers(1, &instance->m_RendererID);
+				glNamedBufferData(instance->m_RendererID, instance->m_Size, instance->m_LocalData.Data, OpenGLUsage(instance->m_Usage));
 			});
 	}
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, VertexBufferUsage usage)
 		: m_Size(size), m_Usage(usage)
 	{
-		SW_RENDER_S({
-			glCreateBuffers(1, &self->m_RendererID);
-			glNamedBufferData(self->m_RendererID, self->m_Size, nullptr, OpenGLUsage(self->m_Usage));
+		Ref<OpenGLVertexBuffer> instance = this;
+		Renderer::Submit([instance]() mutable
+			{
+				glCreateBuffers(1, &instance->m_RendererID);
+				glNamedBufferData(instance->m_RendererID, instance->m_Size, nullptr, OpenGLUsage(instance->m_Usage));
 			});
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
-		SW_RENDER_S({
-			glDeleteBuffers(1, &self->m_RendererID);
+		GLuint rendererID = m_RendererID;
+		Renderer::Submit([rendererID]() {
+			glDeleteBuffers(1, &rendererID);
 			});
 	}
 
@@ -51,15 +58,17 @@ namespace SW
 	{
 		m_LocalData = Buffer::Copy(data, size);
 		m_Size = size;
-		SW_RENDER_S1(offset, {
-			glNamedBufferSubData(self->m_RendererID, offset, self->m_Size, self->m_LocalData.Data);
+		Ref<OpenGLVertexBuffer> instance = this;
+		Renderer::Submit([instance, offset]() {
+			glNamedBufferSubData(instance->m_RendererID, offset, instance->m_Size, instance->m_LocalData.Data);
 			});
 	}
 
 	void OpenGLVertexBuffer::Bind() const
 	{
-		SW_RENDER_S({
-			glBindBuffer(GL_ARRAY_BUFFER, self->m_RendererID);
+		Ref<const OpenGLVertexBuffer> instance = this;
+		Renderer::Submit([instance]() {
+			glBindBuffer(GL_ARRAY_BUFFER, instance->m_RendererID);
 			});
 	}
 
@@ -72,16 +81,29 @@ namespace SW
 	{
 		m_LocalData = Buffer::Copy(data, size);
 
-		SW_RENDER_S({
-			glCreateBuffers(1, &self->m_RendererID);
-			glNamedBufferData(self->m_RendererID, self->m_Size, self->m_LocalData.Data, GL_STATIC_DRAW);
+		Ref<OpenGLIndexBuffer> instance = this;
+		Renderer::Submit([instance]() mutable {
+			glCreateBuffers(1, &instance->m_RendererID);
+			glNamedBufferData(instance->m_RendererID, instance->m_Size, instance->m_LocalData.Data, GL_STATIC_DRAW);
+			});
+	}
+
+	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t size)
+		: m_Size(size)
+	{
+		// m_LocalData = Buffer(size);
+
+		Ref<OpenGLIndexBuffer> instance = this;
+		Renderer::Submit([instance]() mutable {
+			glCreateBuffers(1, &instance->m_RendererID);
+			glNamedBufferData(instance->m_RendererID, instance->m_Size, nullptr, GL_DYNAMIC_DRAW);
 			});
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
-		SW_RENDER_S({
-			glDeleteBuffers(1, &self->m_RendererID);
+		Renderer::Submit([this]() {
+			glDeleteBuffers(1, &m_RendererID);
 			});
 	}
 
@@ -89,15 +111,17 @@ namespace SW
 	{
 		m_LocalData = Buffer::Copy(data, size);
 		m_Size = size;
-		SW_RENDER_S1(offset, {
-			glNamedBufferSubData(self->m_RendererID, offset, self->m_Size, self->m_LocalData.Data);
+		Ref<OpenGLIndexBuffer> instance = this;
+		Renderer::Submit([instance, offset]() {
+			glNamedBufferSubData(instance->m_RendererID, offset, instance->m_Size, instance->m_LocalData.Data);
 			});
 	}
 
 	void OpenGLIndexBuffer::Bind() const
 	{
-		SW_RENDER_S({
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self->m_RendererID);
+		Renderer::Submit([this]() {
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 			});
 	}
+
 }

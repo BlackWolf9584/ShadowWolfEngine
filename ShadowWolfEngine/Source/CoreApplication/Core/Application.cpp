@@ -2,6 +2,7 @@
 #include "CoreApplication/Core/Application.h"
 #include "CoreApplication/Renderer/Renderer.h"
 #include "CoreApplication/Renderer/Framebuffer.h"
+#include "Script/ScriptEngine.h"
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -13,7 +14,6 @@
 namespace SW
 {
 #define BIND_EVENT_FN(fn) std::bind(&Application::##fn, this, std::placeholders::_1)
-
 
 	Application* Application::s_Instance = nullptr;
 
@@ -28,7 +28,7 @@ namespace SW
 		m_ImGuiLayer = new ImGuiLayer("ImGui");
 		PushOverlay(m_ImGuiLayer);
 
-		ScriptEngine::Init("assets/scripts/TestApp.dll");
+		ScriptEngine::Init("assets/scripts/ExampleApp.dll");
 
 		Renderer::Init();
 		Renderer::WaitAndRender();
@@ -178,6 +178,28 @@ namespace SW
 	float Application::GetTime() const
 	{
 		return (float)glfwGetTime();
+	}
+
+	const char* Application::GetConfigurationName()
+	{
+	#if defined(SW_DEBUG)
+		return "Debug";
+	#elif defined(SW_RELEASE)
+		return "Release";
+	#elif defined(SW_DIST)
+		return "Dist";
+	#else
+		#error Undefined configuration?
+	#endif
+	}
+
+	const char* Application::GetPlatformName()
+	{
+	#if defined(SW_PLATFORM_WINDOWS)
+		return "Windows x64";
+	#else
+		 Undefined platform?
+	#endif
 	}
 
 }
