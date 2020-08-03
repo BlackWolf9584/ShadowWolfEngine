@@ -9,6 +9,10 @@ prerequisites-
 
 VS2019
 
+Premake 5 which can be found at https://premake.github.io/download.html
+
+download the 5.0 windows .zip file and in the root directory for the project create thirdparty/bin/ place Premake5.exe in here and then run the batch file in the Scripts folder
+
 to build the .sln ../Scripts/Win-GenProjects.bat
 
 ShadowWolfEngine.sln is the engine Playground is a test project using the C# scripting
