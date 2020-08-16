@@ -1,12 +1,14 @@
 #include "SWpch.h"
-#include "Core/InputCore/Input.h"
-#include "CoreApplication/Platform/Windows/WindowsWindow.h"
+#include "CoreApplication/Core/InputCore/Input.h"
+#include "WindowsWindow.h"
+
 #include "CoreApplication/Core/Application.h"
 
 #include <GLFW/glfw3.h>
 
-namespace SW
+namespace Wolf 
 {
+
 	bool Input::IsKeyPressed(KeyCode keycode)
 	{
 		auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
@@ -43,4 +45,5 @@ namespace SW
 		return { (float)x, (float)y };
 
 	}
+
 }

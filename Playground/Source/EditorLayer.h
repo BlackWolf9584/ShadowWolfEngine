@@ -1,20 +1,25 @@
 #pragma once
+
 #include "Engine.h"
+
 #include "CoreApplication/ImGui/ImGuiLayer.h"
 #include "CoreApplication/Editor/EditorComponents/EditorCamera.h"
-#include "CoreApplication/Editor/Panels/SceneHierarchyPanel.h"
+#include "imgui/imgui_internal.h"
 
-#include "ImGui/imgui_internal.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include "glm/gtx/quaternion.hpp"
+#include <glm/gtx/quaternion.hpp>
 
 #include <string>
 
-namespace SW
-{
+#include "CoreApplication/Core/AssetBrowserCore/AssetManager.h"
+#include "CoreApplication/Core/AssetBrowserCore/DirectoryInformation.h"
+#include "CoreApplication/Editor/Panels/SceneHierarchyPanel.h"
+
+namespace Wolf {
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -28,7 +33,7 @@ namespace SW
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnUpdate(TimeStep ts) override;
+		virtual void OnUpdate(Timestep ts) override;
 
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& e) override;
@@ -53,7 +58,7 @@ namespace SW
 
 		struct SelectedSubmesh
 		{
-			SW::Entity Entity;
+			Wolf::Entity Entity;
 			Submesh* Mesh = nullptr;
 			float Distance = 0.0f;
 		};
@@ -80,6 +85,15 @@ namespace SW
 		Ref<Material> m_MeshMaterial;
 		std::vector<Ref<MaterialInstance>> m_MetalSphereMaterialInstances;
 		std::vector<Ref<MaterialInstance>> m_DielectricSphereMaterialInstances;
+
+		std::string m_CurrentDirPath;
+		std::string m_BaseDirPath;
+		std::string m_prevDirPath;
+
+		int m_basePathLen;
+
+		std::vector<DirectoryInformation> m_CurrentDir;
+		std::vector<DirectoryInformation> m_BaseProjectDir;
 
 		struct AlbedoInput
 		{
@@ -127,6 +141,11 @@ namespace SW
 		// Editor resources
 		Ref<Texture2D> m_CheckerboardTex;
 		Ref<Texture2D> m_PlayButtonTex;
+		Ref<Texture2D> m_folderTex;
+		Ref<Texture2D> m_favoritesTex;
+		Ref<Texture2D> m_FileTex;
+		Ref<Texture2D> m_goBackTex;
+
 
 		glm::vec2 m_ViewportBounds[2];
 		int m_GizmoType = -1; // -1 = no gizmo
@@ -156,4 +175,5 @@ namespace SW
 		glm::mat4* m_RelativeTransform = nullptr;
 		glm::mat4* m_CurrentlySelectedTransform = nullptr;
 	};
+
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace SW
+namespace Wolf
 {
     public class Entity
     {

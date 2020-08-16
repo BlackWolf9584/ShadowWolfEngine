@@ -1,11 +1,12 @@
 #pragma once
-#include "CoreApplication/Renderer/RenderCommandQueue.h"
-#include "CoreApplication/Renderer/RenderPass.h"
-#include "CoreApplication/Renderer/Mesh.h"
-#include "Math/AABB.h"
 
-namespace SW
-{
+#include "RenderCommandQueue.h"
+#include "RenderPass.h"
+
+#include "Mesh.h"
+
+namespace Wolf {
+
 	class ShaderLibrary;
 
 	// TODO: Maybe this should be renamed to RendererAPI? Because we want an actual renderer vs API calls...
@@ -20,7 +21,7 @@ namespace SW
 		static void SetClearColor(float r, float g, float b, float a);
 
 		static void DrawIndexed(uint32_t count, PrimitiveType type, bool depthTest = true);
-
+		
 		// For OpenGL
 		static void SetLineThickness(float thickness);
 
@@ -66,4 +67,5 @@ namespace SW
 	private:
 		static RenderCommandQueue& GetRenderCommandQueue();
 	};
+
 }

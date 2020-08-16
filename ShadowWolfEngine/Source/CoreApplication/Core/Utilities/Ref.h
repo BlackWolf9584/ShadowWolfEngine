@@ -2,8 +2,8 @@
 
 #include <stdint.h>
 
-namespace SW
-{
+namespace Wolf {
+
 	class RefCounted
 	{
 	public:
@@ -29,7 +29,7 @@ namespace SW
 			: m_Instance(nullptr)
 		{
 		}
-
+		
 		Ref(std::nullptr_t n)
 			: m_Instance(nullptr)
 		{
@@ -152,4 +152,5 @@ namespace SW
 	};
 
 	// TODO: WeakRef
+
 }

@@ -1,7 +1,8 @@
 #include "SWpch.h"
-#include "CoreApplication/ImGui/ImGuiLayer.h"
+#include "ImGuiLayer.h"
 
 #include "imgui.h"
+#include "ImGuizmo.h"
 
 #define IMGUI_IMPL_API
 #include "examples/imgui_impl_glfw.h"
@@ -12,8 +13,9 @@
 
 #include "CoreApplication/Renderer/Renderer.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	ImGuiLayer::ImGuiLayer()
 	{
 
@@ -78,6 +80,7 @@ namespace SW
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()

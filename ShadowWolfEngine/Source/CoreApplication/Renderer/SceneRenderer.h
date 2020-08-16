@@ -1,10 +1,11 @@
 #pragma once
-#include "Scene/Scene.h"
-#include "Renderer/Mesh.h"
-#include "Renderer/RenderPass.h"
 
-namespace SW
-{
+#include "CoreApplication/Scene/Scene.h"
+#include "CoreApplication/Renderer/Mesh.h"
+#include "RenderPass.h"
+
+namespace Wolf {
+
 	struct SceneRendererOptions
 	{
 		bool ShowGrid = true;
@@ -13,7 +14,7 @@ namespace SW
 
 	struct SceneRendererCamera
 	{
-		SW::Camera Camera;
+		Wolf::Camera Camera;
 		glm::mat4 ViewMatrix;
 	};
 
@@ -34,7 +35,7 @@ namespace SW
 
 		static Ref<RenderPass> GetFinalRenderPass();
 		static Ref<Texture2D> GetFinalColorBuffer();
-
+		
 		// TODO: Temp
 		static uint32_t GetFinalColorBufferRendererID();
 
@@ -44,4 +45,5 @@ namespace SW
 		static void GeometryPass();
 		static void CompositePass();
 	};
+
 }

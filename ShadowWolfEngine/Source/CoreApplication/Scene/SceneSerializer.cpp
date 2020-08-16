@@ -1,21 +1,21 @@
 #include "SWpch.h"
 #include "SceneSerializer.h"
-#include "Scene/Entity.h"
-#include "Scene/Components.h"
-#include "Script/ScriptEngine.h"
 
-//yaml
+#include "Entity.h"
+#include "Components.h"
+#include "CoreApplication/Script/ScriptEngine.h"
+
 #include "yaml-cpp/yaml.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 #include <fstream>
 
-namespace YAML 
-{
+namespace YAML {
 
 	template<>
 	struct convert<glm::vec2>
@@ -116,8 +116,7 @@ namespace YAML
 	};
 }
 
-namespace SW 
-{
+namespace Wolf {
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
 	{
@@ -187,7 +186,7 @@ namespace SW
 			out << YAML::BeginMap; // TransformComponent
 
 			auto& transform = entity.GetComponent<TransformComponent>().Transform;
-			auto [pos, rot, scale] = GetTransformDecomposition(transform);
+			auto[pos, rot, scale] = GetTransformDecomposition(transform);
 			out << YAML::Key << "Position" << YAML::Value << pos;
 			out << YAML::Key << "Rotation" << YAML::Value << rot;
 			out << YAML::Key << "Scale" << YAML::Value << scale;
@@ -312,14 +311,14 @@ namespace SW
 		out << YAML::Key << "Entities";
 		out << YAML::Value << YAML::BeginSeq;
 		m_Scene->m_Registry.each([&](auto entityID)
-			{
-				Entity entity = { entityID, m_Scene.Raw() };
-				if (!entity || !entity.HasComponent<IDComponent>())
-					return;
+		{
+			Entity entity = { entityID, m_Scene.Raw() };
+			if (!entity || !entity.HasComponent<IDComponent>())
+				return;
 
-				SerializeEntity(out, entity);
+			SerializeEntity(out, entity);
 
-			});
+		});
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 
@@ -424,41 +423,41 @@ namespace SW
 								auto dataNode = field["Data"];
 								switch (type)
 								{
-								case FieldType::Float:
-								{
-									publicFields.at(name).SetStoredValue(dataNode.as<float>());
-									break;
-								}
-								case FieldType::Int:
-								{
-									publicFields.at(name).SetStoredValue(dataNode.as<int32_t>());
-									break;
-								}
-								case FieldType::UnsignedInt:
-								{
-									publicFields.at(name).SetStoredValue(dataNode.as<uint32_t>());
-									break;
-								}
-								case FieldType::String:
-								{
-									SW_CORE_ASSERT(false, "Unimplemented");
-									break;
-								}
-								case FieldType::Vec2:
-								{
-									publicFields.at(name).SetStoredValue(dataNode.as<glm::vec2>());
-									break;
-								}
-								case FieldType::Vec3:
-								{
-									publicFields.at(name).SetStoredValue(dataNode.as<glm::vec3>());
-									break;
-								}
-								case FieldType::Vec4:
-								{
-									publicFields.at(name).SetStoredValue(dataNode.as<glm::vec4>());
-									break;
-								}
+									case FieldType::Float:
+									{
+										publicFields.at(name).SetStoredValue(dataNode.as<float>());
+										break;
+									}
+									case FieldType::Int:
+									{
+										publicFields.at(name).SetStoredValue(dataNode.as<int32_t>());
+										break;
+									}
+									case FieldType::UnsignedInt:
+									{
+										publicFields.at(name).SetStoredValue(dataNode.as<uint32_t>());
+										break;
+									}
+									case FieldType::String:
+									{
+										SW_CORE_ASSERT(false, "Unimplemented");
+										break;
+									}
+									case FieldType::Vec2:
+									{
+										publicFields.at(name).SetStoredValue(dataNode.as<glm::vec2>());
+										break;
+									}
+									case FieldType::Vec3:
+									{
+										publicFields.at(name).SetStoredValue(dataNode.as<glm::vec3>());
+										break;
+									}
+									case FieldType::Vec4:
+									{
+										publicFields.at(name).SetStoredValue(dataNode.as<glm::vec4>());
+										break;
+									}
 								}
 							}
 						}
@@ -492,7 +491,7 @@ namespace SW
 					auto& component = deserializedEntity.AddComponent<SpriteRendererComponent>();
 					component.Color = spriteRendererComponent["Color"].as<glm::vec4>();
 					component.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
-				}
+				} 
 			}
 		}
 		return true;
@@ -504,3 +503,5 @@ namespace SW
 		SW_CORE_ASSERT(false);
 		return false;
 	}
+
+}

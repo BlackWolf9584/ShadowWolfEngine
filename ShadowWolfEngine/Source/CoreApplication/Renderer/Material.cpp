@@ -1,8 +1,9 @@
 #include "SWpch.h"
-#include "CoreApplication/Renderer/Material.h"
+#include "Material.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	//////////////////////////////////////////////////////////////////////////////////
 	// Material
 	//////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +48,7 @@ namespace SW
 	{
 		return;
 		AllocateStorage();
-
+		
 		for (auto mi : m_MaterialInstances)
 			mi->OnShaderReloaded();
 	}
@@ -91,8 +92,8 @@ namespace SW
 	{
 		switch (uniformDeclaration->GetDomain())
 		{
-		case ShaderDomain::Vertex:    return m_VSUniformStorageBuffer;
-		case ShaderDomain::Pixel:     return m_PSUniformStorageBuffer;
+			case ShaderDomain::Vertex:    return m_VSUniformStorageBuffer;
+			case ShaderDomain::Pixel:     return m_PSUniformStorageBuffer;
 		}
 
 		SW_CORE_ASSERT(false, "Invalid uniform declaration domain! Material does not support this shader type.");
@@ -192,8 +193,8 @@ namespace SW
 	{
 		switch (uniformDeclaration->GetDomain())
 		{
-		case ShaderDomain::Vertex:    return m_VSUniformStorageBuffer;
-		case ShaderDomain::Pixel:     return m_PSUniformStorageBuffer;
+			case ShaderDomain::Vertex:    return m_VSUniformStorageBuffer;
+			case ShaderDomain::Pixel:     return m_PSUniformStorageBuffer;
 		}
 
 		SW_CORE_ASSERT(false, "Invalid uniform declaration domain! Material does not support this shader type.");

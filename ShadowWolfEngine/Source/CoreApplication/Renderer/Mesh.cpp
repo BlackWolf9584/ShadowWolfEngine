@@ -1,25 +1,29 @@
-#include "SWpch.h"
-#include "CoreApplication/Renderer/Mesh.h"
-#include "Renderer/Renderer.h"
+#include "SWpch.h" 
+#include "Mesh.h"
 
-#include <Glad/glad.h>
+#include <glad/glad.h>
+
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
-#include <Assimp/scene.h>
-#include <Assimp/postprocess.h>
-#include <Assimp/Importer.hpp>
-#include <Assimp/DefaultLogger.hpp>
-#include <Assimp/LogStream.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/DefaultLogger.hpp>
+#include <assimp/LogStream.hpp>
 
 #include <imgui.h>
+
+#include "CoreApplication/Renderer/Renderer.h"
+
 #include <filesystem>
 
-namespace SW
-{
+namespace Wolf {
+
 #define MESH_DEBUG_LOG 0
 #if MESH_DEBUG_LOG
 #define SW_MESH_LOG(...) SW_CORE_TRACE(__VA_ARGS__)
@@ -70,7 +74,7 @@ namespace SW
 		LogStream::Initialize();
 
 		SW_CORE_INFO("Loading mesh: {0}", filename.c_str());
-
+		
 		m_Importer = std::make_unique<Assimp::Importer>();
 
 		const aiScene* scene = m_Importer->ReadFile(filename, s_MeshImportFlags);
@@ -80,7 +84,7 @@ namespace SW
 		m_Scene = scene;
 
 		m_IsAnimated = scene->mAnimations != nullptr;
-		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("PBR_Anim") : Renderer::GetShaderLibrary()->Get("PBR_Static");
+		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("HazelPBR_Anim") : Renderer::GetShaderLibrary()->Get("HazelPBR_Static");
 		m_BaseMaterial = Ref<Material>::Create(m_MeshShader);
 		// m_MaterialInstance = Ref<MaterialInstance>::Create(m_BaseMaterial);
 		m_InverseTransform = glm::inverse(Mat4FromAssimpMat4(scene->mRootNode->mTransformation));
@@ -168,7 +172,7 @@ namespace SW
 					m_TriangleCache[m].emplace_back(m_StaticVertices[index.V1 + submesh.BaseVertex], m_StaticVertices[index.V2 + submesh.BaseVertex], m_StaticVertices[index.V3 + submesh.BaseVertex]);
 			}
 
-
+			
 		}
 
 		TraverseNodes(scene->mRootNode);
@@ -223,9 +227,9 @@ namespace SW
 			for (uint32_t i = 0; i < scene->mNumMaterials; i++)
 			{
 				auto aiMaterial = scene->mMaterials[i];
-				auto aiMaterialNameGetName();
+				auto aiMaterialName = aiMaterial->GetName();
 
-				auto mi = Ref<MaterialInstance>::Create(m_BaseMaterial, m_MaterialName);
+				auto mi = Ref<MaterialInstance>::Create(m_BaseMaterial, aiMaterialName.data);
 				m_Materials[i] = mi;
 
 				SW_MESH_LOG("  {0} (Index = {1})", aiMaterialName.data, i);
@@ -272,7 +276,7 @@ namespace SW
 				}
 				else
 				{
-					mi->Set("u_AlbedoColor", glm::vec3{ aiColor.r, aiColor.g, aiColor.b });
+					mi->Set("u_AlbedoColor", glm::vec3 { aiColor.r, aiColor.g, aiColor.b });
 					SW_MESH_LOG("    No albedo map");
 				}
 
@@ -343,7 +347,7 @@ namespace SW
 					auto texture = Texture2D::Create(texturePath);
 					if (texture->Loaded())
 					{
-						HZ_MESH_LOG("    Metalness map path = {0}", texturePath);
+						SW_MESH_LOG("    Metalness map path = {0}", texturePath);
 						mi->Set("u_MetalnessTexture", texture);
 						mi->Set("u_MetalnessTexToggle", 1.0f);
 					}
@@ -426,7 +430,7 @@ namespace SW
 						{
 							metalnessTextureFound = true;
 
-							// TODO: Temp - this should be handled by Hazel's filesystem
+							// TODO: Temp - this should be handled by Shadow Wolf's filesystem
 							std::filesystem::path path = filename;
 							auto parentPath = path.parent_path();
 							parentPath /= str;
@@ -472,7 +476,7 @@ namespace SW
 				{ ShaderDataType::Float2, "a_TexCoord" },
 				{ ShaderDataType::Int4, "a_BoneIDs" },
 				{ ShaderDataType::Float4, "a_BoneWeights" },
-				});
+			});
 			m_VertexArray->AddVertexBuffer(vb);
 		}
 		else
@@ -484,7 +488,7 @@ namespace SW
 				{ ShaderDataType::Float3, "a_Tangent" },
 				{ ShaderDataType::Float3, "a_Binormal" },
 				{ ShaderDataType::Float2, "a_TexCoord" },
-				});
+			});
 			m_VertexArray->AddVertexBuffer(vb);
 		}
 
@@ -496,7 +500,7 @@ namespace SW
 	{
 	}
 
-	void Mesh::OnUpdate(TimeStep ts)
+	void Mesh::OnUpdate(Timestep ts)
 	{
 		if (m_IsAnimated)
 		{
@@ -533,7 +537,7 @@ namespace SW
 			submesh.Transform = transform;
 		}
 
-		// HZ_MESH_LOG("{0} {1}", LevelToSpaces(level), node->mName.C_Str());
+		// SW_MESH_LOG("{0} {1}", LevelToSpaces(level), node->mName.C_Str());
 
 		for (uint32_t i = 0; i < node->mNumChildren; i++)
 			TraverseNodes(node->mChildren[i], transform, level + 1);
@@ -693,7 +697,7 @@ namespace SW
 				return nodeAnim;
 		}
 		return nullptr;
-	}
+	} 
 
 	void Mesh::BoneTransform(float time)
 	{

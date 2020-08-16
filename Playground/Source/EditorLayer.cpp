@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
-#include "CoreApplication/ImGui/UmGuizmo.h"
+
+#include "CoreApplication/ImGui/ImGuizmo.h"
 #include "CoreApplication/Renderer/2DRenderer.h"
 #include "CoreApplication/Script/ScriptEngine.h"
 
@@ -10,8 +11,8 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace SW
-{
+namespace Wolf {
+
 	static void ImGuiShowHelpMarker(const char* desc)
 	{
 		ImGui::TextDisabled("(?)");
@@ -97,6 +98,11 @@ namespace SW
 		// Editor
 		m_CheckerboardTex = Texture2D::Create("assets/editor/Checkerboard.tga");
 		m_PlayButtonTex = Texture2D::Create("assets/editor/PlayButton.png");
+		m_folderTex = Texture2D::Create("assets/editor/folder.png");
+		m_favoritesTex = Texture2D::Create("assets/editor/favourites.png");
+		m_FileTex = Texture2D::Create("assets/editor/file.png");
+		m_goBackTex = Texture2D::Create("assets/editor/back.png");
+
 
 		m_EditorScene = Ref<Scene>::Create();
 		UpdateWindowTitle("Untitled Scene");
@@ -106,6 +112,14 @@ namespace SW
 		m_SceneHierarchyPanel->SetEntityDeletedCallback(std::bind(&EditorLayer::OnEntityDeleted, this, std::placeholders::_1));
 		// SceneSerializer serializer(m_ActiveScene);
 		// serializer.Deserialize("Scene.yaml");
+
+				// Directories and assets
+		m_BaseDirPath = "assets";
+		m_CurrentDirPath = m_BaseDirPath;
+		m_prevDirPath = m_CurrentDirPath;
+		m_BaseProjectDir = AssetManager::GetFsContents();
+		m_CurrentDir = m_BaseProjectDir;
+		m_basePathLen = strlen(m_BaseDirPath.c_str());
 	}
 
 	void EditorLayer::OnDetach()
@@ -119,7 +133,7 @@ namespace SW
 		m_SceneState = SceneState::Play;
 
 		if (m_ReloadScriptOnPlay)
-			ScriptEngine::ReloadAssembly("assets/scripts/ExampleApp.dll");
+			ScriptEngine::ReloadAssembly("assets/scripts/TestApp.dll");
 
 		m_RuntimeScene = Ref<Scene>::Create();
 		m_EditorScene->CopyTo(m_RuntimeScene);
@@ -143,66 +157,66 @@ namespace SW
 
 	void EditorLayer::UpdateWindowTitle(const std::string& sceneName)
 	{
-		std::string title = sceneName + " -  - " + Application::GetPlatformName() + " (" + Application::GetConfigurationName() + ")";
+		std::string title = sceneName + " - Playground - " + Application::GetPlatformName() + " (" + Application::GetConfigurationName() + ")";
 		Application::Get().GetWindow().SetTitle(title);
 	}
 
-	void EditorLayer::OnUpdate(TimeStep ts)
+	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		switch (m_SceneState)
 		{
-		case SceneState::Edit:
-		{
-			//if (m_ViewportPanelFocused)
-			m_EditorCamera.OnUpdate(ts);
-
-			m_EditorScene->OnRenderEditor(ts, m_EditorCamera);
-
-			if (m_DrawOnTopBoundingBoxes)
+			case SceneState::Edit:
 			{
-				Renderer::BeginRenderPass(SceneRenderer::GetFinalRenderPass(), false);
-				auto viewProj = m_EditorCamera.GetViewProjection();
-				Renderer2D::BeginScene(viewProj, false);
-				// TODO: Renderer::DrawAABB(m_MeshEntity.GetComponent<MeshComponent>(), m_MeshEntity.GetComponent<TransformComponent>());
-				Renderer2D::EndScene();
-				Renderer::EndRenderPass();
-			}
+				//if (m_ViewportPanelFocused)
+					m_EditorCamera.OnUpdate(ts);
 
-			if (m_SelectionContext.size() && false)
-			{
-				auto& selection = m_SelectionContext[0];
+				m_EditorScene->OnRenderEditor(ts, m_EditorCamera);
 
-				if (selection.Mesh && selection.Entity.HasComponent<MeshComponent>())
+				if (m_DrawOnTopBoundingBoxes)
 				{
 					Renderer::BeginRenderPass(SceneRenderer::GetFinalRenderPass(), false);
 					auto viewProj = m_EditorCamera.GetViewProjection();
 					Renderer2D::BeginScene(viewProj, false);
-					glm::vec4 color = (m_SelectionMode == SelectionMode::Entity) ? glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f } : glm::vec4{ 0.2f, 0.9f, 0.2f, 1.0f };
-					Renderer::DrawAABB(selection.Mesh->BoundingBox, selection.Entity.GetComponent<TransformComponent>().Transform * selection.Mesh->Transform, color);
+					// TODO: Renderer::DrawAABB(m_MeshEntity.GetComponent<MeshComponent>(), m_MeshEntity.GetComponent<TransformComponent>());
 					Renderer2D::EndScene();
 					Renderer::EndRenderPass();
 				}
+
+				if (m_SelectionContext.size() && false)
+				{
+					auto& selection = m_SelectionContext[0];
+
+					if (selection.Mesh && selection.Entity.HasComponent<MeshComponent>())
+					{
+						Renderer::BeginRenderPass(SceneRenderer::GetFinalRenderPass(), false);
+						auto viewProj = m_EditorCamera.GetViewProjection();
+						Renderer2D::BeginScene(viewProj, false);
+						glm::vec4 color = (m_SelectionMode == SelectionMode::Entity) ? glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f } : glm::vec4{ 0.2f, 0.9f, 0.2f, 1.0f };
+						Renderer::DrawAABB(selection.Mesh->BoundingBox, selection.Entity.GetComponent<TransformComponent>().Transform * selection.Mesh->Transform, color);
+						Renderer2D::EndScene();
+						Renderer::EndRenderPass();
+					}
+				}
+
+				break;
 			}
+			case SceneState::Play:
+			{
+				if (m_ViewportPanelFocused)
+					m_EditorCamera.OnUpdate(ts);
 
-			break;
-		}
-		case SceneState::Play:
-		{
-			if (m_ViewportPanelFocused)
-				m_EditorCamera.OnUpdate(ts);
+				m_RuntimeScene->OnUpdate(ts);
+				m_RuntimeScene->OnRenderRuntime(ts);
+				break;
+			}
+			case SceneState::Pause:
+			{
+				if (m_ViewportPanelFocused)
+					m_EditorCamera.OnUpdate(ts);
 
-			m_RuntimeScene->OnUpdate(ts);
-			m_RuntimeScene->OnRenderRuntime(ts);
-			break;
-		}
-		case SceneState::Pause:
-		{
-			if (m_ViewportPanelFocused)
-				m_EditorCamera.OnUpdate(ts);
-
-			m_RuntimeScene->OnRenderRuntime(ts);
-			break;
-		}
+				m_RuntimeScene->OnRenderRuntime(ts);
+				break;
+			}
 		}
 	}
 
@@ -217,7 +231,7 @@ namespace SW
 
 		ImGui::PopItemWidth();
 		ImGui::NextColumn();
-
+		
 		return result;
 	}
 
@@ -236,7 +250,7 @@ namespace SW
 
 		ImGui::PopItemWidth();
 		ImGui::NextColumn();
-
+		
 		return changed;
 	}
 
@@ -418,6 +432,165 @@ namespace SW
 		ImGui::Columns(1);
 
 		ImGui::End();
+
+		/* Asset Browser ImGUI Contents Starts Here --------------------------------------------------------------------- */
+
+		ImGui::Begin("Project");
+		{
+			ImGui::Columns(2, nullptr, false);
+
+			ImGui::SetColumnOffset(1, 200);
+			{
+				ImGui::BeginChild("##folders_common", ImVec2(230, 210));
+				{
+					if (ImGui::CollapsingHeader("res://", nullptr, ImGuiTreeNodeFlags_DefaultOpen))
+					{
+						ImGui::PushID(0);
+
+						if (ImGui::TreeNode("Contents"))
+						{
+							for (int i = 0; i < m_BaseProjectDir.size(); i++)
+							{
+								ImGui::PushID(i);
+								if (ImGui::TreeNode(m_BaseProjectDir[i].filename.c_str()))
+								{
+									ImGui::TreePop();
+								}
+								ImGui::PopID();
+							}
+							ImGui::TreePop();
+						}
+						ImGui::PopID();
+					}
+					ImGui::EndChild();
+				}
+
+				if (ImGui::BeginDragDropTarget())
+				{
+					auto data = ImGui::AcceptDragDropPayload("selectable");
+					if (data)
+					{
+						std::string a = (char*)data->Data;
+						SW_CORE_INFO(a);
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+				ImGui::NextColumn();
+
+				ImGui::BeginChild("##directory_structure", ImVec2(ImGui::GetColumnWidth() - 12, 210));
+				{
+					ImGui::BeginChild("Scrolling");
+
+					if (strlen(m_CurrentDirPath.c_str()) != m_basePathLen)
+					{
+						ImGui::Image((void*)m_goBackTex->GetRendererID(), ImVec2(20, 20));
+						ImGui::SameLine();
+
+						if (ImGui::Selectable("...", false))
+						{
+							m_prevDirPath = AssetManager::GetParentPath(m_CurrentDirPath);
+							m_CurrentDirPath = m_prevDirPath;
+							m_CurrentDir = AssetManager::ReadDirectory(m_CurrentDirPath);
+						}
+					}
+
+					for (int i = 0; i < m_CurrentDir.size(); i++)
+					{
+						if (m_CurrentDir.size() > 0)
+						{
+							if (!m_CurrentDir[i].isFile)
+							{
+								ImGui::Image((void*)m_folderTex->GetRendererID(), ImVec2(20, 20));
+								ImGui::SameLine();
+
+								if (ImGui::Selectable(m_CurrentDir[i].filename.c_str(), false, ImGuiSelectableFlags_AllowDoubleClick))
+								{
+									if (ImGui::IsMouseDoubleClicked(0))
+									{
+										m_prevDirPath = m_CurrentDir[i].absolutePath;
+										m_CurrentDirPath = m_CurrentDir[i].absolutePath;
+										m_CurrentDir = AssetManager::ReadDirectory(m_CurrentDir[i].absolutePath);
+									}
+								}
+
+								if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+								{
+									ImGui::Image((void*)m_folderTex->GetRendererID(), ImVec2(20, 20));
+									ImGui::SameLine();
+									ImGui::Text(m_CurrentDir[i].filename.c_str());
+									ImGui::EndDragDropSource();
+								}
+							}
+							else
+							{
+								ImGui::Image((void*)m_FileTex->GetRendererID(), ImVec2(20, 20));
+								ImGui::SameLine();
+
+								if (ImGui::Selectable(m_CurrentDir[i].filename.c_str(), false, ImGuiSelectableFlags_AllowDoubleClick))
+								{
+									if (ImGui::IsMouseDoubleClicked(0))
+									{
+										std::string cmd = '"' + m_CurrentDir[i].absolutePath + '"';
+										system(cmd.c_str());
+									}
+								}
+
+								if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+								{
+									ImGui::Image((void*)m_FileTex->GetRendererID(), ImVec2(20, 20));
+									ImGui::SameLine();
+									ImGui::Text(m_CurrentDir[i].filename.c_str());
+									int size = sizeof(const char*) + strlen(m_CurrentDir[i].absolutePath.c_str());
+									ImGui::SetDragDropPayload("selectable", m_CurrentDir[i].absolutePath.c_str(), size);
+									ImGui::EndDragDropSource();
+								}
+							}
+						}
+					}
+					ImGui::EndChild();
+					ImGui::EndChild();
+				}
+			}
+
+
+			if (ImGui::BeginMenuBar())
+			{
+				if (ImGui::BeginMenu("Create"))
+				{
+					if (ImGui::MenuItem("Import New Asset", "Ctrl + O"))
+					{
+						std::string filename = Application::Get().OpenFile("");
+						std::vector<std::string> outData;
+
+						AssetManager::ProcessAseets(filename);
+					}
+
+					if (ImGui::MenuItem("Refresh", "Ctrl + R"))
+					{
+						auto data = AssetManager::GetFsContents();
+						for (int i = 0; i < data.size(); i++)
+						{
+							SW_CORE_INFO(data[i].filename);
+						}
+					}
+
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenuBar();
+			}
+
+			ImGui::End();
+		}
+
+		ImGui::Begin("Console");
+		{
+			ImGui::End();
+		}
+
+
+		/* Asset Browser ImGUI Contents Ends Here ----------------------------------------------------------------------- */
+
 
 		ImGui::Separator();
 		{
@@ -603,7 +776,7 @@ namespace SW
 		ImGui::Begin("Toolbar");
 		if (m_SceneState == SceneState::Edit)
 		{
-			if (ImGui::ImageButton((ImTextureID)(m_PlayButtonTex->GetRendererID()), ImVec2(32, 32), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0.9f, 0.9f, 0.9f, 1.0f)))
+			if (ImGui::ImageButton((ImTextureID)(m_PlayButtonTex->GetRendererID()), ImVec2(32, 32), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0,0,0,0), ImVec4(0.9f, 0.9f, 0.9f, 1.0f)))
 			{
 				OnScenePlay();
 			}
@@ -709,7 +882,7 @@ namespace SW
 				if (ImGui::MenuItem("Open Scene..."))
 				{
 					auto& app = Application::Get();
-					std::string filepath = app.OpenFile("Hazel Scene (*.hsc)\0*.hsc\0");
+					std::string filepath = app.OpenFile("Shadow Wolf Scene (*.swc)\0*.swc\0");
 					if (!filepath.empty())
 					{
 						Ref<Scene> newScene = Ref<Scene>::Create();
@@ -728,7 +901,7 @@ namespace SW
 				if (ImGui::MenuItem("Save Scene..."))
 				{
 					auto& app = Application::Get();
-					std::string filepath = app.SaveFile("Hazel Scene (*.hsc)\0*.hsc\0");
+					std::string filepath = app.SaveFile("Shadow Wolf Scene (*.swc)\0*.swc\0");
 					SceneSerializer serializer(m_EditorScene);
 					serializer.Serialize(filepath);
 
@@ -736,17 +909,17 @@ namespace SW
 					UpdateWindowTitle(path.filename().string());
 				}
 				ImGui::Separator();
-
+			
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))
 					p_open = false;
 				ImGui::EndMenu();
 			}
-
+			
 			if (ImGui::BeginMenu("Script"))
 			{
 				if (ImGui::MenuItem("Reload C# Assembly"))
-					ScriptEngine::ReloadAssembly("assets/scripts/ExampleApp.dll");
+					ScriptEngine::ReloadAssembly("assets/scripts/TestApp.dll");
 
 				ImGui::MenuItem("Reload assembly on play", nullptr, &m_ReloadScriptOnPlay);
 				ImGui::EndMenu();
@@ -756,7 +929,7 @@ namespace SW
 		}
 
 		m_SceneHierarchyPanel->OnImGuiRender();
-
+		
 		ImGui::Begin("Materials");
 
 		if (m_SelectionContext.size())
@@ -826,28 +999,28 @@ namespace SW
 		{
 			switch (e.GetKeyCode())
 			{
-			case KeyCode::Q:
-				m_GizmoType = -1;
-				break;
-			case KeyCode::W:
-				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-				break;
-			case KeyCode::E:
-				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-				break;
-			case KeyCode::R:
-				m_GizmoType = ImGuizmo::OPERATION::SCALE;
-				break;
-			case KeyCode::Delete:
-				if (m_SelectionContext.size())
-				{
-					Entity selectedEntity = m_SelectionContext[0].Entity;
-					m_EditorScene->DestroyEntity(selectedEntity);
-					m_SelectionContext.clear();
-					m_EditorScene->SetSelectedEntity({});
-					m_SceneHierarchyPanel->SetSelected({});
-				}
-				break;
+				case KeyCode::Q:
+					m_GizmoType = -1;
+					break;
+				case KeyCode::W:
+					m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+					break;
+				case KeyCode::E:
+					m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+					break;
+				case KeyCode::R:
+					m_GizmoType = ImGuizmo::OPERATION::SCALE;
+					break;
+				case KeyCode::Delete:
+					if (m_SelectionContext.size())
+					{
+						Entity selectedEntity = m_SelectionContext[0].Entity;
+						m_EditorScene->DestroyEntity(selectedEntity);
+						m_SelectionContext.clear();
+						m_EditorScene->SetSelectedEntity({});
+						m_SceneHierarchyPanel->SetSelected({});
+					}
+					break;
 			}
 		}
 
@@ -855,22 +1028,22 @@ namespace SW
 		{
 			switch (e.GetKeyCode())
 			{
-			case KeyCode::G:
-				// Toggle grid
-				SceneRenderer::GetOptions().ShowGrid = !SceneRenderer::GetOptions().ShowGrid;
-				break;
-			case KeyCode::B:
-				// Toggle bounding boxes 
-				m_UIShowBoundingBoxes = !m_UIShowBoundingBoxes;
-				ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
-				break;
-			case KeyCode::D:
-				if (m_SelectionContext.size())
-				{
-					Entity selectedEntity = m_SelectionContext[0].Entity;
-					m_EditorScene->DuplicateEntity(selectedEntity);
-				}
-				break;
+				case KeyCode::G:
+					// Toggle grid
+					SceneRenderer::GetOptions().ShowGrid = !SceneRenderer::GetOptions().ShowGrid;
+					break;
+				case KeyCode::B:
+					// Toggle bounding boxes 
+					m_UIShowBoundingBoxes = !m_UIShowBoundingBoxes;
+					ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
+					break;
+				case KeyCode::D:
+					if (m_SelectionContext.size())
+					{
+						Entity selectedEntity = m_SelectionContext[0].Entity;
+						m_EditorScene->DuplicateEntity(selectedEntity);
+					}
+					break;
 			}
 		}
 
@@ -947,14 +1120,14 @@ namespace SW
 	std::pair<glm::vec3, glm::vec3> EditorLayer::CastRay(float mx, float my)
 	{
 		glm::vec4 mouseClipPos = { mx, my, -1.0f, 1.0f };
-
+		
 		auto inverseProj = glm::inverse(m_EditorCamera.GetProjectionMatrix());
 		auto inverseView = glm::inverse(glm::mat3(m_EditorCamera.GetViewMatrix()));
 
 		glm::vec4 ray = inverseProj * mouseClipPos;
 		glm::vec3 rayPos = m_EditorCamera.GetPosition();
 		glm::vec3 rayDir = inverseView * glm::vec3(ray);
-
+			
 		return { rayPos, rayDir };
 	}
 
@@ -983,4 +1156,5 @@ namespace SW
 		}
 		return Ray::Zero();
 	}
+
 }

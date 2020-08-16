@@ -1,8 +1,9 @@
 #pragma once
+
 #include "SWpch.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	class RenderCommandQueue
 	{
 	public:
@@ -19,5 +20,7 @@ namespace SW
 		uint8_t* m_CommandBufferPtr;
 		uint32_t m_CommandCount = 0;
 	};
+
+
 
 }

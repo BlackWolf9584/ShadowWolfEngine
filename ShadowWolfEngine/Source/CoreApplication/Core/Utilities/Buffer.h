@@ -2,8 +2,9 @@
 
 #include "CoreApplication/Core/Utilities/Base.h"
 
-namespace SW
+namespace Wolf
 {
+
 	struct Buffer
 	{
 		byte* Data;
@@ -45,7 +46,7 @@ namespace SW
 				memset(Data, 0, Size);
 		}
 
-		void Write(byte* data, uint32_t size, uint32_t offset = 0)
+		void Write(void* data, uint32_t size, uint32_t offset = 0)
 		{
 			SW_CORE_ASSERT(offset + size <= Size, "Buffer overflow!");
 			memcpy(Data + offset, data, size);
@@ -74,4 +75,5 @@ namespace SW
 
 		inline uint32_t GetSize() const { return Size; }
 	};
+
 }

@@ -1,20 +1,22 @@
 #include "SWpch.h"
-#include "CoreApplication/Platform/OpenGL/OpenGLShader.h"
-#include "Renderer/Renderer.h"
+#include "OpenGLShader.h"
 
 #include <string>
 #include <sstream>
 #include <limits>
-#include "glm/gtc/type_ptr.hpp"
 
-namespace SW
+#include <glm/gtc/type_ptr.hpp>
+
+#include "CoreApplication/Renderer/Renderer.h"
+
+namespace Wolf 
 {
 
 #define UNIFORM_LOGGING 0
 #if UNIFORM_LOGGING
-	#define SW_LOG_UNIFORM(...) SW_CORE_WARN(__VA_ARGS__)
+#define SW_LOG_UNIFORM(...) SW_CORE_WARN(__VA_ARGS__)
 #else
-	#define SW_LOG_UNIFORM
+#define SW_LOG_UNIFORM
 #endif
 
 	OpenGLShader::OpenGLShader(const std::string& filepath)
@@ -48,25 +50,25 @@ namespace SW
 			Parse();
 
 		Renderer::Submit([=]()
+		{
+			if (m_RendererID)
+				glDeleteProgram(m_RendererID);
+
+			CompileAndUploadShader();
+			if (!m_IsCompute)
 			{
-				if (m_RendererID)
-					glDeleteProgram(m_RendererID);
+				ResolveUniforms();
+				ValidateUniforms();
+			}
 
-				CompileAndUploadShader();
-				if (!m_IsCompute)
-				{
-					ResolveUniforms();
-					ValidateUniforms();
-				}
+			if (m_Loaded)
+			{
+				for (auto& callback : m_ShaderReloadedCallbacks)
+					callback();
+			}
 
-				if (m_Loaded)
-				{
-					for (auto& callback : m_ShaderReloadedCallbacks)
-						callback();
-				}
-
-				m_Loaded = true;
-			});
+			m_Loaded = true;
+		});
 	}
 
 	void OpenGLShader::AddShaderReloadedCallback(const ShaderReloadedCallback& callback)
@@ -78,7 +80,7 @@ namespace SW
 	{
 		Renderer::Submit([=]() {
 			glUseProgram(m_RendererID);
-			});
+		});
 	}
 
 	std::string OpenGLShader::ReadShaderFromFile(const std::string& filepath) const
@@ -550,7 +552,7 @@ namespace SW
 			std::string& source = kv.second;
 
 			GLuint shaderRendererID = glCreateShader(type);
-			const GLchar* sourceCstr = (const GLchar*)source.c_str();
+			const GLchar *sourceCstr = (const GLchar *)source.c_str();
 			glShaderSource(shaderRendererID, 1, &sourceCstr, 0);
 
 			glCompileShader(shaderRendererID);
@@ -583,7 +585,7 @@ namespace SW
 
 		// Note the different functions here: glGetProgram* instead of glGetShader*.
 		GLint isLinked = 0;
-		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+		glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxLength = 0;
@@ -613,7 +615,7 @@ namespace SW
 		Renderer::Submit([this, buffer]() {
 			glUseProgram(m_RendererID);
 			ResolveAndSetUniforms(m_VSMaterialUniformBuffer, buffer);
-			});
+		});
 	}
 
 	void OpenGLShader::SetPSMaterialUniformBuffer(Buffer buffer)
@@ -621,7 +623,7 @@ namespace SW
 		Renderer::Submit([this, buffer]() {
 			glUseProgram(m_RendererID);
 			ResolveAndSetUniforms(m_PSMaterialUniformBuffer, buffer);
-			});
+		});
 	}
 
 	void OpenGLShader::ResolveAndSetUniforms(const Ref<OpenGLShaderUniformBufferDeclaration>& decl, Buffer buffer)
@@ -654,19 +656,19 @@ namespace SW
 			UploadUniformInt(uniform->GetLocation(), *(int32_t*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC2:
-			UploadUniformFloat2(uniform->GetLocation(), *(glm::vec2*) & buffer.Data[offset]);
+			UploadUniformFloat2(uniform->GetLocation(), *(glm::vec2*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC3:
-			UploadUniformFloat3(uniform->GetLocation(), *(glm::vec3*) & buffer.Data[offset]);
+			UploadUniformFloat3(uniform->GetLocation(), *(glm::vec3*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC4:
-			UploadUniformFloat4(uniform->GetLocation(), *(glm::vec4*) & buffer.Data[offset]);
+			UploadUniformFloat4(uniform->GetLocation(), *(glm::vec4*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::MAT3:
-			UploadUniformMat3(uniform->GetLocation(), *(glm::mat3*) & buffer.Data[offset]);
+			UploadUniformMat3(uniform->GetLocation(), *(glm::mat3*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::MAT4:
-			UploadUniformMat4(uniform->GetLocation(), *(glm::mat4*) & buffer.Data[offset]);
+			UploadUniformMat4(uniform->GetLocation(), *(glm::mat4*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::STRUCT:
 			UploadUniformStruct(uniform, buffer.Data, offset);
@@ -678,7 +680,7 @@ namespace SW
 
 	void OpenGLShader::ResolveAndSetUniformArray(OpenGLShaderUniformDeclaration* uniform, Buffer buffer)
 	{
-		//HZ_CORE_ASSERT(uniform->GetLocation() != -1, "Uniform has invalid location!");
+		//SW_CORE_ASSERT(uniform->GetLocation() != -1, "Uniform has invalid location!");
 
 		uint32_t offset = uniform->GetOffset();
 		switch (uniform->GetType())
@@ -690,19 +692,19 @@ namespace SW
 			UploadUniformInt(uniform->GetLocation(), *(int32_t*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC2:
-			UploadUniformFloat2(uniform->GetLocation(), *(glm::vec2*) & buffer.Data[offset]);
+			UploadUniformFloat2(uniform->GetLocation(), *(glm::vec2*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC3:
-			UploadUniformFloat3(uniform->GetLocation(), *(glm::vec3*) & buffer.Data[offset]);
+			UploadUniformFloat3(uniform->GetLocation(), *(glm::vec3*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC4:
-			UploadUniformFloat4(uniform->GetLocation(), *(glm::vec4*) & buffer.Data[offset]);
+			UploadUniformFloat4(uniform->GetLocation(), *(glm::vec4*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::MAT3:
-			UploadUniformMat3(uniform->GetLocation(), *(glm::mat3*) & buffer.Data[offset]);
+			UploadUniformMat3(uniform->GetLocation(), *(glm::mat3*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::MAT4:
-			UploadUniformMat4Array(uniform->GetLocation(), *(glm::mat4*) & buffer.Data[offset], uniform->GetCount());
+			UploadUniformMat4Array(uniform->GetLocation(), *(glm::mat4*)&buffer.Data[offset], uniform->GetCount());
 			break;
 		case OpenGLShaderUniformDeclaration::Type::STRUCT:
 			UploadUniformStruct(uniform, buffer.Data, offset);
@@ -723,19 +725,19 @@ namespace SW
 			UploadUniformInt(field.GetLocation(), *(int32_t*)&data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC2:
-			UploadUniformFloat2(field.GetLocation(), *(glm::vec2*) & data[offset]);
+			UploadUniformFloat2(field.GetLocation(), *(glm::vec2*)&data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC3:
-			UploadUniformFloat3(field.GetLocation(), *(glm::vec3*) & data[offset]);
+			UploadUniformFloat3(field.GetLocation(), *(glm::vec3*)&data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::VEC4:
-			UploadUniformFloat4(field.GetLocation(), *(glm::vec4*) & data[offset]);
+			UploadUniformFloat4(field.GetLocation(), *(glm::vec4*)&data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::MAT3:
-			UploadUniformMat3(field.GetLocation(), *(glm::mat3*) & data[offset]);
+			UploadUniformMat3(field.GetLocation(), *(glm::mat3*)&data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::MAT4:
-			UploadUniformMat4(field.GetLocation(), *(glm::mat4*) & data[offset]);
+			UploadUniformMat4(field.GetLocation(), *(glm::mat4*)&data[offset]);
 			break;
 		default:
 			SW_CORE_ASSERT(false, "Unknown uniform type!");
@@ -749,38 +751,38 @@ namespace SW
 			const UniformDecl& decl = uniformBuffer.GetUniforms()[i];
 			switch (decl.Type)
 			{
-			case UniformType::Float:
-			{
-				const std::string& name = decl.Name;
-				float value = *(float*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=]() {
-					UploadUniformFloat(name, value);
+				case UniformType::Float:
+				{
+					const std::string& name = decl.Name;
+					float value = *(float*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformFloat(name, value);
 					});
-			}
-			case UniformType::Float3:
-			{
-				const std::string& name = decl.Name;
-				glm::vec3& values = *(glm::vec3*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=]() {
-					UploadUniformFloat3(name, values);
+				}
+				case UniformType::Float3:
+				{
+					const std::string& name = decl.Name;
+					glm::vec3& values = *(glm::vec3*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformFloat3(name, values);
 					});
-			}
-			case UniformType::Float4:
-			{
-				const std::string& name = decl.Name;
-				glm::vec4& values = *(glm::vec4*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=]() {
-					UploadUniformFloat4(name, values);
+				}
+				case UniformType::Float4:
+				{
+					const std::string& name = decl.Name;
+					glm::vec4& values = *(glm::vec4*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformFloat4(name, values);
 					});
-			}
-			case UniformType::Matrix4x4:
-			{
-				const std::string& name = decl.Name;
-				glm::mat4& values = *(glm::mat4*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=]() {
-					UploadUniformMat4(name, values);
+				}
+				case UniformType::Matrix4x4:
+				{
+					const std::string& name = decl.Name;
+					glm::mat4& values = *(glm::mat4*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformMat4(name, values);
 					});
-			}
+				}
 			}
 		}
 	}
@@ -789,28 +791,28 @@ namespace SW
 	{
 		Renderer::Submit([=]() {
 			UploadUniformFloat(name, value);
-			});
+		});
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
 		Renderer::Submit([=]() {
 			UploadUniformInt(name, value);
-			});
+		});
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
 		Renderer::Submit([=]() {
 			UploadUniformFloat3(name, value);
-			});
+		});
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
 		Renderer::Submit([=]() {
 			UploadUniformMat4(name, value);
-			});
+		});
 	}
 
 	void OpenGLShader::SetMat4FromRenderThread(const std::string& name, const glm::mat4& value, bool bind)
@@ -831,7 +833,7 @@ namespace SW
 	{
 		Renderer::Submit([=]() {
 			UploadUniformIntArray(name, values, size);
-			});
+		});
 	}
 
 	void OpenGLShader::UploadUniformInt(uint32_t location, int32_t value)

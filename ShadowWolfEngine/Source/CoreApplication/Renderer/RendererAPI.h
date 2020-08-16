@@ -1,7 +1,7 @@
 #pragma once
 
-namespace SW
-{
+namespace Wolf {
+
 	using RendererID = uint32_t;
 
 	enum class RendererAPIType
@@ -13,9 +13,7 @@ namespace SW
 	// TODO: move into separate header
 	enum class PrimitiveType
 	{
-		None = 0,
-		Triangles,
-		Lines
+		None = 0, Triangles, Lines
 	};
 
 	struct RenderAPICapabilities
@@ -55,4 +53,5 @@ namespace SW
 	private:
 		static RendererAPIType s_CurrentRendererAPI;
 	};
+
 }

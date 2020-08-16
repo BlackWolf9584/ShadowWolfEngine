@@ -1,11 +1,13 @@
 #pragma once
+
 #include "CoreApplication/Renderer/Shader.h"
-#include "CoreApplication/Platform/OpenGL/OpenGLShaderUniform.h"
+#include <glad/glad.h>
 
-#include <Glad/glad.h>
+#include "OpenGLShaderUniform.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	class OpenGLShader : public Shader
 	{
 	public:

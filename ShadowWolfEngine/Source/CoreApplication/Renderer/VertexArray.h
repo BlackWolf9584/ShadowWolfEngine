@@ -1,10 +1,11 @@
 #pragma once
-#include "CoreApplication/Renderer/Buffer.h"
 
 #include <memory>
 
-namespace SW
-{
+#include "CoreApplication/Renderer/Buffer.h"
+
+namespace Wolf {
+
 	class VertexArray : public RefCounted
 	{
 	public:
@@ -23,4 +24,5 @@ namespace SW
 
 		static Ref<VertexArray> Create();
 	};
+
 }

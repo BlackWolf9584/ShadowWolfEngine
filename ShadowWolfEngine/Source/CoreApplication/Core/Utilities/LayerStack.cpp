@@ -1,8 +1,9 @@
 #include "SWpch.h"
-#include "CoreApplication/Core/Utilities/LayerStack.h"
+#include "LayerStack.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	LayerStack::LayerStack()
 	{
 	}
@@ -41,4 +42,5 @@ namespace SW
 		if (it != m_Layers.end())
 			m_Layers.erase(it);
 	}
+
 }

@@ -1,10 +1,11 @@
 #include "SWpch.h"
 #include "Noise.h"
 
-#include <FastNoise.h>
+#include "FastNoise.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	static FastNoise s_FastNoise;
 
 	float Noise::PerlinNoise(float x, float y)

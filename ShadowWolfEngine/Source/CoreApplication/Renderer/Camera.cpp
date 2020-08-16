@@ -1,10 +1,12 @@
 #include "SWpch.h"
-#include "CoreApplication/Renderer/Camera.h"
+#include "Camera.h"
 
-namespace SW
+namespace Wolf
 {
+
 	Camera::Camera(const glm::mat4& projectionMatrix)
 		: m_ProjectionMatrix(projectionMatrix)
 	{
 	}
+
 }

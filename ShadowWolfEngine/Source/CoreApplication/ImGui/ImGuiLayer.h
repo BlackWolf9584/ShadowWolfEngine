@@ -1,9 +1,10 @@
 #pragma once
+
 #include "SWpch.h"
 #include "CoreApplication/Core/Utilities/Layer.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	class ImGuiLayer : public Layer
 	{
 	public:
@@ -17,8 +18,8 @@ namespace SW
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnImGuiRender() override;
-
 	private:
 		float m_Time = 0.0f;
 	};
+
 }

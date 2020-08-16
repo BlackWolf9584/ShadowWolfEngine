@@ -1,14 +1,15 @@
 #pragma once
-#include "CoreApplication/Renderer/RendererAPI.h"
 
 #include <glm/glm.hpp>
 
-namespace SW
-{
+#include "CoreApplication/Renderer/RendererAPI.h"
+
+namespace Wolf {
+
 	enum class FramebufferFormat
 	{
-		None = 0,
-		RGBA8 = 1,
+		None    = 0,
+		RGBA8   = 1,
 		RGBA16F = 2
 	};
 
@@ -19,7 +20,7 @@ namespace SW
 		glm::vec4 ClearColor;
 		FramebufferFormat Format;
 		uint32_t Samples = 1; // multisampling
-
+		
 		// SwapChainTarget = screen buffer (i.e. no framebuffer)
 		bool SwapChainTarget = false;
 	};

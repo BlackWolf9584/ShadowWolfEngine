@@ -1,20 +1,22 @@
 #pragma once
-#include "CoreApplication/Core/Utilities/Base.h"
-#include "CoreApplication/Core/Events/Event.h"
 
 #include <functional>
 
-namespace SW
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Events/Event.h"
+
+namespace Wolf 
 {
+
 	struct WindowProps
 	{
 		std::string Title;
 		unsigned int Width;
 		unsigned int Height;
 
-		WindowProps(const std::string& title = "Shadow Wolf Engine",
-			unsigned int width = 1280,
-			unsigned int height = 720)
+		WindowProps(const std::string& title = "Sahdow Wolf Engine",
+			        unsigned int width = 1280,
+			        unsigned int height = 720)
 			: Title(title), Width(width), Height(height)
 		{
 		}
@@ -47,4 +49,5 @@ namespace SW
 
 		static Window* Create(const WindowProps& props = WindowProps());
 	};
+
 }

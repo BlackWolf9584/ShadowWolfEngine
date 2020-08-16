@@ -1,21 +1,24 @@
 #include "SWpch.h"
 #include "ScriptEngine.h"
-#include "ScriptEngineRegistry.h"
-#include "Scene/Scene.h"
-
-#include "imgui.h"
-
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/attrdefs.h>
+
 #include <iostream>
 #include <chrono>
 #include <thread>
+
 #include <Windows.h>
 #include <winioctl.h>
 
-namespace SW {
+#include "ScriptEngineRegistry.h"
+
+#include "CoreApplication/Scene/Scene.h"
+
+#include "imgui.h"
+
+namespace Wolf {
 
 	static MonoDomain* s_MonoDomain = nullptr;
 	static std::string s_AssemblyPath;
@@ -104,12 +107,12 @@ namespace SW {
 	{
 		mono_set_assemblies_path("mono/lib");
 		// mono_jit_set_trace_options("--verbose");
-		auto domain = mono_jit_init("Hazel");
+		auto domain = mono_jit_init("ShadowWolf");
 
-		char* name = (char*)"HazelRuntime";
+		char* name = (char*)"ShadowWolfRuntime";
 		s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
 	}
-
+	
 	static void ShutdownMono()
 	{
 		mono_jit_cleanup(s_MonoDomain);
@@ -150,7 +153,7 @@ namespace SW {
 		MonoObject* instance = mono_object_new(s_MonoDomain, scriptClass.Class);
 		if (!instance)
 			std::cout << "mono_object_new failed" << std::endl;
-
+		
 		mono_runtime_object_init(instance);
 		uint32_t handle = mono_gchandle_new(instance, false);
 		return handle;
@@ -223,13 +226,13 @@ namespace SW {
 		bool cleanup = false;
 		if (s_MonoDomain)
 		{
-			domain = mono_domain_create_appdomain("Hazel Runtime", nullptr);
+			domain = mono_domain_create_appdomain("Shadow Wolf Runtime", nullptr);
 			mono_domain_set(domain, false);
-
+			
 			cleanup = true;
 		}
 
-		s_CoreAssembly = LoadAssembly("assets/scripts/Hazel-ScriptCore.dll");
+		s_CoreAssembly = LoadAssembly("assets/scripts/ShadowWolf-ScriptCore.dll");
 		s_CoreAssemblyImage = GetAssemblyImage(s_CoreAssembly);
 
 		auto appAssembly = LoadAssembly(path);
@@ -256,7 +259,7 @@ namespace SW {
 			if (s_EntityInstanceMap.find(scene->GetUUID()) != s_EntityInstanceMap.end())
 			{
 				auto& entityMap = s_EntityInstanceMap.at(scene->GetUUID());
-				for (auto& [entityID, entityInstanceData] : entityMap)
+				for (auto&[entityID, entityInstanceData]: entityMap)
 				{
 					const auto& entityMap = scene->GetEntityMap();
 					SW_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
@@ -337,7 +340,7 @@ namespace SW {
 			CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnCreateMethod);
 	}
 
-	void ScriptEngine::OnUpdateEntity(UUID sceneID, UUID entityID, TimeStep ts)
+	void ScriptEngine::OnUpdateEntity(UUID sceneID, UUID entityID, Timestep ts)
 	{
 		EntityInstance& entityInstance = GetEntityInstanceData(sceneID, entityID).Instance;
 		if (entityInstance.ScriptClass->OnUpdateMethod)
@@ -377,17 +380,17 @@ namespace SW {
 		int type = mono_type_get_type(monoType);
 		switch (type)
 		{
-		case MONO_TYPE_R4: return FieldType::Float;
-		case MONO_TYPE_I4: return FieldType::Int;
-		case MONO_TYPE_U4: return FieldType::UnsignedInt;
-		case MONO_TYPE_STRING: return FieldType::String;
-		case MONO_TYPE_VALUETYPE:
-		{
-			char* name = mono_type_get_name(monoType);
-			if (strcmp(name, "Hazel.Vector2") == 0) return FieldType::Vec2;
-			if (strcmp(name, "Hazel.Vector3") == 0) return FieldType::Vec3;
-			if (strcmp(name, "Hazel.Vector4") == 0) return FieldType::Vec4;
-		}
+			case MONO_TYPE_R4: return FieldType::Float;
+			case MONO_TYPE_I4: return FieldType::Int;
+			case MONO_TYPE_U4: return FieldType::UnsignedInt;
+			case MONO_TYPE_STRING: return FieldType::String;
+			case MONO_TYPE_VALUETYPE:
+			{
+				char* name = mono_type_get_name(monoType);
+				if (strcmp(name, "ShadowWolf.Vector2") == 0) return FieldType::Vec2;
+				if (strcmp(name, "ShadowWolf.Vector3") == 0) return FieldType::Vec3;
+				if (strcmp(name, "ShadowWolf.Vector4") == 0) return FieldType::Vec4;
+			}
 		}
 		return FieldType::None;
 	}
@@ -396,13 +399,13 @@ namespace SW {
 	{
 		switch (type)
 		{
-		case FieldType::Float:       return "Float";
-		case FieldType::Int:         return "Int";
-		case FieldType::UnsignedInt: return "UnsignedInt";
-		case FieldType::String:      return "String";
-		case FieldType::Vec2:        return "Vec2";
-		case FieldType::Vec3:        return "Vec3";
-		case FieldType::Vec4:        return "Vec4";
+			case FieldType::Float:       return "Float";
+			case FieldType::Int:         return "Int";
+			case FieldType::UnsignedInt: return "UnsignedInt";
+			case FieldType::String:      return "String";
+			case FieldType::Vec2:        return "Vec2";
+			case FieldType::Vec3:        return "Vec3";
+			case FieldType::Vec4:        return "Vec4";
 		}
 		return "Unknown";
 	}
@@ -441,7 +444,7 @@ namespace SW {
 		entityInstance.ScriptClass = &scriptClass;
 		ScriptModuleFieldMap& moduleFieldMap = entityInstanceData.ModuleFieldMap;
 		auto& fieldMap = moduleFieldMap[moduleName];
-
+		
 		// Save old fields
 		std::unordered_map<std::string, PublicField> oldFields;
 		oldFields.reserve(fieldMap.size());
@@ -511,7 +514,7 @@ namespace SW {
 		if (moduleFieldMap.find(moduleName) != moduleFieldMap.end())
 		{
 			auto& publicFields = moduleFieldMap.at(moduleName);
-			for (auto& [name, field] : publicFields)
+			for (auto&[name, field] : publicFields)
 				field.CopyStoredValueToRuntime();
 		}
 
@@ -536,13 +539,13 @@ namespace SW {
 	{
 		switch (type)
 		{
-		case FieldType::Float:       return 4;
-		case FieldType::Int:         return 4;
-		case FieldType::UnsignedInt: return 4;
+			case FieldType::Float:       return 4;
+			case FieldType::Int:         return 4;
+			case FieldType::UnsignedInt: return 4;
 			// case FieldType::String:   return 8; // TODO
-		case FieldType::Vec2:        return 4 * 2;
-		case FieldType::Vec3:        return 4 * 3;
-		case FieldType::Vec4:        return 4 * 4;
+			case FieldType::Vec2:        return 4 * 2;
+			case FieldType::Vec3:        return 4 * 3;
+			case FieldType::Vec4:        return 4 * 4;
 		}
 		SW_CORE_ASSERT(false, "Unknown field type!");
 		return 0;
@@ -648,7 +651,7 @@ namespace SW {
 								for (auto& [fieldName, field] : fieldMap)
 								{
 
-									opened = ImGui::TreeNodeEx((void*)&field, ImGuiTreeNodeFlags_Leaf, fieldName.c_str());
+									opened = ImGui::TreeNodeEx((void*)&field, ImGuiTreeNodeFlags_Leaf , fieldName.c_str());
 									if (opened)
 									{
 
@@ -666,4 +669,7 @@ namespace SW {
 		}
 		ImGui::End();
 	}
+
+
+
 }

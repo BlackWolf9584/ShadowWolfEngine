@@ -1,10 +1,12 @@
 #include "SWpch.h"
-#include "CoreApplication/Core/Utilities/TimeStep.h"
+#include "Timestep.h"
 
-namespace SW
+namespace Wolf 
 {
-	TimeStep::TimeStep(float time)
-		:m_Time(time)
+
+	Timestep::Timestep(float time)
+		: m_Time(time)
 	{
 	}
+
 }

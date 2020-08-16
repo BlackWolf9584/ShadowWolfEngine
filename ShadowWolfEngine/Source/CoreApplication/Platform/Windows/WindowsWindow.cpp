@@ -1,18 +1,21 @@
 #include "SWpch.h"
-#include "CoreApplication/Platform/Windows/WindowsWindow.h"
+#include <glad/glad.h>
+#include "WindowsWindow.h"
+
 #include "CoreApplication/Core/Events/ApplicationEvent.h"
 #include "CoreApplication/Core/Events/KeyEvent.h"
 #include "CoreApplication/Core/Events/MouseEvent.h"
 
 #include <imgui.h>
 
-namespace SW
+namespace Wolf 
 {
+
 	static void GLFWErrorCallback(int error, const char* description)
 	{
 		SW_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
-
+	
 	static bool s_GLFWInitialized = false;
 
 	Window* Window::Create(const WindowProps& props)
@@ -56,29 +59,29 @@ namespace SW
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-			{
-				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+		{
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				WindowResizeEvent event((unsigned int)width, (unsigned int)height);
-				data.EventCallback(event);
-				data.Width = width;
-				data.Height = height;
-			});
+			WindowResizeEvent event((unsigned int)width, (unsigned int)height);
+			data.EventCallback(event);
+			data.Width = width;
+			data.Height = height;
+		});
 
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-			{
-				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+		{
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				WindowCloseEvent event;
-				data.EventCallback(event);
-			});
+			WindowCloseEvent event;
+			data.EventCallback(event);
+		});
 
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-			{
-				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+		{
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				switch (action)
-				{
+			switch (action)
+			{
 				case GLFW_PRESS:
 				{
 					KeyPressedEvent event((KeyCode)key, 0);
@@ -97,23 +100,23 @@ namespace SW
 					data.EventCallback(event);
 					break;
 				}
-				}
-			});
+			}
+		});
 
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int codepoint)
-			{
-				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+		{
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				KeyTypedEvent event((KeyCode)codepoint);
-				data.EventCallback(event);
-			});
+			KeyTypedEvent event((KeyCode)codepoint);
+			data.EventCallback(event);
+		});
 
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
-			{
-				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+		{
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				switch (action)
-				{
+			switch (action)
+			{
 				case GLFW_PRESS:
 				{
 					MouseButtonPressedEvent event(button);
@@ -126,24 +129,24 @@ namespace SW
 					data.EventCallback(event);
 					break;
 				}
-				}
-			});
+			}
+		});
 
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-			{
-				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+		{
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				MouseScrolledEvent event((float)xOffset, (float)yOffset);
-				data.EventCallback(event);
-			});
+			MouseScrolledEvent event((float)xOffset, (float)yOffset);
+			data.EventCallback(event);
+		});
 
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x, double y)
-			{
-				auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+		{
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-				MouseMovedEvent event((float)x, (float)y);
-				data.EventCallback(event);
-			});
+			MouseMovedEvent event((float)x, (float)y);
+			data.EventCallback(event);
+		});
 
 		m_ImGuiMouseCursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 		m_ImGuiMouseCursors[ImGuiMouseCursor_TextInput] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
@@ -159,13 +162,13 @@ namespace SW
 			int width, height;
 			glfwGetWindowSize(m_Window, &width, &height);
 			m_Data.Width = width;
-			m_Data.Height = height;
+			m_Data.Height= height;
 		}
 	}
 
 	void WindowsWindow::Shutdown()
 	{
-
+		
 	}
 
 	inline std::pair<float, float> WindowsWindow::GetWindowPos() const
@@ -209,4 +212,5 @@ namespace SW
 		m_Data.Title = title;
 		glfwSetWindowTitle(m_Window, m_Data.Title.c_str());
 	}
+
 }

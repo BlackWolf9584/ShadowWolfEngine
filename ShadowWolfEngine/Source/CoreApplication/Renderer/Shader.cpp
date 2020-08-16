@@ -1,10 +1,11 @@
 #include "SWpch.h"
-#include "CoreApplication/Renderer/Shader.h"
+#include "Shader.h"
+
 #include "CoreApplication/Renderer/Renderer.h"
 #include "CoreApplication/Platform/OpenGL/OpenGLShader.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	std::vector<Ref<Shader>> Shader::s_AllShaders;
 
 	Ref<Shader> Shader::Create(const std::string& filepath)
@@ -13,8 +14,8 @@ namespace SW
 
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None: return nullptr;
-		case RendererAPIType::OpenGL: result = Ref<OpenGLShader>::Create(filepath);
+			case RendererAPIType::None: return nullptr;
+			case RendererAPIType::OpenGL: result = Ref<OpenGLShader>::Create(filepath);
 		}
 		s_AllShaders.push_back(result);
 		return result;
@@ -26,8 +27,8 @@ namespace SW
 
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None: return nullptr;
-		case RendererAPIType::OpenGL: result = OpenGLShader::CreateFromString(source);
+			case RendererAPIType::None: return nullptr;
+			case RendererAPIType::OpenGL: result = OpenGLShader::CreateFromString(source);
 		}
 		s_AllShaders.push_back(result);
 		return result;
@@ -41,7 +42,7 @@ namespace SW
 	{
 	}
 
-	void ShaderLibrary::Add(const SW::Ref<Shader>& shader)
+	void ShaderLibrary::Add(const Wolf::Ref<Shader>& shader)
 	{
 		auto& name = shader->GetName();
 		SW_CORE_ASSERT(m_Shaders.find(name) == m_Shaders.end());

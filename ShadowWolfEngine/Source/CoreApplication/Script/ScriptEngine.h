@@ -1,29 +1,23 @@
-#pragma once 
-#include "Core/Utilities/Base.h"
-#include "Core/Utilities/TimeStep.h"
-#include "Scene/Components.h"
-#include "Scene/Entity.h"
+#pragma once
+
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Utilities/Timestep.h"
 
 #include <string>
 
+#include "CoreApplication/Scene/Components.h"
+#include "CoreApplication/Scene/Entity.h"
 
 extern "C" {
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoClassField MonoClassField;
 }
 
-namespace SW {
+namespace Wolf {
 
 	enum class FieldType
 	{
-		None = 0, 
-		Float, 
-		Int, 
-		UnsignedInt, 
-		String, 
-		Vec2,
-		Vec3,
-		Vec4
+		None = 0, Float, Int, UnsignedInt, String, Vec2, Vec3, Vec4
 	};
 
 	const char* FieldTypeToString(FieldType type);
@@ -67,7 +61,7 @@ namespace SW {
 			SetStoredValue_Internal(&value);
 		}
 
-		template<typename T>
+		template<typename T> 
 		T GetRuntimeValue() const
 		{
 			T value;
@@ -103,7 +97,7 @@ namespace SW {
 		EntityInstance Instance;
 		ScriptModuleFieldMap ModuleFieldMap;
 	};
-
+	
 	using EntityInstanceMap = std::unordered_map<UUID, std::unordered_map<UUID, EntityInstanceData>>;
 
 	class ScriptEngine
@@ -124,7 +118,7 @@ namespace SW {
 
 		static void OnCreateEntity(Entity entity);
 		static void OnCreateEntity(UUID sceneID, UUID entityID);
-		static void OnUpdateEntity(UUID sceneID, UUID entityID, TimeStep ts);
+		static void OnUpdateEntity(UUID sceneID, UUID entityID, Timestep ts);
 
 		static void OnScriptComponentDestroyed(UUID sceneID, UUID entityID);
 

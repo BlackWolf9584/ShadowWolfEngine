@@ -1,11 +1,12 @@
 #pragma once
-#include "Core/Utilities/Window.h"
 
-#include <glad/glad.h>
+#include "CoreApplication/Core/Utilities/Window.h"
+
 #include <GLFW/glfw3.h>
 
-namespace SW
+namespace Wolf 
 {
+
 	class WindowsWindow : public Window
 	{
 	public:
@@ -48,4 +49,5 @@ namespace SW
 		WindowData m_Data;
 		float m_LastFrameTime = 0.0f;
 	};
+
 }

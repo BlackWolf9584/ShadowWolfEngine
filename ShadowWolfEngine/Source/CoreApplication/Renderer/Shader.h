@@ -1,18 +1,19 @@
 #pragma once
+
 #include "CoreApplication/Core/Utilities/Base.h"
 #include "CoreApplication/Core/Utilities/Buffer.h"
+
 #include "CoreApplication/Renderer/RendererAPI.h"
 #include "CoreApplication/Renderer/ShaderUniform.h"
 
 #include <string>
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 
-namespace SW
+namespace Wolf
 {
-
 	struct ShaderUniform
 	{
-
+		
 	};
 
 	struct ShaderUniformCollection

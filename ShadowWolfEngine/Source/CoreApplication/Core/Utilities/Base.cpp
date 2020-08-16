@@ -1,16 +1,18 @@
 #include "SWpch.h"
-#include "CoreApplication/Core/Utilities/Base.h"
+#include "Base.h"
+
 #include "CoreApplication/Core/Debug/Log.h"
 
-#define SW_BUILD_ID "v0.1a"
+#define WOLF_BUILD_ID "v0.1a"
 
-namespace SW
+namespace Wolf
 {
+
 	void InitializeCore()
 	{
-		SW::Log::Init();
+		Log::Init();
 
-		SW_CORE_TRACE("Shadow Wolf Engine {}", SW_BUILD_ID);
+		SW_CORE_TRACE("Shadow Wolf Engine {}", WOLF_BUILD_ID);
 		SW_CORE_TRACE("Initializing...");
 	}
 
@@ -18,4 +20,5 @@ namespace SW
 	{
 		SW_CORE_TRACE("Shutting down...");
 	}
+
 }

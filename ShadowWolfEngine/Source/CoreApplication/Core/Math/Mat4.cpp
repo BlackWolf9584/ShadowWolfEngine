@@ -3,8 +3,9 @@
 
 #include <assimp/matrix4x4.h>
 
-namespace SW
+namespace Wolf
 {
+
 	/*glm::mat4 Mat4::FromAssimpMat4(const aiMatrix4x4& matrix)
 	{
 		glm::mat4 result;

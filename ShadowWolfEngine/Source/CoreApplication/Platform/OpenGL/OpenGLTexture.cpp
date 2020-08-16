@@ -1,22 +1,22 @@
 #include "SWpch.h"
-#include "CoreApplication/Platform/OpenGL/OpenGLTexture.h"
+#include "OpenGLTexture.h"
+
 #include "CoreApplication/Renderer/RendererAPI.h"
 #include "CoreApplication/Renderer/Renderer.h"
 
-#include <Glad/glad.h>
+#include <glad/glad.h>
+#include "stb_image.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-namespace SW
+namespace Wolf 
 {
-	static GLenum WolfToOpenGLTextureFormat(TextureFormat format)
+
+	static GLenum HazelToOpenGLTextureFormat(TextureFormat format)
 	{
 		switch (format)
 		{
-		case SW::TextureFormat::RGB:     return GL_RGB;
-		case SW::TextureFormat::RGBA:    return GL_RGBA;
-		case SW::TextureFormat::Float16: return GL_RGBA16F;
+			case Wolf::TextureFormat::RGB:     return GL_RGB;
+			case Wolf::TextureFormat::RGBA:    return GL_RGBA;
+			case Wolf::TextureFormat::Float16: return GL_RGBA16F;
 		}
 		SW_CORE_ASSERT(false, "Unknown texture format!");
 		return 0;
@@ -31,21 +31,21 @@ namespace SW
 	{
 		Ref<OpenGLTexture2D> instance = this;
 		Renderer::Submit([instance]() mutable
-			{
-				glGenTextures(1, &instance->m_RendererID);
-				glBindTexture(GL_TEXTURE_2D, instance->m_RendererID);
+		{
+			glGenTextures(1, &instance->m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, instance->m_RendererID);
 
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				GLenum wrap = instance->m_Wrap == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT;
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-				glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GLenum wrap = instance->m_Wrap == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT;
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+			glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
 
-				glTexImage2D(GL_TEXTURE_2D, 0, WolfToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height, 0, WolfToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, HazelToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height, 0, HazelToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, nullptr);
 
-				glBindTexture(GL_TEXTURE_2D, 0);
-			});
+			glBindTexture(GL_TEXTURE_2D, 0);
+		});
 
 		m_ImageData.Allocate(width * height * Texture::GetBPP(m_Format));
 	}
@@ -79,40 +79,40 @@ namespace SW
 
 		Ref<OpenGLTexture2D> instance = this;
 		Renderer::Submit([instance, srgb]() mutable
+		{
+			// TODO: Consolidate properly
+			if (srgb)
 			{
-				// TODO: Consolidate properly
-				if (srgb)
-				{
-					glCreateTextures(GL_TEXTURE_2D, 1, &instance->m_RendererID);
-					int levels = Texture::CalculateMipMapCount(instance->m_Width, instance->m_Height);
-					glTextureStorage2D(instance->m_RendererID, levels, GL_SRGB8, instance->m_Width, instance->m_Height);
-					glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-					glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glCreateTextures(GL_TEXTURE_2D, 1, &instance->m_RendererID);
+				int levels = Texture::CalculateMipMapCount(instance->m_Width, instance->m_Height);
+				glTextureStorage2D(instance->m_RendererID, levels, GL_SRGB8, instance->m_Width, instance->m_Height);
+				glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+				glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-					glTextureSubImage2D(instance->m_RendererID, 0, 0, 0, instance->m_Width, instance->m_Height, GL_RGB, GL_UNSIGNED_BYTE, instance->m_ImageData.Data);
-					glGenerateTextureMipmap(instance->m_RendererID);
-				}
-				else
-				{
-					glGenTextures(1, &instance->m_RendererID);
-					glBindTexture(GL_TEXTURE_2D, instance->m_RendererID);
+				glTextureSubImage2D(instance->m_RendererID, 0, 0, 0, instance->m_Width, instance->m_Height, GL_RGB, GL_UNSIGNED_BYTE, instance->m_ImageData.Data);
+				glGenerateTextureMipmap(instance->m_RendererID);
+			}
+			else
+			{
+				glGenTextures(1, &instance->m_RendererID);
+				glBindTexture(GL_TEXTURE_2D, instance->m_RendererID);
 
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-					GLenum internalFormat = WolfToOpenGLTextureFormat(instance->m_Format);
-					GLenum format = srgb ? GL_SRGB8 : (instance->m_IsHDR ? GL_RGB : WolfToOpenGLTextureFormat(instance->m_Format)); // HDR = GL_RGB for now
-					GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
-					glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, instance->m_Width, instance->m_Height, 0, format, type, instance->m_ImageData.Data);
-					glGenerateMipmap(GL_TEXTURE_2D);
+				GLenum internalFormat = HazelToOpenGLTextureFormat(instance->m_Format);
+				GLenum format = srgb ? GL_SRGB8 : (instance->m_IsHDR ? GL_RGB : HazelToOpenGLTextureFormat(instance->m_Format)); // HDR = GL_RGB for now
+				GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
+				glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, instance->m_Width, instance->m_Height, 0, format, type, instance->m_ImageData.Data);
+				glGenerateMipmap(GL_TEXTURE_2D);
 
-					glBindTexture(GL_TEXTURE_2D, 0);
-				}
-				stbi_image_free(instance->m_ImageData.Data);
-			});
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+			stbi_image_free(instance->m_ImageData.Data);
+		});
 	}
 
 	OpenGLTexture2D::~OpenGLTexture2D()
@@ -120,7 +120,7 @@ namespace SW
 		GLuint rendererID = m_RendererID;
 		Renderer::Submit([rendererID]() {
 			glDeleteTextures(1, &rendererID);
-			});
+		});
 	}
 
 	void OpenGLTexture2D::Bind(uint32_t slot) const
@@ -128,7 +128,7 @@ namespace SW
 		Ref<const OpenGLTexture2D> instance = this;
 		Renderer::Submit([instance, slot]() {
 			glBindTextureUnit(slot, instance->m_RendererID);
-			});
+		});
 	}
 
 	void OpenGLTexture2D::Lock()
@@ -141,8 +141,8 @@ namespace SW
 		m_Locked = false;
 		Ref<OpenGLTexture2D> instance = this;
 		Renderer::Submit([instance]() {
-			glTextureSubImage2D(instance->m_RendererID, 0, 0, 0, instance->m_Width, instance->m_Height, WolfToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, instance->m_ImageData.Data);
-			});
+			glTextureSubImage2D(instance->m_RendererID, 0, 0, 0, instance->m_Width, instance->m_Height, HazelToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, instance->m_ImageData.Data);
+		});
 	}
 
 	void OpenGLTexture2D::Resize(uint32_t width, uint32_t height)
@@ -150,7 +150,7 @@ namespace SW
 		SW_CORE_ASSERT(m_Locked, "Texture must be locked!");
 
 		m_ImageData.Allocate(width * height * Texture::GetBPP(m_Format));
-#if HZ_DEBUG
+#if SW_DEBUG
 		m_ImageData.ZeroInitialize();
 #endif
 	}
@@ -179,17 +179,17 @@ namespace SW
 		uint32_t levels = Texture::CalculateMipMapCount(width, height);
 		Ref<OpenGLTextureCube> instance = this;
 		Renderer::Submit([instance, levels]() mutable
-			{
-				glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &instance->m_RendererID);
-				glTextureStorage2D(instance->m_RendererID, levels, WolfToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height);
-				glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-				glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		{
+			glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &instance->m_RendererID);
+			glTextureStorage2D(instance->m_RendererID, levels, HazelToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height);
+			glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+			glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-				// glTextureParameterf(m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, 16);
-			});
+			// glTextureParameterf(m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, 16);
+		});
 	}
 
 	// TODO: Revisit this, as currently env maps are being loaded as equirectangular 2D images
@@ -253,36 +253,36 @@ namespace SW
 
 		Ref<OpenGLTextureCube> instance = this;
 		Renderer::Submit([instance, faceWidth, faceHeight, faces]() mutable
-			{
-				glGenTextures(1, &instance->m_RendererID);
-				glBindTexture(GL_TEXTURE_CUBE_MAP, instance->m_RendererID);
+		{
+			glGenTextures(1, &instance->m_RendererID);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, instance->m_RendererID);
 
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-				glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
 
-				auto format = WolfToOpenGLTextureFormat(instance->m_Format);
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[2]);
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[0]);
+			auto format = HazelToOpenGLTextureFormat(instance->m_Format);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[2]);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[0]);
 
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[4]);
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[5]);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[4]);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[5]);
 
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[1]);
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[3]);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[1]);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[3]);
 
-				glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-				glBindTexture(GL_TEXTURE_2D, 0);
+			glBindTexture(GL_TEXTURE_2D, 0);
 
-				for (size_t i = 0; i < faces.size(); i++)
-					delete[] faces[i];
+			for (size_t i = 0; i < faces.size(); i++)
+				delete[] faces[i];
 
-				stbi_image_free(instance->m_ImageData);
-			});
+			stbi_image_free(instance->m_ImageData);
+		});
 	}
 
 	OpenGLTextureCube::~OpenGLTextureCube()
@@ -290,7 +290,7 @@ namespace SW
 		GLuint rendererID = m_RendererID;
 		Renderer::Submit([rendererID]() {
 			glDeleteTextures(1, &rendererID);
-			});
+		});
 	}
 
 	void OpenGLTextureCube::Bind(uint32_t slot) const
@@ -298,7 +298,7 @@ namespace SW
 		Ref<const OpenGLTextureCube> instance = this;
 		Renderer::Submit([instance, slot]() {
 			glBindTextureUnit(slot, instance->m_RendererID);
-			});
+		});
 	}
 
 	uint32_t OpenGLTextureCube::GetMipLevelCount() const

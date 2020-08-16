@@ -1,26 +1,28 @@
 #include "SWpch.h"
-#include "CoreApplication/Platform/OpenGL/OpenGLVertexArray.h"
-#include "Renderer/Renderer.h"
-#include <Glad/glad.h>
+#include "OpenGLVertexArray.h"
 
-namespace SW
+#include <glad/glad.h>
+
+#include "CoreApplication/Renderer/Renderer.h"
+
+namespace Wolf
 {
 
 	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)
 		{
-		case SW::ShaderDataType::Float:    return GL_FLOAT;
-		case SW::ShaderDataType::Float2:   return GL_FLOAT;
-		case SW::ShaderDataType::Float3:   return GL_FLOAT;
-		case SW::ShaderDataType::Float4:   return GL_FLOAT;
-		case SW::ShaderDataType::Mat3:     return GL_FLOAT;
-		case SW::ShaderDataType::Mat4:     return GL_FLOAT;
-		case SW::ShaderDataType::Int:      return GL_INT;
-		case SW::ShaderDataType::Int2:     return GL_INT;
-		case SW::ShaderDataType::Int3:     return GL_INT;
-		case SW::ShaderDataType::Int4:     return GL_INT;
-		case SW::ShaderDataType::Bool:     return GL_BOOL;
+			case Wolf::ShaderDataType::Float:    return GL_FLOAT;
+			case Wolf::ShaderDataType::Float2:   return GL_FLOAT;
+			case Wolf::ShaderDataType::Float3:   return GL_FLOAT;
+			case Wolf::ShaderDataType::Float4:   return GL_FLOAT;
+			case Wolf::ShaderDataType::Mat3:     return GL_FLOAT;
+			case Wolf::ShaderDataType::Mat4:     return GL_FLOAT;
+			case Wolf::ShaderDataType::Int:      return GL_INT;
+			case Wolf::ShaderDataType::Int2:     return GL_INT;
+			case Wolf::ShaderDataType::Int3:     return GL_INT;
+			case Wolf::ShaderDataType::Int4:     return GL_INT;
+			case Wolf::ShaderDataType::Bool:     return GL_BOOL;
 		}
 
 		SW_CORE_ASSERT(false, "Unknown ShaderDataType!");
@@ -31,7 +33,7 @@ namespace SW
 	{
 		Renderer::Submit([this]() {
 			glCreateVertexArrays(1, &m_RendererID);
-			});
+		});
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
@@ -39,7 +41,7 @@ namespace SW
 		GLuint rendererID = m_RendererID;
 		Renderer::Submit([rendererID]() {
 			glDeleteVertexArrays(1, &rendererID);
-			});
+		});
 	}
 
 	void OpenGLVertexArray::Bind() const
@@ -47,7 +49,7 @@ namespace SW
 		Ref<const OpenGLVertexArray> instance = this;
 		Renderer::Submit([instance]() {
 			glBindVertexArray(instance->m_RendererID);
-			});
+		});
 	}
 
 	void OpenGLVertexArray::Unbind() const
@@ -55,7 +57,7 @@ namespace SW
 		Ref<const OpenGLVertexArray> instance = this;
 		Renderer::Submit([this]() {
 			glBindVertexArray(0);
-			});
+		});
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
@@ -91,7 +93,7 @@ namespace SW
 				}
 				instance->m_VertexBufferIndex++;
 			}
-			});
+		});
 		m_VertexBuffers.push_back(vertexBuffer);
 	}
 

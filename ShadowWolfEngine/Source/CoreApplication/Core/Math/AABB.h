@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 
-namespace SW
-{
+namespace Wolf {
+
 	struct AABB
 	{
 		glm::vec3 Min, Max;
@@ -13,5 +13,8 @@ namespace SW
 
 		AABB(const glm::vec3& min, const glm::vec3& max)
 			: Min(min), Max(max) {}
+
 	};
+
+
 }

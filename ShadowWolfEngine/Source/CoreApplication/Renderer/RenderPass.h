@@ -1,9 +1,11 @@
-#pragma once 
-#include "CoreApplication/Core/Utilities/Base.h"
-#include "CoreApplication/Renderer/Framebuffer.h"
+#pragma once
 
-namespace SW
-{
+#include "CoreApplication/Core/Utilities/Base.h"
+
+#include "Framebuffer.h"
+
+namespace Wolf {
+
 	struct RenderPassSpecification
 	{
 		Ref<Framebuffer> TargetFramebuffer;
@@ -19,4 +21,5 @@ namespace SW
 
 		static Ref<RenderPass> Create(const RenderPassSpecification& spec);
 	};
+
 }

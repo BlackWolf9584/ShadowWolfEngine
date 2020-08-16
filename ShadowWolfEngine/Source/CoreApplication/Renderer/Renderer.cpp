@@ -1,14 +1,16 @@
 #include "SWpch.h"
-#include "CoreApplication/Renderer/Renderer.h"
-#include "CoreApplication/Renderer/Shader.h"
-#include "CoreApplication/Renderer/RendererAPI.h"
-#include "CoreApplication/Renderer/SceneRenderer.h"
-#include "CoreApplication/Renderer/2DRenderer.h"
+#include "Renderer.h"
+
+#include "Shader.h"
 
 #include <glad/glad.h>
 
-namespace SW
-{
+#include "RendererAPI.h"
+#include "SceneRenderer.h"
+#include "2DRenderer.h"
+
+namespace Wolf {
+
 	RendererAPIType RendererAPI::s_CurrentRendererAPI = RendererAPIType::OpenGL;
 
 	struct RendererData
@@ -20,11 +22,11 @@ namespace SW
 	};
 
 	static RendererData s_Data;
-
+	
 	void Renderer::Init()
 	{
 		s_Data.m_ShaderLibrary = Ref<ShaderLibrary>::Create();
-		Renderer::Submit([]() { RendererAPI::Init(); });
+		Renderer::Submit([](){ RendererAPI::Init(); });
 
 		Renderer::GetShaderLibrary()->Load("assets/shaders/PBR_Static.glsl");
 		Renderer::GetShaderLibrary()->Load("assets/shaders/PBR_Anim.glsl");
@@ -78,16 +80,16 @@ namespace SW
 
 	void Renderer::Clear()
 	{
-		Renderer::Submit([]() {
+		Renderer::Submit([](){
 			RendererAPI::Clear(0.0f, 0.0f, 0.0f, 1.0f);
-			});
+		});
 	}
 
 	void Renderer::Clear(float r, float g, float b, float a)
 	{
 		Renderer::Submit([=]() {
 			RendererAPI::Clear(r, g, b, a);
-			});
+		});
 	}
 
 	void Renderer::ClearMagenta()
@@ -103,14 +105,14 @@ namespace SW
 	{
 		Renderer::Submit([=]() {
 			RendererAPI::DrawIndexed(count, type, depthTest);
-			});
+		});
 	}
 
 	void Renderer::SetLineThickness(float thickness)
 	{
 		Renderer::Submit([=]() {
 			RendererAPI::SetLineThickness(thickness);
-			});
+		});
 	}
 
 	void Renderer::WaitAndRender()
@@ -124,14 +126,14 @@ namespace SW
 
 		// TODO: Convert all of this into a render command buffer
 		s_Data.m_ActiveRenderPass = renderPass;
-
+		
 		renderPass->GetSpecification().TargetFramebuffer->Bind();
 		if (clear)
 		{
 			const glm::vec4& clearColor = renderPass->GetSpecification().TargetFramebuffer->GetSpecification().ClearColor;
 			Renderer::Submit([=]() {
 				RendererAPI::Clear(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-				});
+			});
 		}
 	}
 
@@ -197,13 +199,13 @@ namespace SW
 			shader->SetMat4("u_Transform", transform * submesh.Transform);
 
 			Renderer::Submit([submesh, material]() {
-				if (material->GetFlag(MaterialFlag::DepthTest))
+				if (material->GetFlag(MaterialFlag::DepthTest))	
 					glEnable(GL_DEPTH_TEST);
 				else
 					glDisable(GL_DEPTH_TEST);
 
 				glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
-				});
+			});
 		}
 	}
 

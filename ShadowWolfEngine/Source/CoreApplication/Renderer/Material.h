@@ -1,18 +1,19 @@
 #pragma once
+
 #include "CoreApplication/Core/Utilities/Base.h"
+
 #include "CoreApplication/Renderer/Shader.h"
 #include "CoreApplication/Renderer/Texture.h"
 
 #include <unordered_set>
 
-namespace SW
-{
+namespace Wolf {
 
 	enum class MaterialFlag
 	{
-		None = BIT(0),
-		DepthTest = BIT(1),
-		Blend = BIT(2)
+		None       = BIT(0),
+		DepthTest  = BIT(1),
+		Blend      = BIT(2)
 	};
 
 	class Material : public RefCounted
@@ -35,7 +36,7 @@ namespace SW
 			SW_CORE_ASSERT(decl, "Could not find uniform with name 'x'");
 			auto& buffer = GetUniformBufferTarget(decl);
 			buffer.Write((byte*)&value, decl->GetSize(), decl->GetOffset());
-
+			
 			for (auto mi : m_MaterialInstances)
 				mi->OnMaterialValueUpdated(decl);
 		}
@@ -95,7 +96,7 @@ namespace SW
 			// SW_CORE_ASSERT(decl, "Could not find uniform with name '{0}'", name);
 			SW_CORE_ASSERT(decl, "Could not find uniform with name 'x'");
 			auto& buffer = GetUniformBufferTarget(decl);
-			buffer.Write((byte*)&value, decl->GetSize(), decl->GetOffset());
+			buffer.Write((byte*)& value, decl->GetSize(), decl->GetOffset());
 
 			m_OverriddenValues.insert(name);
 		}

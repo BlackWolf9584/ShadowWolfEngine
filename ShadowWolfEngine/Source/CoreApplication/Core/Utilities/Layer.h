@@ -1,11 +1,11 @@
 #pragma once
+
 #include "CoreApplication/Core/Utilities/Base.h"
-#include "CoreApplication/Core/Utilities/TimeStep.h"
+#include "CoreApplication/Core/Utilities/Timestep.h"
 
-#include <string>
-
-namespace SW
+namespace Wolf 
 {
+
 	class Layer
 	{
 	public:
@@ -14,13 +14,13 @@ namespace SW
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(TimeStep ts) {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
 		inline const std::string& GetName() const { return m_DebugName; }
-
 	protected:
 		std::string m_DebugName;
 	};
+
 }

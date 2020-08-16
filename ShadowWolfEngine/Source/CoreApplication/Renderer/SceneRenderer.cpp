@@ -1,13 +1,17 @@
 #include "SWpch.h"
 #include "SceneRenderer.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/2DRenderer.h"
+
+#include "Renderer.h"
 
 #include <glad/glad.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace SW
+#include "2DRenderer.h"
+
+namespace Wolf 
 {
+
 	struct SceneRendererData
 	{
 		const Scene* ActiveScene = nullptr;
@@ -55,7 +59,7 @@ namespace SW
 		geoFramebufferSpec.ClearColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
 		RenderPassSpecification geoRenderPassSpec;
-		geoRenderPassSpec.TargetFramebuffer = SW::Framebuffer::Create(geoFramebufferSpec);
+		geoRenderPassSpec.TargetFramebuffer = Wolf::Framebuffer::Create(geoFramebufferSpec);
 		s_Data.GeoPass = RenderPass::Create(geoRenderPassSpec);
 
 		FramebufferSpecification compFramebufferSpec;
@@ -65,7 +69,7 @@ namespace SW
 		compFramebufferSpec.ClearColor = { 0.5f, 0.1f, 0.1f, 1.0f };
 
 		RenderPassSpecification compRenderPassSpec;
-		compRenderPassSpec.TargetFramebuffer = SW::Framebuffer::Create(compFramebufferSpec);
+		compRenderPassSpec.TargetFramebuffer = Wolf::Framebuffer::Create(compFramebufferSpec);
 		s_Data.CompositePass = RenderPass::Create(compRenderPassSpec);
 
 		s_Data.CompositeShader = Shader::Create("assets/shaders/SceneComposite.glsl");
@@ -138,11 +142,11 @@ namespace SW
 		equirectangularConversionShader->Bind();
 		envEquirect->Bind();
 		Renderer::Submit([envUnfiltered, cubemapSize, envEquirect]()
-			{
-				glBindImageTexture(0, envUnfiltered->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
-				glDispatchCompute(cubemapSize / 32, cubemapSize / 32, 6);
-				glGenerateTextureMipmap(envUnfiltered->GetRendererID());
-			});
+		{
+			glBindImageTexture(0, envUnfiltered->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
+			glDispatchCompute(cubemapSize / 32, cubemapSize / 32, 6);
+			glGenerateTextureMipmap(envUnfiltered->GetRendererID());		
+		});
 
 
 		if (!envFilteringShader)
@@ -151,11 +155,11 @@ namespace SW
 		Ref<TextureCube> envFiltered = TextureCube::Create(TextureFormat::Float16, cubemapSize, cubemapSize);
 
 		Renderer::Submit([envUnfiltered, envFiltered]()
-			{
-				glCopyImageSubData(envUnfiltered->GetRendererID(), GL_TEXTURE_CUBE_MAP, 0, 0, 0, 0,
-					envFiltered->GetRendererID(), GL_TEXTURE_CUBE_MAP, 0, 0, 0, 0,
-					envFiltered->GetWidth(), envFiltered->GetHeight(), 6);
-			});
+		{
+			glCopyImageSubData(envUnfiltered->GetRendererID(), GL_TEXTURE_CUBE_MAP, 0, 0, 0, 0,
+				envFiltered->GetRendererID(), GL_TEXTURE_CUBE_MAP, 0, 0, 0, 0,
+				envFiltered->GetWidth(), envFiltered->GetHeight(), 6);
+		});
 
 		envFilteringShader->Bind();
 		envUnfiltered->Bind();
@@ -169,7 +173,7 @@ namespace SW
 				glProgramUniform1f(envFilteringShader->GetRendererID(), 0, level * deltaRoughness);
 				glDispatchCompute(numGroups, numGroups, 6);
 			}
-			});
+		});
 
 		if (!envIrradianceShader)
 			envIrradianceShader = Shader::Create("assets/shaders/EnvironmentIrradiance.glsl");
@@ -178,11 +182,11 @@ namespace SW
 		envIrradianceShader->Bind();
 		envFiltered->Bind();
 		Renderer::Submit([irradianceMap]()
-			{
+		{
 				glBindImageTexture(0, irradianceMap->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16F);
 				glDispatchCompute(irradianceMap->GetWidth() / 32, irradianceMap->GetHeight() / 32, 6);
 				glGenerateTextureMipmap(irradianceMap->GetRendererID());
-			});
+		});
 
 		return { envFiltered, irradianceMap };
 	}
@@ -194,19 +198,19 @@ namespace SW
 		if (outline)
 		{
 			Renderer::Submit([]()
-				{
-					glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-				});
+			{
+				glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+			});
 		}
-
+		
 		Renderer::BeginRenderPass(s_Data.GeoPass);
 
 		if (outline)
 		{
 			Renderer::Submit([]()
-				{
-					glStencilMask(0);
-				});
+			{
+				glStencilMask(0);
+			});
 		}
 
 		auto viewProjection = s_Data.SceneData.SceneCamera.Camera.GetProjectionMatrix() * s_Data.SceneData.SceneCamera.ViewMatrix;
@@ -239,10 +243,10 @@ namespace SW
 		if (outline)
 		{
 			Renderer::Submit([]()
-				{
-					glStencilFunc(GL_ALWAYS, 1, 0xff);
-					glStencilMask(0xff);
-				});
+			{
+				glStencilFunc(GL_ALWAYS, 1, 0xff);
+				glStencilMask(0xff);
+			});
 		}
 		for (auto& dc : s_Data.SelectedMeshDrawList)
 		{
@@ -265,15 +269,15 @@ namespace SW
 		if (outline)
 		{
 			Renderer::Submit([]()
-				{
-					glStencilFunc(GL_NOTEQUAL, 1, 0xff);
-					glStencilMask(0);
+			{
+				glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+				glStencilMask(0);
 
-					glLineWidth(10);
-					glEnable(GL_LINE_SMOOTH);
-					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-					glDisable(GL_DEPTH_TEST);
-				});
+				glLineWidth(10);
+				glEnable(GL_LINE_SMOOTH);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				glDisable(GL_DEPTH_TEST);
+			});
 
 			// Draw outline here
 			s_Data.OutlineMaterial->Set("u_ViewProjection", viewProjection);
@@ -283,22 +287,22 @@ namespace SW
 			}
 
 			Renderer::Submit([]()
-				{
-					glPointSize(10);
-					glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-				});
+			{
+				glPointSize(10);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+			});
 			for (auto& dc : s_Data.SelectedMeshDrawList)
 			{
 				Renderer::SubmitMesh(dc.Mesh, dc.Transform, s_Data.OutlineMaterial);
 			}
 
 			Renderer::Submit([]()
-				{
-					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-					glStencilMask(0xff);
-					glStencilFunc(GL_ALWAYS, 1, 0xff);
-					glEnable(GL_DEPTH_TEST);
-				});
+			{
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				glStencilMask(0xff);
+				glStencilFunc(GL_ALWAYS, 1, 0xff);
+				glEnable(GL_DEPTH_TEST);
+			});
 		}
 
 		// Grid

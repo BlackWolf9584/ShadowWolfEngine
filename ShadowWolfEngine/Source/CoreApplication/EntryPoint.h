@@ -5,16 +5,16 @@
 
 #ifdef SW_PLATFORM_WINDOWS
 
-extern SW::Application* SW::CreateApplication();
+extern Wolf::Application* Wolf::CreateApplication();
 
 int main(int argc, char** argv)
 {
-	SW::InitializeCore();
-	SW::Application* app = SW::CreateApplication();
+	Wolf::InitializeCore();
+	Wolf::Application* app = Wolf::CreateApplication();
 	SW_CORE_ASSERT(app, "Client Application is null!");
 	app->Run();
 	delete app;
-	SW::ShutdownCore();
+	Wolf::ShutdownCore();
 }
 
 #endif

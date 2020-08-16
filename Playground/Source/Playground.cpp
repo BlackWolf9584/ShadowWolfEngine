@@ -2,21 +2,21 @@
 #include "CoreApplication/EntryPoint.h"
 #include "EditorLayer.h"
 
-class SWApplication : public SW::Application
+class SWApplication : public Wolf::Application
 {
 public: 
-	SWApplication(const SW::ApplicationProps& props)
+	SWApplication(const Wolf::ApplicationProps& props)
 		: Application(props)
 	{
 	}
 
 	virtual void OnInit() override
 	{
-		PushLayer(new SW::EditorLayer());
+		PushLayer(new Wolf::EditorLayer());
 	}
 };
 
-SW::Application* SW::CreateApplication()
+Wolf::Application* Wolf::CreateApplication()
 {
 	return new SWApplication({ "Playground", 1600, 900 });
 }

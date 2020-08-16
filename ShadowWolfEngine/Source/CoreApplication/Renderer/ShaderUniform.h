@@ -1,12 +1,13 @@
 #pragma once
+
 #include "CoreApplication/Core/Utilities/Base.h"
 #include "CoreApplication/Core/Debug/Log.h"
 
 #include <string>
 #include <vector>
 
-namespace SW
-{
+namespace Wolf {
+
 	enum class ShaderDomain
 	{
 		None = 0, Vertex = 0, Pixel = 1
@@ -90,4 +91,5 @@ namespace SW
 	};
 
 	typedef std::vector<ShaderResourceDeclaration*> ShaderResourceList;
+
 }

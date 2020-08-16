@@ -1,8 +1,10 @@
 #pragma once
+
 #include "CoreApplication/Renderer/ShaderUniform.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	class OpenGLShaderResourceDeclaration : public ShaderResourceDeclaration
 	{
 	public:

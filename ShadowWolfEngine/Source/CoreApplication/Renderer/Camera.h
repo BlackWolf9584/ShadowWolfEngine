@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 
-namespace SW
-{
+namespace Wolf {
+
 	class Camera
 	{
 	public:

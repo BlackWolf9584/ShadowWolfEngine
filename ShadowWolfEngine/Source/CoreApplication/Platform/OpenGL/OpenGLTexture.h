@@ -1,9 +1,11 @@
 #pragma once
+
 #include "CoreApplication/Renderer/RendererAPI.h"
 #include "CoreApplication/Renderer/Texture.h"
 
-namespace SW
+namespace Wolf
 {
+
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
@@ -84,5 +86,4 @@ namespace SW
 
 		std::string m_FilePath;
 	};
-
 }

@@ -1,0 +1,9 @@
+Scene: Scene Name
+Environment:
+  AssetPath: ""
+  Light:
+    Direction: [0, 0, 0]
+    Radiance: [0, 0, 0]
+    Multiplier: 1
+Entities:
+  []

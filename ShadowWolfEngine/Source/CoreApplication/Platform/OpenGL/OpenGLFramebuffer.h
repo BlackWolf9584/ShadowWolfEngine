@@ -1,8 +1,10 @@
 #pragma once
+
 #include "CoreApplication/Renderer/Framebuffer.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	class OpenGLFramebuffer : public Framebuffer
 	{
 	public:

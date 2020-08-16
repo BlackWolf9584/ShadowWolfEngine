@@ -1,16 +1,19 @@
 #pragma once
-#include "SceneCamera.h"
-#include "Core/Utilities/UUID.h"
-#include "Core/Utilities/TimeStep.h"
-#include "Renderer/Camera.h"
-#include "Renderer/Texture.h"
-#include "Renderer/Material.h"
-#include "entt.hpp"
-#include "SceneCamera.h"
-#include "Editor/EditorComponents/EditorCamera.h"
 
-namespace SW
+#include "CoreApplication/Core/Utilities/UUID.h"
+#include "CoreApplication/Core/Utilities/Timestep.h"
+
+#include "CoreApplication/Renderer/Camera.h"
+#include "CoreApplication/Renderer/Texture.h"
+#include "CoreApplication/Renderer/Material.h"
+
+#include <entt/entt.hpp>
+#include "SceneCamera.h"
+#include "CoreApplication/Editor/EditorComponents/EditorCamera.h"
+
+namespace Wolf 
 {
+
 	struct Environment
 	{
 		std::string FilePath;
@@ -36,12 +39,12 @@ namespace SW
 	public:
 		Scene(const std::string& debugName = "Scene");
 		~Scene();
-
+		
 		void Init();
 
-		void OnUpdate(TimeStep ts);
-		void OnRenderRuntime(TimeStep ts);
-		void OnRenderEditor(TimeStep ts, const EditorCamera& editorCamera);
+		void OnUpdate(Timestep ts);
+		void OnRenderRuntime(Timestep ts);
+		void OnRenderEditor(Timestep ts, const EditorCamera& editorCamera);
 		void OnEvent(Event& e);
 
 		// Runtime
@@ -111,4 +114,5 @@ namespace SW
 
 		friend void OnScriptComponentConstruct(entt::registry& registry, entt::entity entity);
 	};
+
 }

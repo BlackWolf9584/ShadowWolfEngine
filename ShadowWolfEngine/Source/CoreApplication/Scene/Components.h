@@ -1,13 +1,13 @@
 #pragma once
-#include "Core/Utilities/UUID.h"
-#include "Renderer/Texture.h"
-#include "Renderer/Mesh.h"
-#include "Scene/SceneCamera.h"
 
 #include <glm/glm.hpp>
 
-namespace SW
-{
+#include "CoreApplication/Core/Utilities/UUID.h"
+#include "CoreApplication/Renderer/Texture.h"
+#include "CoreApplication/Renderer/Mesh.h"
+#include "CoreApplication/Scene/SceneCamera.h"
+
+namespace Wolf {
 
 	struct IDComponent
 	{
@@ -44,15 +44,15 @@ namespace SW
 
 	struct MeshComponent
 	{
-		Ref<SW::Mesh> Mesh;
+		Ref<Wolf::Mesh> Mesh;
 
 		MeshComponent() = default;
 		MeshComponent(const MeshComponent& other)
 			: Mesh(other.Mesh) {}
-		MeshComponent(const Ref<SW::Mesh>& mesh)
+		MeshComponent(const Ref<Wolf::Mesh>& mesh)
 			: Mesh(mesh) {}
 
-		operator Ref<SW::Mesh>() { return Mesh; }
+		operator Ref<Wolf::Mesh> () { return Mesh; }
 	};
 
 	struct ScriptComponent
@@ -89,5 +89,4 @@ namespace SW
 		SpriteRendererComponent(const SpriteRendererComponent& other)
 			: Color(other.Color), Texture(other.Texture), TilingFactor(other.TilingFactor) {}
 	};
-
 }

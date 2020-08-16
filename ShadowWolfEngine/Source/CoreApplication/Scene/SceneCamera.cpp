@@ -3,8 +3,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace SW
-{
+namespace Wolf {
+
 	SceneCamera::SceneCamera()
 	{
 	}

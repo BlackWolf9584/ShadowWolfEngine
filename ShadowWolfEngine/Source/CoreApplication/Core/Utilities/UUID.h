@@ -1,12 +1,12 @@
-#pragma once 
-#include "Base.h"
+#pragma once
 
+#include "Base.h"
 #include <xhash>
 
-namespace SW
-{
+namespace Wolf {
+
 	// "UUID" (universally unique identifier) or GUID is (usually) a 128-bit integer
-	// used to "uniquely" identify information. In Hazel, even though we use the term
+	// used to "uniquely" identify information. In Shadow Wolf, even though we use the term
 	// GUID and UUID, at the moment we're simply using a randomly generated 64-bit
 	// integer, as the possibility of a clash is low enough for now.
 	// This may change in the future.
@@ -18,19 +18,19 @@ namespace SW
 		UUID(const UUID& other);
 
 		operator uint64_t () { return m_UUID; }
-		operator const uint64_t() const { return m_UUID; }
-
+		operator const uint64_t () const { return m_UUID; }
 	private:
 		uint64_t m_UUID;
 	};
+		
 }
 
-namespace std
-{
+namespace std {
+
 	template <>
-	struct hash<SW::UUID>
+	struct hash<Wolf::UUID>
 	{
-		std::size_t operator()(const SW::UUID& uuid) const
+		std::size_t operator()(const Wolf::UUID& uuid) const
 		{
 			return hash<uint64_t>()((uint64_t)uuid);
 		}

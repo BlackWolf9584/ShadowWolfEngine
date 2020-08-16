@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace SW
+namespace Wolf
 {
     public static class Noise
     {

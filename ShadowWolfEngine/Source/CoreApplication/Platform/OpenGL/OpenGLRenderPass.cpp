@@ -1,10 +1,11 @@
 #include "SWpch.h"
-#include "Platform/OpenGL/OpenGLRenderPass.h"
+#include "OpenGLRenderPass.h"
 
-namespace SW
+namespace Wolf
 {
+
 	OpenGLRenderPass::OpenGLRenderPass(const RenderPassSpecification& spec)
-		:m_Specification(spec)
+		: m_Specification(spec)
 	{
 
 	}
@@ -13,4 +14,5 @@ namespace SW
 	{
 
 	}
+
 }

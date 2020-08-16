@@ -1,30 +1,30 @@
 #include "SWpch.h"
 #include "CoreApplication/Renderer/RendererAPI.h"
-#include "CoreApplication/Renderer/Renderer.h"
-#include "CoreApplication/Renderer/Shader.h"
 
 #include <Glad/glad.h>
 
-namespace SW
+#include "CoreApplication/Renderer/Shader.h"
+
+namespace Wolf 
 {
 
 	static void OpenGLLogMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 	{
 		switch (severity)
 		{
-		case GL_DEBUG_SEVERITY_HIGH:
-			SW_CORE_ERROR("[OpenGL Debug HIGH] {0}", message);
-			SW_CORE_ASSERT(false, "GL_DEBUG_SEVERITY_HIGH");
-			break;
-		case GL_DEBUG_SEVERITY_MEDIUM:
-			SW_CORE_WARN("[OpenGL Debug MEDIUM] {0}", message);
-			break;
-		case GL_DEBUG_SEVERITY_LOW:
-			SW_CORE_INFO("[OpenGL Debug LOW] {0}", message);
-			break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION:
-			// SW_CORE_TRACE("[OpenGL Debug NOTIFICATION] {0}", message);
-			break;
+			case GL_DEBUG_SEVERITY_HIGH:
+				SW_CORE_ERROR("[OpenGL Debug HIGH] {0}", message);
+				SW_CORE_ASSERT(false, "GL_DEBUG_SEVERITY_HIGH");
+				break;
+			case GL_DEBUG_SEVERITY_MEDIUM:
+				SW_CORE_WARN("[OpenGL Debug MEDIUM] {0}", message);
+				break;
+			case GL_DEBUG_SEVERITY_LOW:
+				SW_CORE_INFO("[OpenGL Debug LOW] {0}", message);
+				break;
+			case GL_DEBUG_SEVERITY_NOTIFICATION:
+				// SW_CORE_TRACE("[OpenGL Debug NOTIFICATION] {0}", message);
+				break;
 		}
 	}
 
@@ -97,12 +97,12 @@ namespace SW
 		GLenum glPrimitiveType = 0;
 		switch (type)
 		{
-		case PrimitiveType::Triangles:
-			glPrimitiveType = GL_TRIANGLES;
-			break;
-		case PrimitiveType::Lines:
-			glPrimitiveType = GL_LINES;
-			break;
+			case PrimitiveType::Triangles:
+				glPrimitiveType = GL_TRIANGLES;
+				break;
+			case PrimitiveType::Lines:
+				glPrimitiveType = GL_LINES;
+				break;
 		}
 
 		glDrawElements(glPrimitiveType, count, GL_UNSIGNED_INT, nullptr);

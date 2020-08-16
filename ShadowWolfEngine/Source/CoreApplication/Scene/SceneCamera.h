@@ -1,9 +1,11 @@
 #pragma once
-#include "Renderer/Camera.h"
 
-namespace SW
+#include "CoreApplication/Renderer/Camera.h"
+
+namespace Wolf 
 {
-	class SceneCamera : public Camera
+
+	class SceneCamera : public Camera 
 	{
 	public:
 		enum class ProjectionType { Perspective = 0, Orthographic = 1 };

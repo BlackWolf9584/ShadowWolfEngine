@@ -1,15 +1,18 @@
 #include "SWpch.h"
-#include "Renderer/Renderer.h"
-#include "CoreApplication/Platform/OpenGL/OPenGLBuffer.h"
 
-namespace SW
+#include "Renderer.h"
+
+#include "CoreApplication/Platform/OpenGL/OpenGLBuffer.h"
+
+namespace Wolf 
 {
+
 	Ref<VertexBuffer> VertexBuffer::Create(void* data, uint32_t size, VertexBufferUsage usage)
 	{
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None:    return nullptr;
-		case RendererAPIType::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(data, size, usage);
+			case RendererAPIType::None:    return nullptr;
+			case RendererAPIType::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(data, size, usage);
 		}
 		SW_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
@@ -19,19 +22,19 @@ namespace SW
 	{
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None:    return nullptr;
-		case RendererAPIType::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size, usage);
+			case RendererAPIType::None:    return nullptr;
+			case RendererAPIType::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size, usage);
 		}
 		SW_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
 	}
-
+	
 	Ref<IndexBuffer> IndexBuffer::Create(uint32_t size)
 	{
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None:    return nullptr;
-		case RendererAPIType::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(size);
+			case RendererAPIType::None:    return nullptr;
+			case RendererAPIType::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(size);
 		}
 		SW_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
@@ -41,8 +44,8 @@ namespace SW
 	{
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None:    return nullptr;
-		case RendererAPIType::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(data, size);
+			case RendererAPIType::None:    return nullptr;
+			case RendererAPIType::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(data, size);
 		}
 		SW_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;

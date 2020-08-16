@@ -1,8 +1,10 @@
 #pragma once
+
 #include "CoreApplication/Renderer/VertexArray.h"
 
-namespace SW
+namespace Wolf 
 {
+
 	class OpenGLVertexArray : public VertexArray
 	{
 	public:
@@ -17,10 +19,13 @@ namespace SW
 
 		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
+
+		virtual RendererID GetRendererID() const override { return m_RendererID; };
 	private:
 		RendererID m_RendererID = 0;
 		uint32_t m_VertexBufferIndex = 0;
 		std::vector<Ref<VertexBuffer>> m_VertexBuffers;
 		Ref<IndexBuffer> m_IndexBuffer;
 	};
+
 }

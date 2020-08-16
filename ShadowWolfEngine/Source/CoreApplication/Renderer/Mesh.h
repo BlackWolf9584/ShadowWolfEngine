@@ -1,26 +1,28 @@
 #pragma once
-#include "CoreApplication/Core/Utilities/TimeStep.h"
+
+#include <vector>
+#include <glm/glm.hpp>
+
+#include "CoreApplication/Core/Utilities/Timestep.h"
+
 #include "CoreApplication/Renderer/VertexArray.h"
 #include "CoreApplication/Renderer/Buffer.h"
 #include "CoreApplication/Renderer/Shader.h"
 #include "CoreApplication/Renderer/Material.h"
-#include "CoreApplication/Core/Math/AABB.h"
 
-#include <vector>
-#include <glm/glm.hpp>
+#include "CoreApplication/Core/Math/AABB.h"
 
 struct aiNode;
 struct aiAnimation;
 struct aiNodeAnim;
 struct aiScene;
 
-namespace Assimp
-{
+namespace Assimp {
 	class Importer;
 }
 
-namespace SW
-{
+namespace Wolf {
+
 	struct Vertex
 	{
 		glm::vec3 Position;
@@ -95,7 +97,7 @@ namespace SW
 					return;
 				}
 			}
-
+			
 			// should never get here - more bones than we have space for
 			SW_CORE_ASSERT(false, "Too many bones!");
 		}
@@ -129,7 +131,7 @@ namespace SW
 		Mesh(const std::string& filename);
 		~Mesh();
 
-		void OnUpdate(TimeStep ts);
+		void OnUpdate(Timestep ts);
 		void DumpVertexBuffer();
 
 		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
@@ -156,7 +158,7 @@ namespace SW
 		glm::vec3 InterpolateScale(float animationTime, const aiNodeAnim* nodeAnim);
 	private:
 		std::vector<Submesh> m_Submeshes;
-
+		
 		std::unique_ptr<Assimp::Importer> m_Importer;
 
 		glm::mat4 m_InverseTransform;
@@ -179,7 +181,6 @@ namespace SW
 		std::vector<Ref<Texture2D>> m_Textures;
 		std::vector<Ref<Texture2D>> m_NormalMaps;
 		std::vector<Ref<MaterialInstance>> m_Materials;
-		std::vector<Ref<MaterialInstance>> m_MaterialName;
 
 		std::unordered_map<uint32_t, std::vector<Triangle>> m_TriangleCache;
 
@@ -195,5 +196,4 @@ namespace SW
 		friend class Renderer;
 		friend class SceneHierarchyPanel;
 	};
-
 }

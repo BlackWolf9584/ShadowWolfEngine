@@ -1,10 +1,10 @@
 #include "SWpch.h"
-#include "CoreApplication/Renderer/RenderCommandQueue.h"
+#include "RenderCommandQueue.h"
 
 #define SW_RENDER_TRACE(...) SW_CORE_TRACE(__VA_ARGS__)
 
-namespace SW
-{
+namespace Wolf {
+
 	RenderCommandQueue::RenderCommandQueue()
 	{
 		m_CommandBuffer = new uint8_t[10 * 1024 * 1024]; // 10mb buffer

@@ -1,17 +1,19 @@
 #include "SWpch.h"
-#include "CoreApplication/Renderer/Framebuffer.h"
+#include "Framebuffer.h"
+
 #include "CoreApplication/Platform/OpenGL/OpenGLFramebuffer.h"
 
-namespace SW
+namespace Wolf
 {
+
 	Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 	{
 		Ref<Framebuffer> result = nullptr;
 
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None:		return nullptr;
-		case RendererAPIType::OpenGL:	result = Ref<OpenGLFramebuffer>::Create(spec);
+			case RendererAPIType::None:		return nullptr;
+			case RendererAPIType::OpenGL:	result = Ref<OpenGLFramebuffer>::Create(spec);
 		}
 		FramebufferPool::GetGlobal()->Add(result);
 		return result;
@@ -26,7 +28,7 @@ namespace SW
 
 	FramebufferPool::~FramebufferPool()
 	{
-
+		
 	}
 
 	std::weak_ptr<Framebuffer> FramebufferPool::AllocateBuffer()

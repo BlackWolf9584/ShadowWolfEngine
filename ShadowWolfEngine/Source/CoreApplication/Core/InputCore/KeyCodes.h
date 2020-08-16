@@ -1,6 +1,6 @@
 #pragma once
 
-namespace SW
+namespace Wolf
 {
 	typedef enum class KeyCode : uint16_t
 	{
@@ -145,131 +145,131 @@ namespace SW
 }
 
 // From glfw3.h
-#define SW_KEY_SPACE           ::SW::Key::Space
-#define SW_KEY_APOSTROPHE      ::SW::Key::Apostrophe    /* ' */
-#define SW_KEY_COMMA           ::SW::Key::Comma         /* , */
-#define SW_KEY_MINUS           ::SW::Key::Minus         /* - */
-#define SW_KEY_PERIOD          ::SW::Key::Period        /* . */
-#define SW_KEY_SLASH           ::SW::Key::Slash         /* / */
-#define SW_KEY_0               ::SW::Key::D0
-#define SW_KEY_1               ::SW::Key::D1
-#define SW_KEY_2               ::SW::Key::D2
-#define SW_KEY_3               ::SW::Key::D3
-#define SW_KEY_4               ::SW::Key::D4
-#define SW_KEY_5               ::SW::Key::D5
-#define SW_KEY_6               ::SW::Key::D6
-#define SW_KEY_7               ::SW::Key::D7
-#define SW_KEY_8               ::SW::Key::D8
-#define SW_KEY_9               ::SW::Key::D9
-#define SW_KEY_SEMICOLON       ::SW::Key::Semicolon     /* ; */
-#define SW_KEY_EQUAL           ::SW::Key::Equal         /* = */
-#define SW_KEY_A               ::SW::Key::A
-#define SW_KEY_B               ::SW::Key::B
-#define SW_KEY_C               ::SW::Key::C
-#define SW_KEY_D               ::SW::Key::D
-#define SW_KEY_E               ::SW::Key::E
-#define SW_KEY_F               ::SW::Key::F
-#define SW_KEY_G               ::SW::Key::G
-#define SW_KEY_H               ::SW::Key::H
-#define SW_KEY_I               ::SW::Key::I
-#define SW_KEY_J               ::SW::Key::J
-#define SW_KEY_K               ::SW::Key::K
-#define SW_KEY_L               ::SW::Key::L
-#define SW_KEY_M               ::SW::Key::M
-#define SW_KEY_N               ::SW::Key::N
-#define SW_KEY_O               ::SW::Key::O
-#define SW_KEY_P               ::SW::Key::P
-#define SW_KEY_Q               ::SW::Key::Q
-#define SW_KEY_R               ::SW::Key::R
-#define SW_KEY_S               ::SW::Key::S
-#define SW_KEY_T               ::SW::Key::T
-#define SW_KEY_U               ::SW::Key::U
-#define SW_KEY_V               ::SW::Key::V
-#define SW_KEY_W               ::SW::Key::W
-#define SW_KEY_X               ::SW::Key::X
-#define SW_KEY_Y               ::SW::Key::Y
-#define SW_KEY_Z               ::SW::Key::Z
-#define SW_KEY_LEFT_BRACKET    ::SW::Key::LeftBracket   /* [ */
-#define SW_KEY_BACKSLASH       ::SW::Key::Backslash     /* \ */
-#define SW_KEY_RIGHT_BRACKET   ::SW::Key::RightBracket  /* ] */
-#define SW_KEY_GRAVE_ACCENT    ::SW::Key::GraveAccent   /* ` */
-#define SW_KEY_WORLD_1         ::SW::Key::World1        /* non-US #1 */
-#define SW_KEY_WORLD_2         ::SW::Key::World2        /* non-US #2 */
+#define SW_KEY_SPACE           ::Wolf::Key::Space
+#define SW_KEY_APOSTROPHE      ::Wolf::Key::Apostrophe    /* ' */
+#define SW_KEY_COMMA           ::Wolf::Key::Comma         /* , */
+#define SW_KEY_MINUS           ::Wolf::Key::Minus         /* - */
+#define SW_KEY_PERIOD          ::Wolf::Key::Period        /* . */
+#define SW_KEY_SLASH           ::Wolf::Key::Slash         /* / */
+#define SW_KEY_0               ::Wolf::Key::D0
+#define SW_KEY_1               ::Wolf::Key::D1
+#define SW_KEY_2               ::Wolf::Key::D2
+#define SW_KEY_3               ::Wolf::Key::D3
+#define SW_KEY_4               ::Wolf::Key::D4
+#define SW_KEY_5               ::Wolf::Key::D5
+#define SW_KEY_6               ::Wolf::Key::D6
+#define SW_KEY_7               ::Wolf::Key::D7
+#define SW_KEY_8               ::Wolf::Key::D8
+#define SW_KEY_9               ::Wolf::Key::D9
+#define SW_KEY_SEMICOLON       ::Wolf::Key::Semicolon     /* ; */
+#define SW_KEY_EQUAL           ::Wolf::Key::Equal         /* = */
+#define SW_KEY_A               ::Wolf::Key::A
+#define SW_KEY_B               ::Wolf::Key::B
+#define SW_KEY_C               ::Wolf::Key::C
+#define SW_KEY_D               ::Wolf::Key::D
+#define SW_KEY_E               ::Wolf::Key::E
+#define SW_KEY_F               ::Wolf::Key::F
+#define SW_KEY_G               ::Wolf::Key::G
+#define SW_KEY_H               ::Wolf::Key::H
+#define SW_KEY_I               ::Wolf::Key::I
+#define SW_KEY_J               ::Wolf::Key::J
+#define SW_KEY_K               ::Wolf::Key::K
+#define SW_KEY_L               ::Wolf::Key::L
+#define SW_KEY_M               ::Wolf::Key::M
+#define SW_KEY_N               ::Wolf::Key::N
+#define SW_KEY_O               ::Wolf::Key::O
+#define SW_KEY_P               ::Wolf::Key::P
+#define SW_KEY_Q               ::Wolf::Key::Q
+#define SW_KEY_R               ::Wolf::Key::R
+#define SW_KEY_S               ::Wolf::Key::S
+#define SW_KEY_T               ::Wolf::Key::T
+#define SW_KEY_U               ::Wolf::Key::U
+#define SW_KEY_V               ::Wolf::Key::V
+#define SW_KEY_W               ::Wolf::Key::W
+#define SW_KEY_X               ::Wolf::Key::X
+#define SW_KEY_Y               ::Wolf::Key::Y
+#define SW_KEY_Z               ::Wolf::Key::Z
+#define SW_KEY_LEFT_BRACKET    ::Wolf::Key::LeftBracket   /* [ */
+#define SW_KEY_BACKSLASH       ::Wolf::Key::Backslash     /* \ */
+#define SW_KEY_RIGHT_BRACKET   ::Wolf::Key::RightBracket  /* ] */
+#define SW_KEY_GRAVE_ACCENT    ::Wolf::Key::GraveAccent   /* ` */
+#define SW_KEY_WORLD_1         ::Wolf::Key::World1        /* non-US #1 */
+#define SW_KEY_WORLD_2         ::Wolf::Key::World2        /* non-US #2 */
 
 /* Function keys */
-#define SW_KEY_ESCAPE          ::SW::Key::Escape
-#define SW_KEY_ENTER           ::SW::Key::Enter
-#define SW_KEY_TAB             ::SW::Key::Tab
-#define SW_KEY_BACKSPACE       ::SW::Key::Backspace
-#define SW_KEY_INSERT          ::SW::Key::Insert
-#define SW_KEY_DELETE          ::SW::Key::Delete
-#define SW_KEY_RIGHT           ::SW::Key::Right
-#define SW_KEY_LEFT            ::SW::Key::Left
-#define SW_KEY_DOWN            ::SW::Key::Down
-#define SW_KEY_UP              ::SW::Key::Up
-#define SW_KEY_PAGE_UP         ::SW::Key::PageUp
-#define SW_KEY_PAGE_DOWN       ::SW::Key::PageDown
-#define SW_KEY_HOME            ::SW::Key::Home
-#define SW_KEY_END             ::SW::Key::End
-#define SW_KEY_CAPS_LOCK       ::SW::Key::CapsLock
-#define SW_KEY_SCROLL_LOCK     ::SW::Key::ScrollLock
-#define SW_KEY_NUM_LOCK        ::SW::Key::NumLock
-#define SW_KEY_PRINT_SCREEN    ::SW::Key::PrintScreen
-#define SW_KEY_PAUSE           ::SW::Key::Pause
-#define SW_KEY_F1              ::SW::Key::F1
-#define SW_KEY_F2              ::SW::Key::F2
-#define SW_KEY_F3              ::SW::Key::F3
-#define SW_KEY_F4              ::SW::Key::F4
-#define SW_KEY_F5              ::SW::Key::F5
-#define SW_KEY_F6              ::SW::Key::F6
-#define SW_KEY_F7              ::SW::Key::F7
-#define SW_KEY_F8              ::SW::Key::F8
-#define SW_KEY_F9              ::SW::Key::F9
-#define SW_KEY_F10             ::SW::Key::F10
-#define SW_KEY_F11             ::SW::Key::F11
-#define SW_KEY_F12             ::SW::Key::F12
-#define SW_KEY_F13             ::SW::Key::F13
-#define SW_KEY_F14             ::SW::Key::F14
-#define SW_KEY_F15             ::SW::Key::F15
-#define SW_KEY_F16             ::SW::Key::F16
-#define SW_KEY_F17             ::SW::Key::F17
-#define SW_KEY_F18             ::SW::Key::F18
-#define SW_KEY_F19             ::SW::Key::F19
-#define SW_KEY_F20             ::SW::Key::F20
-#define SW_KEY_F21             ::SW::Key::F21
-#define SW_KEY_F22             ::SW::Key::F22
-#define SW_KEY_F23             ::SW::Key::F23
-#define SW_KEY_F24             ::SW::Key::F24
-#define SW_KEY_F25             ::SW::Key::F25
+#define SW_KEY_ESCAPE          ::Wolf::Key::Escape
+#define SW_KEY_ENTER           ::Wolf::Key::Enter
+#define SW_KEY_TAB             ::Wolf::Key::Tab
+#define SW_KEY_BACKSPACE       ::Wolf::Key::Backspace
+#define SW_KEY_INSERT          ::Wolf::Key::Insert
+#define SW_KEY_DELETE          ::Wolf::Key::Delete
+#define SW_KEY_RIGHT           ::Wolf::Key::Right
+#define SW_KEY_LEFT            ::Wolf::Key::Left
+#define SW_KEY_DOWN            ::Wolf::Key::Down
+#define SW_KEY_UP              ::Wolf::Key::Up
+#define SW_KEY_PAGE_UP         ::Wolf::Key::PageUp
+#define SW_KEY_PAGE_DOWN       ::Wolf::Key::PageDown
+#define SW_KEY_HOME            ::Wolf::Key::Home
+#define SW_KEY_END             ::Wolf::Key::End
+#define SW_KEY_CAPS_LOCK       ::Wolf::Key::CapsLock
+#define SW_KEY_SCROLL_LOCK     ::Wolf::Key::ScrollLock
+#define SW_KEY_NUM_LOCK        ::Wolf::Key::NumLock
+#define SW_KEY_PRINT_SCREEN    ::Wolf::Key::PrintScreen
+#define SW_KEY_PAUSE           ::Wolf::Key::Pause
+#define SW_KEY_F1              ::Wolf::Key::F1
+#define SW_KEY_F2              ::Wolf::Key::F2
+#define SW_KEY_F3              ::Wolf::Key::F3
+#define SW_KEY_F4              ::Wolf::Key::F4
+#define SW_KEY_F5              ::Wolf::Key::F5
+#define SW_KEY_F6              ::Wolf::Key::F6
+#define SW_KEY_F7              ::Wolf::Key::F7
+#define SW_KEY_F8              ::Wolf::Key::F8
+#define SW_KEY_F9              ::Wolf::Key::F9
+#define SW_KEY_F10             ::Wolf::Key::F10
+#define SW_KEY_F11             ::Wolf::Key::F11
+#define SW_KEY_F12             ::Wolf::Key::F12
+#define SW_KEY_F13             ::Wolf::Key::F13
+#define SW_KEY_F14             ::Wolf::Key::F14
+#define SW_KEY_F15             ::Wolf::Key::F15
+#define SW_KEY_F16             ::Wolf::Key::F16
+#define SW_KEY_F17             ::Wolf::Key::F17
+#define SW_KEY_F18             ::Wolf::Key::F18
+#define SW_KEY_F19             ::Wolf::Key::F19
+#define SW_KEY_F20             ::Wolf::Key::F20
+#define SW_KEY_F21             ::Wolf::Key::F21
+#define SW_KEY_F22             ::Wolf::Key::F22
+#define SW_KEY_F23             ::Wolf::Key::F23
+#define SW_KEY_F24             ::Wolf::Key::F24
+#define SW_KEY_F25             ::Wolf::Key::F25
 
 /* Keypad */
-#define SW_KEY_KP_0            ::SW::Key::KP0
-#define SW_KEY_KP_1            ::SW::Key::KP1
-#define SW_KEY_KP_2            ::SW::Key::KP2
-#define SW_KEY_KP_3            ::SW::Key::KP3
-#define SW_KEY_KP_4            ::SW::Key::KP4
-#define SW_KEY_KP_5            ::SW::Key::KP5
-#define SW_KEY_KP_6            ::SW::Key::KP6
-#define SW_KEY_KP_7            ::SW::Key::KP7
-#define SW_KEY_KP_8            ::SW::Key::KP8
-#define SW_KEY_KP_9            ::SW::Key::KP9
-#define SW_KEY_KP_DECIMAL      ::SW::Key::KPDecimal
-#define SW_KEY_KP_DIVIDE       ::SW::Key::KPDivide
-#define SW_KEY_KP_MULTIPLY     ::SW::Key::KPMultiply
-#define SW_KEY_KP_SUBTRACT     ::SW::Key::KPSubtract
-#define SW_KEY_KP_ADD          ::SW::Key::KPAdd
-#define SW_KEY_KP_ENTER        ::SW::Key::KPEnter
-#define SW_KEY_KP_EQUAL        ::SW::Key::KPEqual
+#define SW_KEY_KP_0            ::Wolf::Key::KP0
+#define SW_KEY_KP_1            ::Wolf::Key::KP1
+#define SW_KEY_KP_2            ::Wolf::Key::KP2
+#define SW_KEY_KP_3            ::Wolf::Key::KP3
+#define SW_KEY_KP_4            ::Wolf::Key::KP4
+#define SW_KEY_KP_5            ::Wolf::Key::KP5
+#define SW_KEY_KP_6            ::Wolf::Key::KP6
+#define SW_KEY_KP_7            ::Wolf::Key::KP7
+#define SW_KEY_KP_8            ::Wolf::Key::KP8
+#define SW_KEY_KP_9            ::Wolf::Key::KP9
+#define SW_KEY_KP_DECIMAL      ::Wolf::Key::KPDecimal
+#define SW_KEY_KP_DIVIDE       ::Wolf::Key::KPDivide
+#define SW_KEY_KP_MULTIPLY     ::Wolf::Key::KPMultiply
+#define SW_KEY_KP_SUBTRACT     ::Wolf::Key::KPSubtract
+#define SW_KEY_KP_ADD          ::Wolf::Key::KPAdd
+#define SW_KEY_KP_ENTER        ::Wolf::Key::KPEnter
+#define SW_KEY_KP_EQUAL        ::Wolf::Key::KPEqual
 
-#define SW_KEY_LEFT_SHIFT      ::SW::Key::LeftShift
-#define SW_KEY_LEFT_CONTROL    ::SW::Key::LeftControl
-#define SW_KEY_LEFT_ALT        ::SW::Key::LeftAlt
-#define SW_KEY_LEFT_SUPER      ::SW::Key::LeftSuper
-#define SW_KEY_RIGHT_SHIFT     ::SW::Key::RightShift
-#define SW_KEY_RIGHT_CONTROL   ::SW::Key::RightControl
-#define SW_KEY_RIGHT_ALT       ::SW::Key::RightAlt
-#define SW_KEY_RIGHT_SUPER     ::SW::Key::RightSuper
-#define SW_KEY_MENU            ::SW::Key::Menu
+#define SW_KEY_LEFT_SHIFT      ::Wolf::Key::LeftShift
+#define SW_KEY_LEFT_CONTROL    ::Wolf::Key::LeftControl
+#define SW_KEY_LEFT_ALT        ::Wolf::Key::LeftAlt
+#define SW_KEY_LEFT_SUPER      ::Wolf::Key::LeftSuper
+#define SW_KEY_RIGHT_SHIFT     ::Wolf::Key::RightShift
+#define SW_KEY_RIGHT_CONTROL   ::Wolf::Key::RightControl
+#define SW_KEY_RIGHT_ALT       ::Wolf::Key::RightAlt
+#define SW_KEY_RIGHT_SUPER     ::Wolf::Key::RightSuper
+#define SW_KEY_MENU            ::Wolf::Key::Menu
 
 // Mouse (TODO: move into separate file probably)
 #define SW_MOUSE_BUTTON_LEFT    0

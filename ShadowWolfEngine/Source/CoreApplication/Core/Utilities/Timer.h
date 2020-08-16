@@ -2,8 +2,8 @@
 
 #include <chrono>
 
-namespace SW
-{
+namespace Wolf {
+
 	class Timer
 	{
 	public:
@@ -30,4 +30,5 @@ namespace SW
 	private:
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_Start;
 	};
+
 }

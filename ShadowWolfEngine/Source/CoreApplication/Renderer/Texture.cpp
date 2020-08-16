@@ -1,10 +1,11 @@
 #include "SWpch.h"
-#include "CoreApplication/Renderer/Texture.h"
+#include "Texture.h"
+
 #include "CoreApplication/Renderer/RendererAPI.h"
 #include "CoreApplication/Platform/OpenGL/OpenGLTexture.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	Ref<Texture2D> Texture2D::Create(TextureFormat format, unsigned int width, unsigned int height, TextureWrap wrap)
 	{
 		switch (RendererAPI::Current())
@@ -49,8 +50,8 @@ namespace SW
 	{
 		switch (format)
 		{
-			case TextureFormat::RGB:  return 3;
-			case TextureFormat::RGBA: return 4;
+			case TextureFormat::RGB:    return 3;
+			case TextureFormat::RGBA:   return 4;
 		}
 		return 0;
 	}
@@ -63,4 +64,5 @@ namespace SW
 
 		return levels;
 	}
+
 }

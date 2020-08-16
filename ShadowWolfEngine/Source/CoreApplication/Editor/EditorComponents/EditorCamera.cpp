@@ -1,6 +1,7 @@
 #include "SWpch.h"
 #include "EditorCamera.h"
-#include "Core/InputCore/Input.h"
+
+#include "CoreApplication/Core/InputCore/Input.h"
 
 #include <glfw/glfw3.h>
 #include <glm/gtc/quaternion.hpp>
@@ -10,15 +11,16 @@
 
 #define M_PI 3.14159f
 
-namespace SW
+namespace Wolf 
 {
+
 	EditorCamera::EditorCamera(const glm::mat4& projectionMatrix)
 		: Camera(projectionMatrix)
 	{
 		m_Rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		m_FocalPoint = glm::vec3(0.0f);
 
-		glm::vec3 position = { -5, 5, 5 };
+		glm::vec3 position = { -5, 5, 5};
 		m_Distance = glm::distance(position, m_FocalPoint);
 
 		m_Yaw = 3.0f * (float)M_PI / 4.0f;
@@ -66,7 +68,7 @@ namespace SW
 		return speed;
 	}
 
-	void EditorCamera::OnUpdate(TimeStep ts)
+	void EditorCamera::OnUpdate(Timestep ts)
 	{
 		if (Input::IsKeyPressed(KeyCode::LeftAlt))
 		{
@@ -147,5 +149,4 @@ namespace SW
 	{
 		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
 	}
-
 }

@@ -1,8 +1,9 @@
 #pragma once
+
 #include "KeyCodes.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	class Input
 	{
 	public:

@@ -1,11 +1,12 @@
 #pragma once
-#include "CoreApplication/Core/Events/Event.h"
+
+#include "Event.h"
 #include "CoreApplication/Core/InputCore/KeyCodes.h"
 
 #include <sstream>
 
-namespace SW
-{
+namespace Wolf {
+
 	class KeyEvent : public Event
 	{
 	public:

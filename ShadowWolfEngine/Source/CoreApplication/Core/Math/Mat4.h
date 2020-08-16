@@ -2,11 +2,13 @@
 
 #include <glm/glm.hpp>
 
-namespace SW
+namespace Wolf 
 {
+
 	class Mat4
 	{
 	public:
-		//static glm::mat4 FromAssimpMat4(const aiMatrix4x4& matrix);
+		// static glm::mat4 FromAssimpMat4(const aiMatrix4x4& matrix);
 	};
+
 }

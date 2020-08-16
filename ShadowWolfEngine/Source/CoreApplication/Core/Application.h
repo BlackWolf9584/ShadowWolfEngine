@@ -1,13 +1,16 @@
 #pragma once
+
 #include "CoreApplication/Core/Utilities/Base.h"
-#include "CoreApplication/Core/Utilities/TimeStep.h"
+#include "CoreApplication/Core/Utilities/Timestep.h"
 #include "CoreApplication/Core/Utilities/Window.h"
 #include "CoreApplication/Core/Utilities/LayerStack.h"
+
 #include "CoreApplication/Core/Events/ApplicationEvent.h"
+
 #include "CoreApplication/ImGui/ImGuiLayer.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	struct ApplicationProps
 	{
 		std::string Name;
@@ -24,7 +27,7 @@ namespace SW
 
 		virtual void OnInit() {}
 		virtual void OnShutdown() {}
-		virtual void OnUpdate(TimeStep ts) {}
+		virtual void OnUpdate(Timestep ts) {}
 
 		virtual void OnEvent(Event& event);
 
@@ -36,7 +39,7 @@ namespace SW
 		std::string SaveFile(const char* filter = "All\0*.*\0") const;
 
 		inline Window& GetWindow() { return *m_Window; }
-
+		
 		static inline Application& Get() { return *s_Instance; }
 
 		float GetTime() const; // TODO: This should be in "Platform"
@@ -51,7 +54,7 @@ namespace SW
 		bool m_Running = true, m_Minimized = false;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
-		TimeStep m_TimeStep;
+		Timestep m_TimeStep;
 
 		float m_LastFrameTime = 0.0f;
 
@@ -60,5 +63,4 @@ namespace SW
 
 	// Implemented by CLIENT
 	Application* CreateApplication();
-
 }

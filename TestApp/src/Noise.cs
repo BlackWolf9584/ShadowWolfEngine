@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using SW;
+using Wolf;
 
 namespace TestApp.src
 {
@@ -77,7 +77,7 @@ namespace TestApp.src
                         float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].X;
                         float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].Y;
 
-                        float perlinValue = SW.Noise.PerlinNoise(sampleX, sampleY);// * 2 - 1; // 0->1  // -1 -> 1      
+                        float perlinValue = Wolf.Noise.PerlinNoise(sampleX, sampleY);// * 2 - 1; // 0->1  // -1 -> 1      
                         noiseHeight += perlinValue * amplitude;
 
                         amplitude *= persistance;

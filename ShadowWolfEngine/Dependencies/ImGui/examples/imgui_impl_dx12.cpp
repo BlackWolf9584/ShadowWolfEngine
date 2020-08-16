@@ -15,7 +15,7 @@
 
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
-//  2019-XX-XX: Platform: Added support for multiple windows via the ImGuiPlatformIO interface.
+//  2020-XX-XX: Platform: Added support for multiple windows via the ImGuiPlatformIO interface.
 //  2019-10-18: DirectX12: *BREAKING CHANGE* Added extra ID3D12DescriptorHeap parameter to ImGui_ImplDX12_Init() function.
 //  2019-05-29: DirectX12: Added support for large mesh (64K+ vertices), enable ImGuiBackendFlags_RendererHasVtxOffset flag.
 //  2019-04-30: DirectX12: Added support for special ImDrawCallback_ResetRenderState callback to reset render state.
@@ -66,6 +66,7 @@ struct FrameContext
     D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetCpuDescriptors;
 };
 
+// Helper structure we store in the void* RenderUserData field of each ImGuiViewport to easily retrieve our backend data.
 struct ImGuiViewportDataDx12
 {
     ID3D12CommandQueue*         CommandQueue;
@@ -814,7 +815,8 @@ static void ImGui_ImplDX12_CreateWindow(ImGuiViewport* viewport)
         desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
         desc.NodeMask = 1;
 
-        IM_ASSERT(g_pd3dDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&data->RtvDescHeap)) == S_OK);
+        HRESULT hr = g_pd3dDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&data->RtvDescHeap));
+        IM_ASSERT(hr == S_OK);
 
         SIZE_T rtv_descriptor_size = g_pd3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
         D3D12_CPU_DESCRIPTOR_HANDLE rtv_handle = data->RtvDescHeap->GetCPUDescriptorHandleForHeapStart();
@@ -846,12 +848,24 @@ static void ImGui_ImplDX12_DestroyWindow(ImGuiViewport* viewport)
     // The main viewport (owned by the application) will always have RendererUserData == NULL since we didn't create the data for it.
     if (ImGuiViewportDataDx12* data = (ImGuiViewportDataDx12*)viewport->RendererUserData)
     {
+        // Wait for pending operations to complete to safely release objects below
+        HRESULT hr;
+        if (data->CommandQueue && data->Fence && data->FenceEvent)
+        {
+           hr = data->CommandQueue->Signal(data->Fence, ++data->FenceSignaledValue);
+           IM_ASSERT(hr == S_OK);
+           ::WaitForSingleObject(data->FenceEvent, 0); // Reset any forgotten waits
+           hr = data->Fence->SetEventOnCompletion(data->FenceSignaledValue, data->FenceEvent);
+           IM_ASSERT(hr == S_OK);
+           ::WaitForSingleObject(data->FenceEvent, INFINITE);
+        }
+
         SafeRelease(data->CommandQueue);
         SafeRelease(data->CommandList);
         SafeRelease(data->SwapChain);
         SafeRelease(data->RtvDescHeap);
         SafeRelease(data->Fence);
-        ::CloseHandle(data->FenceEvent); 
+        ::CloseHandle(data->FenceEvent);
         data->FenceEvent = NULL;
 
         for (UINT i = 0; i < g_numFramesInFlight; i++)

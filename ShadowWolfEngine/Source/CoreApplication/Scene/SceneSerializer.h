@@ -1,8 +1,9 @@
-#pragma once 
+#pragma once
+
 #include "Scene.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	class SceneSerializer
 	{
 	public:
@@ -16,4 +17,6 @@ namespace SW
 	private:
 		Ref<Scene> m_Scene;
 	};
+
+
 }

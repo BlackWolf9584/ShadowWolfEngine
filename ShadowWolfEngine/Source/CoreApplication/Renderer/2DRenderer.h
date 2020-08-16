@@ -1,9 +1,9 @@
 #pragma once
-#include "Renderer/Texture.h"
+#include "CoreApplication/Renderer/Texture.h"
 
 #include <glm/glm.hpp>
 
-namespace SW
+namespace Wolf
 {
 	class Renderer2D
 	{

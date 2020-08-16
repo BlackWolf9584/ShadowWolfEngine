@@ -1,10 +1,11 @@
 #pragma once
-#include "CoreApplication/Core/Utilities/Buffer.h"
-#include "CoreApplication/Core/Utilities/Base.h"
-#include "CoreApplication/Renderer/RendererAPI.h"
 
-namespace SW
-{
+#include "CoreApplication/Core/Utilities/Base.h"
+#include "CoreApplication/Core/Utilities/Buffer.h"
+#include "RendererAPI.h"
+
+namespace Wolf {
+
 	enum class TextureFormat
 	{
 		None = 0,
@@ -37,13 +38,14 @@ namespace SW
 
 		static uint32_t GetBPP(TextureFormat format);
 		static uint32_t CalculateMipMapCount(uint32_t width, uint32_t height);
+
 		virtual bool operator==(const Texture& other) const = 0;
 	};
 
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(TextureFormat format, unsigned int width, unsigned int height, TextureWrap wrap = TextureWrap::Clamp);
+		static Ref<Texture2D> Create(TextureFormat format, uint32_t width, uint32_t height, TextureWrap wrap = TextureWrap::Clamp);
 		static Ref<Texture2D> Create(const std::string& path, bool srgb = false);
 
 		virtual void Lock() = 0;
@@ -51,6 +53,7 @@ namespace SW
 
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual Buffer GetWriteableBuffer() = 0;
+
 		virtual bool Loaded() const = 0;
 
 		virtual const std::string& GetPath() const = 0;
@@ -64,4 +67,5 @@ namespace SW
 
 		virtual const std::string& GetPath() const = 0;
 	};
+
 }

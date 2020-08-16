@@ -1,19 +1,25 @@
 #include "SWpch.h"
 #include "Scene.h"
+
 #include "Entity.h"
+
 #include "Components.h"
-#include "Renderer/SceneRenderer.h"
-#include "Script/ScriptEngine.h"
-#include "Renderer/2DRenderer.h"
+
+#include "CoreApplication/Renderer/SceneRenderer.h"
+#include "CoreApplication/Script/ScriptEngine.h"
+
+#include "CoreApplication/Renderer/2DRenderer.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// TEMP
+#include "CoreApplication/Core/InputCore/Input.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	static const std::string DefaultEntityName = "Entity";
 
 	std::unordered_map<UUID, Scene*> s_ActiveScenes;
@@ -73,7 +79,7 @@ namespace SW
 	}
 
 	// Merge OnUpdate/Render into one function?
-	void Scene::OnUpdate(TimeStep ts)
+	void Scene::OnUpdate(Timestep ts)
 	{
 		// Update all entities
 		{
@@ -88,7 +94,7 @@ namespace SW
 		}
 	}
 
-	void Scene::OnRenderRuntime(TimeStep ts)
+	void Scene::OnRenderRuntime(Timestep ts)
 	{
 		/////////////////////////////////////////////////////////////////////
 		// RENDER 3D SCENE
@@ -139,7 +145,7 @@ namespace SW
 #endif
 	}
 
-	void Scene::OnRenderEditor(TimeStep ts, const EditorCamera& editorCamera)
+	void Scene::OnRenderEditor(Timestep ts, const EditorCamera& editorCamera)
 	{
 		/////////////////////////////////////////////////////////////////////
 		// RENDER 3D SCENE
@@ -362,5 +368,4 @@ namespace SW
 		auto [radiance, irradiance] = SceneRenderer::CreateEnvironmentMap(filepath);
 		return { filepath, radiance, irradiance };
 	}
-
 }

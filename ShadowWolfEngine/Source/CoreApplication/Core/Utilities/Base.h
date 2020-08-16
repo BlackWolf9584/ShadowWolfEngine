@@ -1,17 +1,18 @@
 #pragma once
-#include "Ref.h"
 
 #include <memory>
+#include "Ref.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	void InitializeCore();
 	void ShutdownCore();
+
 }
 
-//#ifdef SW_PLATFORM_WINDOWS
-//	#error "Shadow Wolf only supports Windows!"
-//#endif
+#ifndef SW_PLATFORM_WINDOWS
+	#error Shadow Wolf only supports Windows!
+#endif
 
 // __VA_ARGS__ expansion to get past MSVC "bug"
 #define SW_EXPAND_VARGS(x) x
@@ -22,9 +23,9 @@ namespace SW
 
 #include "SWAssert.h"
 
-//pointer wrappers
-namespace SW
-{
+// Pointer wrappers
+namespace Wolf {
+
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
 	template<typename T, typename ... Args>

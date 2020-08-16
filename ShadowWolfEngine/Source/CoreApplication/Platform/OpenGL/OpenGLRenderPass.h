@@ -1,8 +1,10 @@
-#pragma once 
-#include "Renderer/RenderPass.h"
+#pragma once
 
-namespace SW
+#include "CoreApplication/Renderer/RenderPass.h"
+
+namespace Wolf 
 {
+
 	class OpenGLRenderPass : public RenderPass
 	{
 	public:
@@ -11,8 +13,8 @@ namespace SW
 
 		virtual RenderPassSpecification& GetSpecification() override { return m_Specification; }
 		virtual const RenderPassSpecification& GetSpecification() const override { return m_Specification; }
-
 	private:
 		RenderPassSpecification m_Specification;
 	};
+
 }

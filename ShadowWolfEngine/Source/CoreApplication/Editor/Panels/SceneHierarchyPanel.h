@@ -1,10 +1,11 @@
 #pragma once
+
 #include "CoreApplication/Scene/Scene.h"
 #include "CoreApplication/Scene/Entity.h"
 #include "CoreApplication/Renderer/Mesh.h"
 
-namespace SW
-{
+namespace Wolf {
+
 	class SceneHierarchyPanel
 	{
 	public:
@@ -27,4 +28,5 @@ namespace SW
 
 		std::function<void(Entity)> m_SelectionChangedCallback, m_EntityDeletedCallback;
 	};
+
 }

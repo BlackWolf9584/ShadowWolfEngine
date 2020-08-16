@@ -1,10 +1,11 @@
 #pragma once
-#include "Renderer/Camera.h"
-#include "Core/Utilities/TimeStep.h"
-#include "Core/Events/MouseEvent.h"
 
-namespace SW
-{
+#include "coreApplication/Renderer/Camera.h"
+#include "coreApplication/Core/Utilities/Timestep.h"
+#include "coreApplication/Core/Events/MouseEvent.h"
+
+namespace Wolf {
+
 	class EditorCamera : public Camera
 	{
 	public:
@@ -12,7 +13,7 @@ namespace SW
 		EditorCamera(const glm::mat4& projectionMatrix);
 
 		void Focus();
-		void OnUpdate(TimeStep ts);
+		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
 		inline float GetDistance() const { return m_Distance; }
@@ -60,7 +61,7 @@ namespace SW
 		float m_Pitch, m_Yaw;
 
 		float m_Exposure = 0.8f;
-
+		
 		uint32_t m_ViewportWidth = 1280, m_ViewportHeight = 720;
 	};
 
