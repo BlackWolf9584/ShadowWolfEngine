@@ -1,9 +1,7 @@
 #include "EditorLayer.h"
-
 #include "CoreApplication/ImGui/ImGuizmo.h"
 #include "CoreApplication/Renderer/2DRenderer.h"
 #include "CoreApplication/Script/ScriptEngine.h"
-
 #include <filesystem>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -113,7 +111,7 @@ namespace Wolf {
 		// SceneSerializer serializer(m_ActiveScene);
 		// serializer.Deserialize("Scene.yaml");
 
-				// Directories and assets
+		// Directories and assets
 		m_BaseDirPath = "assets";
 		m_CurrentDirPath = m_BaseDirPath;
 		m_prevDirPath = m_CurrentDirPath;
@@ -133,7 +131,7 @@ namespace Wolf {
 		m_SceneState = SceneState::Play;
 
 		if (m_ReloadScriptOnPlay)
-			ScriptEngine::ReloadAssembly("assets/scripts/TestApp.dll");
+			ScriptEngine::ReloadAssembly("assets/scripts/ShadowWolf-ScriptCore.dll");
 
 		m_RuntimeScene = Ref<Scene>::Create();
 		m_EditorScene->CopyTo(m_RuntimeScene);
@@ -563,7 +561,7 @@ namespace Wolf {
 						std::string filename = Application::Get().OpenFile("");
 						std::vector<std::string> outData;
 
-						AssetManager::ProcessAseets(filename);
+						AssetManager::ProcessAssets(filename);
 					}
 
 					if (ImGui::MenuItem("Refresh", "Ctrl + R"))
@@ -594,23 +592,23 @@ namespace Wolf {
 
 		ImGui::Separator();
 		{
-			ImGui::Text("Mesh");
-			/*auto meshComponent = m_MeshEntity.GetComponent<MeshComponent>();
-			std::string fullpath = meshComponent.Mesh ? meshComponent.Mesh->GetFilePath() : "None";
-			size_t found = fullpath.find_last_of("/\\");
-			std::string path = found != std::string::npos ? fullpath.substr(found + 1) : fullpath;
-			ImGui::Text(path.c_str()); ImGui::SameLine();
-			if (ImGui::Button("...##Mesh"))
-			{
-				std::string filename = Application::Get().OpenFile("");
-				if (filename != "")
-				{
-					auto newMesh = Ref<Mesh>::Create(filename);
-					// m_MeshMaterial.reset(new MaterialInstance(newMesh->GetMaterial()));
-					// m_MeshEntity->SetMaterial(m_MeshMaterial);
-					meshComponent.Mesh = newMesh;
-				}
-			}*/
+			//ImGui::Text("Mesh");
+			////auto meshComponent = m_MeshEntity.GetComponent<MeshComponent>();
+			////std::string fullpath = meshComponent.Mesh ? meshComponent.Mesh->GetFilePath() : "None";
+			////size_t found = fullpath.find_last_of("/\\");
+			////std::string path = found != std::string::npos ? fullpath.substr(found + 1) : fullpath;
+			////ImGui::Text(path.c_str()); ImGui::SameLine();
+			////if (ImGui::Button("...##Mesh"))
+			////{
+			////	std::string filename = Application::Get().OpenFile("");
+			////	if (filename != "")
+			////	{
+			////		auto newMesh = Ref<Mesh>::Create(filename);
+			////		 m_MeshMaterial.reset(new MaterialInstance(newMesh->GetMaterial()));
+			////		 m_MeshEntity->SetMaterial(m_MeshMaterial);
+			////		meshComponent.Mesh = newMesh;
+			////	}
+			////}
 		}
 		ImGui::Separator();
 
@@ -919,7 +917,7 @@ namespace Wolf {
 			if (ImGui::BeginMenu("Script"))
 			{
 				if (ImGui::MenuItem("Reload C# Assembly"))
-					ScriptEngine::ReloadAssembly("assets/scripts/TestApp.dll");
+					ScriptEngine::ReloadAssembly("assets/scripts/ShadowWolf-ScriptCore.dll");
 
 				ImGui::MenuItem("Reload assembly on play", nullptr, &m_ReloadScriptOnPlay);
 				ImGui::EndMenu();

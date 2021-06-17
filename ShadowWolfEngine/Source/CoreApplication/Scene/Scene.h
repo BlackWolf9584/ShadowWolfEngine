@@ -2,11 +2,9 @@
 
 #include "CoreApplication/Core/Utilities/UUID.h"
 #include "CoreApplication/Core/Utilities/Timestep.h"
-
 #include "CoreApplication/Renderer/Camera.h"
 #include "CoreApplication/Renderer/Texture.h"
 #include "CoreApplication/Renderer/Material.h"
-
 #include <entt/entt.hpp>
 #include "SceneCamera.h"
 #include "CoreApplication/Editor/EditorComponents/EditorCamera.h"

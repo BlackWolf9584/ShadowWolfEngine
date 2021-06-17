@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
 #include "CoreApplication/Core/Utilities/UUID.h"
 #include "CoreApplication/Renderer/Texture.h"
 #include "CoreApplication/Renderer/Mesh.h"

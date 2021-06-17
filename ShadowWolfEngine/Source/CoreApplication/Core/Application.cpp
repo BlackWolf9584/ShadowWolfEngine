@@ -1,12 +1,9 @@
 #include "SWpch.h"
 #include "Application.h"
-
 #include "CoreApplication/Renderer/Renderer.h"
 #include "CoreApplication/Renderer/Framebuffer.h"
 #include <GLFW/glfw3.h>
-
 #include <imgui.h>
-
 #include "CoreApplication/Script/ScriptEngine.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -31,7 +28,7 @@ namespace Wolf
 		m_ImGuiLayer = new ImGuiLayer("ImGui");
 		PushOverlay(m_ImGuiLayer);
 
-		ScriptEngine::Init("assets/scripts/TestApp.dll");
+		ScriptEngine::Init("assets/scripts/ShadowWolf-ScriptCore.dll");
 
 		Renderer::Init();
 		Renderer::WaitAndRender();

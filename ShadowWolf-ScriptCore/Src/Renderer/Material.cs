@@ -44,7 +44,6 @@ namespace Wolf
         public static extern void SetTexture_Native(IntPtr unmanagedInstance, string uniform, IntPtr texture);
 
     }
-
     public class MaterialInstance
     {
         public void Set(string uniform, float value)

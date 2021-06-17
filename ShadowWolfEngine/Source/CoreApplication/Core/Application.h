@@ -4,9 +4,7 @@
 #include "CoreApplication/Core/Utilities/Timestep.h"
 #include "CoreApplication/Core/Utilities/Window.h"
 #include "CoreApplication/Core/Utilities/LayerStack.h"
-
 #include "CoreApplication/Core/Events/ApplicationEvent.h"
-
 #include "CoreApplication/ImGui/ImGuiLayer.h"
 
 namespace Wolf {

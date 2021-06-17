@@ -1,12 +1,8 @@
 #include "SWpch.h"
 #include "SceneRenderer.h"
-
 #include "Renderer.h"
-
 #include <glad/glad.h>
-
 #include <glm/gtc/matrix_transform.hpp>
-
 #include "2DRenderer.h"
 
 namespace Wolf 

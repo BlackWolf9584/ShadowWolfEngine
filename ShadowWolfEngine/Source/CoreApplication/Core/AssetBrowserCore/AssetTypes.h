@@ -6,7 +6,7 @@ namespace Wolf
 	{
 	private:
 		static inline std::vector<std::string> assetTypes = {
-			"fbx", "obj", "wav", "cs", "png", "blend", "hazel", "ogg"
+			"fbx", "obj", "wav", "cs", "png", "blend", "SWC", "ogg"
 		};
 
 	public:

@@ -4,22 +4,17 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/attrdefs.h>
-
 #include <iostream>
 #include <chrono>
 #include <thread>
-
 #include <Windows.h>
 #include <winioctl.h>
-
 #include "ScriptEngineRegistry.h"
-
 #include "CoreApplication/Scene/Scene.h"
-
 #include "imgui.h"
 
-namespace Wolf {
-
+namespace Wolf
+{
 	static MonoDomain* s_MonoDomain = nullptr;
 	static std::string s_AssemblyPath;
 	static Ref<Scene> s_SceneContext;
@@ -112,7 +107,7 @@ namespace Wolf {
 		char* name = (char*)"ShadowWolfRuntime";
 		s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
 	}
-	
+
 	static void ShutdownMono()
 	{
 		mono_jit_cleanup(s_MonoDomain);
@@ -153,7 +148,7 @@ namespace Wolf {
 		MonoObject* instance = mono_object_new(s_MonoDomain, scriptClass.Class);
 		if (!instance)
 			std::cout << "mono_object_new failed" << std::endl;
-		
+
 		mono_runtime_object_init(instance);
 		uint32_t handle = mono_gchandle_new(instance, false);
 		return handle;
@@ -220,7 +215,7 @@ namespace Wolf {
 		return mono_string_new(s_MonoDomain, "Hello!");
 	}
 
-	void ScriptEngine::LoadHazelRuntimeAssembly(const std::string& path)
+	void ScriptEngine::LoadShadowWolfRuntimeAssembly(const std::string& path)
 	{
 		MonoDomain* domain = nullptr;
 		bool cleanup = false;
@@ -228,7 +223,7 @@ namespace Wolf {
 		{
 			domain = mono_domain_create_appdomain("Shadow Wolf Runtime", nullptr);
 			mono_domain_set(domain, false);
-			
+
 			cleanup = true;
 		}
 
@@ -251,7 +246,7 @@ namespace Wolf {
 
 	void ScriptEngine::ReloadAssembly(const std::string& path)
 	{
-		LoadHazelRuntimeAssembly(path);
+		LoadShadowWolfRuntimeAssembly(path);
 		if (s_EntityInstanceMap.size())
 		{
 			Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
@@ -259,7 +254,7 @@ namespace Wolf {
 			if (s_EntityInstanceMap.find(scene->GetUUID()) != s_EntityInstanceMap.end())
 			{
 				auto& entityMap = s_EntityInstanceMap.at(scene->GetUUID());
-				for (auto&[entityID, entityInstanceData]: entityMap)
+				for (auto& [entityID, entityInstanceData] : entityMap)
 				{
 					const auto& entityMap = scene->GetEntityMap();
 					SW_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
@@ -275,7 +270,7 @@ namespace Wolf {
 
 		InitMono();
 
-		LoadHazelRuntimeAssembly(s_AssemblyPath);
+		LoadShadowWolfRuntimeAssembly(s_AssemblyPath);
 	}
 
 	void ScriptEngine::Shutdown()
@@ -317,12 +312,12 @@ namespace Wolf {
 			for (auto& [moduleName, srcFieldMap] : srcEntityMap[entityID].ModuleFieldMap)
 			{
 				auto& dstModuleFieldMap = dstEntityMap[entityID].ModuleFieldMap;
-				for (auto& [fieldName, field] : srcFieldMap)
+				for (auto& [FieldName, field] : srcFieldMap)
 				{
 					SW_CORE_ASSERT(dstModuleFieldMap.find(moduleName) != dstModuleFieldMap.end());
 					auto& fieldMap = dstModuleFieldMap.at(moduleName);
-					SW_CORE_ASSERT(fieldMap.find(fieldName) != fieldMap.end());
-					fieldMap.at(fieldName).SetStoredValueRaw(field.m_StoredValueBuffer);
+					SW_CORE_ASSERT(fieldMap.find(FieldName) != fieldMap.end());
+					fieldMap.at(FieldName).SetStoredValueRaw(field.m_StoredValueBuffer);
 				}
 			}
 		}
@@ -375,22 +370,22 @@ namespace Wolf {
 		return monoClass != nullptr;
 	}
 
-	static FieldType GetHazelFieldType(MonoType* monoType)
+	static FieldType GetShadowWolfFieldType(MonoType* monoType)
 	{
 		int type = mono_type_get_type(monoType);
 		switch (type)
 		{
-			case MONO_TYPE_R4: return FieldType::Float;
-			case MONO_TYPE_I4: return FieldType::Int;
-			case MONO_TYPE_U4: return FieldType::UnsignedInt;
-			case MONO_TYPE_STRING: return FieldType::String;
-			case MONO_TYPE_VALUETYPE:
-			{
-				char* name = mono_type_get_name(monoType);
-				if (strcmp(name, "ShadowWolf.Vector2") == 0) return FieldType::Vec2;
-				if (strcmp(name, "ShadowWolf.Vector3") == 0) return FieldType::Vec3;
-				if (strcmp(name, "ShadowWolf.Vector4") == 0) return FieldType::Vec4;
-			}
+		case MONO_TYPE_R4: return FieldType::Float;
+		case MONO_TYPE_I4: return FieldType::Int;
+		case MONO_TYPE_U4: return FieldType::UnsignedInt;
+		case MONO_TYPE_STRING: return FieldType::String;
+		case MONO_TYPE_VALUETYPE:
+		{
+			char* name = mono_type_get_name(monoType);
+			if (strcmp(name, "Wolf.Vector2") == 0) return FieldType::Vec2;
+			if (strcmp(name, "Wolf.Vector3") == 0) return FieldType::Vec3;
+			if (strcmp(name, "Wolf.Vector4") == 0) return FieldType::Vec4;
+		}
 		}
 		return FieldType::None;
 	}
@@ -399,13 +394,13 @@ namespace Wolf {
 	{
 		switch (type)
 		{
-			case FieldType::Float:       return "Float";
-			case FieldType::Int:         return "Int";
-			case FieldType::UnsignedInt: return "UnsignedInt";
-			case FieldType::String:      return "String";
-			case FieldType::Vec2:        return "Vec2";
-			case FieldType::Vec3:        return "Vec3";
-			case FieldType::Vec4:        return "Vec4";
+		case FieldType::Float:       return "Float";
+		case FieldType::Int:         return "Int";
+		case FieldType::UnsignedInt: return "UnsignedInt";
+		case FieldType::String:      return "String";
+		case FieldType::Vec2:        return "Vec2";
+		case FieldType::Vec3:        return "Vec3";
+		case FieldType::Vec4:        return "Vec4";
 		}
 		return "Unknown";
 	}
@@ -444,12 +439,12 @@ namespace Wolf {
 		entityInstance.ScriptClass = &scriptClass;
 		ScriptModuleFieldMap& moduleFieldMap = entityInstanceData.ModuleFieldMap;
 		auto& fieldMap = moduleFieldMap[moduleName];
-		
+
 		// Save old fields
 		std::unordered_map<std::string, PublicField> oldFields;
 		oldFields.reserve(fieldMap.size());
-		for (auto& [fieldName, field] : fieldMap)
-			oldFields.emplace(fieldName, std::move(field));
+		for (auto& [FieldName, field] : fieldMap)
+			oldFields.emplace(FieldName, std::move(field));
 		fieldMap.clear();
 
 		// Retrieve public fields (TODO: cache these fields if the module is used more than once)
@@ -464,7 +459,7 @@ namespace Wolf {
 					continue;
 
 				MonoType* fieldType = mono_field_get_type(iter);
-				FieldType hazelFieldType = GetHazelFieldType(fieldType);
+				FieldType ShadowWolfFieldType = GetShadowWolfFieldType(fieldType);
 
 				// TODO: Attributes
 				MonoCustomAttrInfo* attr = mono_custom_attrs_from_field(scriptClass.Class, iter);
@@ -475,7 +470,7 @@ namespace Wolf {
 				}
 				else
 				{
-					PublicField field = { name, hazelFieldType };
+					PublicField field = { name, ShadowWolfFieldType };
 					field.m_EntityInstance = &entityInstance;
 					field.m_MonoClassField = iter;
 					fieldMap.emplace(name, std::move(field));
@@ -514,7 +509,7 @@ namespace Wolf {
 		if (moduleFieldMap.find(moduleName) != moduleFieldMap.end())
 		{
 			auto& publicFields = moduleFieldMap.at(moduleName);
-			for (auto&[name, field] : publicFields)
+			for (auto& [name, field] : publicFields)
 				field.CopyStoredValueToRuntime();
 		}
 
@@ -539,13 +534,13 @@ namespace Wolf {
 	{
 		switch (type)
 		{
-			case FieldType::Float:       return 4;
-			case FieldType::Int:         return 4;
-			case FieldType::UnsignedInt: return 4;
+		case FieldType::Float:       return 4;
+		case FieldType::Int:         return 4;
+		case FieldType::UnsignedInt: return 4;
 			// case FieldType::String:   return 8; // TODO
-			case FieldType::Vec2:        return 4 * 2;
-			case FieldType::Vec3:        return 4 * 3;
-			case FieldType::Vec4:        return 4 * 4;
+		case FieldType::Vec2:        return 4 * 2;
+		case FieldType::Vec3:        return 4 * 3;
+		case FieldType::Vec4:        return 4 * 4;
 		}
 		SW_CORE_ASSERT(false, "Unknown field type!");
 		return 0;
@@ -648,10 +643,10 @@ namespace Wolf {
 							opened = ImGui::TreeNode(moduleName.c_str());
 							if (opened)
 							{
-								for (auto& [fieldName, field] : fieldMap)
+								for (auto& [FieldName, field] : fieldMap)
 								{
 
-									opened = ImGui::TreeNodeEx((void*)&field, ImGuiTreeNodeFlags_Leaf , fieldName.c_str());
+									opened = ImGui::TreeNodeEx((void*)&field, ImGuiTreeNodeFlags_Leaf, FieldName.c_str());
 									if (opened)
 									{
 
@@ -669,7 +664,4 @@ namespace Wolf {
 		}
 		ImGui::End();
 	}
-
-
-
 }

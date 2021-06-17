@@ -47,10 +47,10 @@ namespace Wolf {
 			new (storageBuffer) FuncT(std::forward<FuncT>(func));
 		}
 
-		/*static void* Submit(RenderCommandFn fn, unsigned int size)
-		{
-			return s_Instance->m_CommandQueue.Allocate(fn, size);
-		}*/
+		//static void* Submit(RenderCommandFn fn, unsigned int size)
+		//{
+		//	return s_Instance->m_CommandQueue.Allocate(fn, size);
+		//}
 
 		static void WaitAndRender();
 

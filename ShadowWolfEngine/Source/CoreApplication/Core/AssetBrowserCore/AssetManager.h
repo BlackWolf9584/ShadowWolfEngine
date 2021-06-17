@@ -12,7 +12,7 @@ namespace Wolf
 		static std::string ParseFilename(std::string const& str, const char delim, std::vector<std::string>& out);
 		static std::string ParseFiletype(std::string filename);
 
-		static void ProcessAseets(std::string assetType);
+		static void ProcessAssets(std::string assetType);
 		static void InitiateAssetConversion(std::string assetPath, std::string conversionType);
 
 		static std::vector<DirectoryInformation> GetFsContents();

@@ -54,6 +54,5 @@ namespace Wolf
         public static extern IntPtr GetMaterialByIndex_Native(IntPtr unmanagedInstance, int index);
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern int GetMaterialCount_Native(IntPtr unmanagedInstance);
-
     }
 }

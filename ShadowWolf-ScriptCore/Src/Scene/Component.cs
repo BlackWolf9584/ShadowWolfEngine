@@ -27,7 +27,7 @@ namespace Wolf
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern string GetTag_Native(ulong entityID);
+        public static extern string GetTag_Native(ulong EntityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SetTag_Native(string tag);
@@ -51,10 +51,10 @@ namespace Wolf
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void GetTransform_Native(ulong entityID, out Matrix4 result);
+        public static extern void GetTransform_Native(ulong EntityID, out Matrix4 result);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetTransform_Native(ulong entityID, ref Matrix4 result);
+        public static extern void SetTransform_Native(ulong EntityID, ref Matrix4 result);
 
     }
 
@@ -75,10 +75,10 @@ namespace Wolf
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern IntPtr GetMesh_Native(ulong entityID);
+        public static extern IntPtr GetMesh_Native(ulong EntityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetMesh_Native(ulong entityID, IntPtr unmanagedInstance);
+        public static extern void SetMesh_Native(ulong EntityID, IntPtr unmanagedInstance);
 
     }
 

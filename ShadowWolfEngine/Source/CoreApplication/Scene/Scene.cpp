@@ -1,13 +1,9 @@
 #include "SWpch.h"
 #include "Scene.h"
-
 #include "Entity.h"
-
 #include "Components.h"
-
 #include "CoreApplication/Renderer/SceneRenderer.h"
 #include "CoreApplication/Script/ScriptEngine.h"
-
 #include "CoreApplication/Renderer/2DRenderer.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -114,13 +110,13 @@ namespace Wolf {
 		SceneRenderer::BeginScene(this, { camera, cameraViewMatrix });
 		for (auto entity : group)
 		{
-			auto [transformComponent, meshComponent] = group.get<TransformComponent, MeshComponent>(entity);
-			if (meshComponent.Mesh)
+			auto [TransformComponent, MeshComponent] = group.get<TransformComponent, MeshComponent>(entity);
+			if (MeshComponent.Mesh)
 			{
-				meshComponent.Mesh->OnUpdate(ts);
+				MeshComponent.Mesh->OnUpdate(ts);
 
 				// TODO: Should we render (logically)
-				SceneRenderer::SubmitMesh(meshComponent, transformComponent, nullptr);
+				SceneRenderer::SubmitMesh(MeshComponent, TransformComponent, nullptr);
 			}
 		}
 		SceneRenderer::EndScene();
@@ -133,11 +129,11 @@ namespace Wolf {
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRenderer>);
 			for (auto entity : group)
 			{
-				auto [transformComponent, spriteRendererComponent] = group.get<TransformComponent, SpriteRenderer>(entity);
-				if (spriteRendererComponent.Texture)
-					Renderer2D::DrawQuad(transformComponent.Transform, spriteRendererComponent.Texture, spriteRendererComponent.TilingFactor);
+				auto [TransformComponent, SpriteRendererComponent] = group.get<TransformComponent, SpriteRenderer>(entity);
+				if (SpriteRendererComponent.Texture)
+					Renderer2D::DrawQuad(TransformComponent.Transform, SpriteRendererComponent.Texture, SpriteRendererComponent.TilingFactor);
 				else
-					Renderer2D::DrawQuad(transformComponent.Transform, spriteRendererComponent.Color);
+					Renderer2D::DrawQuad(TransformComponent.Transform, SpriteRendererComponent.Color);
 			}
 		}
 
@@ -156,17 +152,17 @@ namespace Wolf {
 		SceneRenderer::BeginScene(this, { editorCamera, editorCamera.GetViewMatrix() });
 		for (auto entity : group)
 		{
-			auto [transformComponent, meshComponent] = group.get<TransformComponent, MeshComponent>(entity);
-			if (meshComponent.Mesh)
+			auto [TransformComponent, MeshComponent] = group.get<TransformComponent, MeshComponent>(entity);
+			if (MeshComponent.Mesh)
 			{
-				meshComponent.Mesh->OnUpdate(ts);
+				MeshComponent.Mesh->OnUpdate(ts);
 
 				// TODO: Should we render (logically)
 
 				if (m_SelectedEntity == entity)
-					SceneRenderer::SubmitSelectedMesh(meshComponent, transformComponent);
+					SceneRenderer::SubmitSelectedMesh(MeshComponent, TransformComponent);
 				else
-					SceneRenderer::SubmitMesh(meshComponent, transformComponent, nullptr);
+					SceneRenderer::SubmitMesh(MeshComponent, TransformComponent, nullptr);
 			}
 		}
 		SceneRenderer::EndScene();
@@ -179,11 +175,11 @@ namespace Wolf {
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRenderer>);
 			for (auto entity : group)
 			{
-				auto [transformComponent, spriteRendererComponent] = group.get<TransformComponent, SpriteRenderer>(entity);
-				if (spriteRendererComponent.Texture)
-					Renderer2D::DrawQuad(transformComponent.Transform, spriteRendererComponent.Texture, spriteRendererComponent.TilingFactor);
+				auto [TransformComponent, SpriteRendererComponent] = group.get<TransformComponent, SpriteRenderer>(entity);
+				if (SpriteRendererComponent.Texture)
+					Renderer2D::DrawQuad(TransformComponent.Transform, SpriteRendererComponent.Texture, SpriteRendererComponent.TilingFactor);
 				else
-					Renderer2D::DrawQuad(transformComponent.Transform, spriteRendererComponent.Color);
+					Renderer2D::DrawQuad(TransformComponent.Transform, SpriteRendererComponent.Color);
 			}
 		}
 

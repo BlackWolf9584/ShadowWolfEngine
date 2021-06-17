@@ -2,9 +2,7 @@
 
 #include "CoreApplication/Core/Utilities/Base.h"
 #include "CoreApplication/Core/Utilities/Timestep.h"
-
 #include <string>
-
 #include "CoreApplication/Scene/Components.h"
 #include "CoreApplication/Scene/Entity.h"
 
@@ -13,8 +11,8 @@ extern "C" {
 	typedef struct _MonoClassField MonoClassField;
 }
 
-namespace Wolf {
-
+namespace Wolf
+{
 	enum class FieldType
 	{
 		None = 0, Float, Int, UnsignedInt, String, Vec2, Vec3, Vec4
@@ -61,7 +59,7 @@ namespace Wolf {
 			SetStoredValue_Internal(&value);
 		}
 
-		template<typename T> 
+		template<typename T>
 		T GetRuntimeValue() const
 		{
 			T value;
@@ -97,7 +95,7 @@ namespace Wolf {
 		EntityInstance Instance;
 		ScriptModuleFieldMap ModuleFieldMap;
 	};
-	
+
 	using EntityInstanceMap = std::unordered_map<UUID, std::unordered_map<UUID, EntityInstanceData>>;
 
 	class ScriptEngine
@@ -108,7 +106,7 @@ namespace Wolf {
 
 		static void OnSceneDestruct(UUID sceneID);
 
-		static void LoadHazelRuntimeAssembly(const std::string& path);
+		static void LoadShadowWolfRuntimeAssembly(const std::string& path);
 		static void ReloadAssembly(const std::string& path);
 
 		static void SetSceneContext(const Ref<Scene>& scene);
@@ -133,5 +131,4 @@ namespace Wolf {
 		// Debug
 		static void OnImGuiRender();
 	};
-
 }

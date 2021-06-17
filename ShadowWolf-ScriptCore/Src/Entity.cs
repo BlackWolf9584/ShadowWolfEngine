@@ -55,6 +55,5 @@ namespace Wolf
         private static extern void GetTransform_Native(ulong entityID, out Matrix4 matrix);
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void SetTransform_Native(ulong entityID, ref Matrix4 matrix);
-
     }
 }

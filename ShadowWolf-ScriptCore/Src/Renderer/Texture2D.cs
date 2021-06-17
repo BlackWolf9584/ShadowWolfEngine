@@ -9,7 +9,6 @@ namespace Wolf
 {
     public class Texture2D
     {
-
         public Texture2D(uint width, uint height)
         {
             m_UnmanagedInstance = Constructor_Native(width, height);
@@ -33,7 +32,5 @@ namespace Wolf
         internal static extern void Destructor_Native(IntPtr unmanagedInstance);
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void SetData_Native(IntPtr unmanagedInstance, Vector4[] data, int size);
-
-
     }
 }

@@ -14,7 +14,7 @@ namespace Wolf
 		unsigned int Width;
 		unsigned int Height;
 
-		WindowProps(const std::string& title = "Sahdow Wolf Engine",
+		WindowProps(const std::string& title = "Shadow Wolf Engine",
 			        unsigned int width = 1280,
 			        unsigned int height = 720)
 			: Title(title), Width(width), Height(height)

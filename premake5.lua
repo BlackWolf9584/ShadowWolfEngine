@@ -30,7 +30,6 @@ group "Dependencies"
 include "ShadowWolfEngine/Dependencies/GLFW"
 include "ShadowWolfEngine/Dependencies/Glad"
 include "ShadowWolfEngine/Dependencies/ImGui"
-group ""
 
 group "Core"
 project "ShadowWolfEngine"
@@ -85,7 +84,8 @@ project "ShadowWolfEngine"
 		"Glad",
 		"ImGui",
 		"opengl32.lib",
-		"%{LibraryDir.mono}"
+		"%{LibraryDir.mono}",
+		"ShadowWolf-ScriptCore"
 	}
 
 	filter "files:ShadowWolfEngine/Dependencies/FastNoise/**.cpp or files:ShadowWolfEngine/Dependencies/yaml-cpp/src/**.cpp"
@@ -124,7 +124,6 @@ project "ShadowWolf-ScriptCore"
 	{
 		"%{prj.name}/src/**.cs", 
 	}
-group ""
 
 group "Tools"
 project "Playground"
@@ -217,47 +216,3 @@ project "Playground"
 			'{COPY} "../ShadowWolfEngine/Dependencies/Assimp/win64/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
 			'{COPY} "../ShadowWolfEngine/Dependencies/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
 		}
-group ""
-
-workspace "Playground"
-	architecture "x64"
-	targetdir "build"
-
-	configurations 
-	{
-		"Debug",
-		"Release",
-		"Dist"
-	}
-
-project "ShadowWolf-ScriptCore"
-	location "ShadowWolf-ScriptCore"
-	kind "SharedLib"
-	language "C#"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files 
-	{
-		"%{prj.name}/src/**.cs", 
-	}
-
-project "TestApp"
-	location "TestApp"
-	kind "SharedLib"
-	language "C#"
-
-	targetdir ("Playground/assets/scripts")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files 
-	{
-		"%{prj.name}/src/**.cs", 
-	}
-
-	links
-	{
-		"ShadowWolf-ScriptCore"
-	}
-group ""

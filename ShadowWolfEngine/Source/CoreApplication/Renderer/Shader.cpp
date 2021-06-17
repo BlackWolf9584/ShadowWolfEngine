@@ -1,11 +1,10 @@
 #include "SWpch.h"
 #include "Shader.h"
-
 #include "CoreApplication/Renderer/Renderer.h"
 #include "CoreApplication/Platform/OpenGL/OpenGLShader.h"
 
-namespace Wolf {
-
+namespace Wolf 
+{
 	std::vector<Ref<Shader>> Shader::s_AllShaders;
 
 	Ref<Shader> Shader::Create(const std::string& filepath)

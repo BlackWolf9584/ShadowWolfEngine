@@ -1,17 +1,14 @@
 #include "SWpch.h"
 #include "SceneSerializer.h"
-
 #include "Entity.h"
 #include "Components.h"
 #include "CoreApplication/Script/ScriptEngine.h"
-
 #include "yaml-cpp/yaml.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <iostream>
 #include <fstream>
 

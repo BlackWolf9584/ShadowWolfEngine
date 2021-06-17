@@ -1,17 +1,13 @@
 #include "SWpch.h"
 #include "OpenGLShader.h"
-
 #include <string>
 #include <sstream>
 #include <limits>
-
 #include <glm/gtc/type_ptr.hpp>
-
 #include "CoreApplication/Renderer/Renderer.h"
 
 namespace Wolf 
 {
-
 #define UNIFORM_LOGGING 0
 #if UNIFORM_LOGGING
 #define SW_LOG_UNIFORM(...) SW_CORE_WARN(__VA_ARGS__)

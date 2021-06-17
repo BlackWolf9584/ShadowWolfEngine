@@ -1,15 +1,4 @@
-﻿// -----------------------------
-// --Shadow Wolf Engine PBR shader --
-// -----------------------------
-// Note: this shader is still very much experimental expect bugs.
-//       Currently heavily updated. 
-//
-// References upon which this is based:
-// - Unreal Engine 4 PBR notes (https://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf)
-// - Frostbite's SIGGRAPH 2014 paper (https://seblagarde.wordpress.com/2015/07/14/siggraph-2014-moving-frostbite-to-physically-based-rendering/)
-// - Michał Siejak's PBR project (https://github.com/Nadrin)
-// - Implementation from years ago in the Sparky engine by Yan Chernikov(https://github.com/TheCherno/Sparky)
-#type vertex
+﻿#type vertex
 #version 430 core
 
 layout(location = 0) in vec3 a_Position;
@@ -19,7 +8,7 @@ layout(location = 3) in vec3 a_Binormal;
 layout(location = 4) in vec2 a_TexCoord;
 
 uniform mat4 u_ViewProjectionMatrix;
-uniform mat4 u_Transform;
+uniform mat4 u_ModelMatrix;
 
 out VertexOutput
 {
@@ -27,20 +16,18 @@ out VertexOutput
     vec3 Normal;
 	vec2 TexCoord;
 	mat3 WorldNormals;
-	mat3 WorldTransform;
 	vec3 Binormal;
 } vs_Output;
 
 void main()
 {
-	vs_Output.WorldPosition = vec3(u_Transform * vec4(a_Position, 1.0));
-    vs_Output.Normal = mat3(u_Transform) * a_Normal;
+	vs_Output.WorldPosition = vec3(u_ModelMatrix * vec4(a_Position, 1.0));
+    vs_Output.Normal = a_Normal;
 	vs_Output.TexCoord = vec2(a_TexCoord.x, 1.0 - a_TexCoord.y);
-	vs_Output.WorldNormals = mat3(u_Transform) * mat3(a_Tangent, a_Binormal, a_Normal);
-	vs_Output.WorldTransform = mat3(u_Transform);
+	vs_Output.WorldNormals = mat3(u_ModelMatrix) * mat3(a_Tangent, a_Binormal, a_Normal);
 	vs_Output.Binormal = a_Binormal;
 
-	gl_Position = u_ViewProjectionMatrix * u_Transform * vec4(a_Position, 1.0);
+	gl_Position = u_ViewProjectionMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
 }
 
 #type fragment
@@ -57,7 +44,6 @@ const vec3 Fdielectric = vec3(0.04);
 struct Light {
 	vec3 Direction;
 	vec3 Radiance;
-	float Multiplier;
 };
 
 in VertexOutput
@@ -66,7 +52,6 @@ in VertexOutput
     vec3 Normal;
 	vec2 TexCoord;
 	mat3 WorldNormals;
-	mat3 WorldTransform;
 	vec3 Binormal;
 } vs_Input;
 
@@ -247,7 +232,7 @@ vec3 Lighting(vec3 F0)
 	for(int i = 0; i < LightCount; i++)
 	{
 		vec3 Li = -lights.Direction;
-		vec3 Lradiance = lights.Radiance * lights.Multiplier;
+		vec3 Lradiance = lights.Radiance;
 		vec3 Lh = normalize(Li + m_Params.View);
 
 		// Calculate angles between surface normal and various light vectors.
@@ -279,7 +264,12 @@ vec3 IBL(vec3 F0, vec3 Lr)
 	int u_EnvRadianceTexLevels = textureQueryLevels(u_EnvRadianceTex);
 	float NoV = clamp(m_Params.NdotV, 0.0, 1.0);
 	vec3 R = 2.0 * dot(m_Params.View, m_Params.Normal) * m_Params.Normal - m_Params.View;
-	vec3 specularIrradiance = textureLod(u_EnvRadianceTex, RotateVectorAboutY(u_EnvMapRotation, Lr), (m_Params.Roughness) * u_EnvRadianceTexLevels).rgb;
+	vec3 specularIrradiance = vec3(0.0);
+
+	if (u_RadiancePrefilter > 0.5)
+		specularIrradiance = PrefilterEnvMap(m_Params.Roughness * m_Params.Roughness, R) * u_RadiancePrefilter;
+	else
+		specularIrradiance = textureLod(u_EnvRadianceTex, RotateVectorAboutY(u_EnvMapRotation, Lr), sqrt(m_Params.Roughness) * u_EnvRadianceTexLevels).rgb * (1.0 - u_RadiancePrefilter);
 
 	// Sample BRDF Lut, 1.0 - roughness for y-coord because texture was generated (in Sparky) for gloss model
 	vec2 specularBRDF = texture(u_BRDFLUTTexture, vec2(m_Params.NdotV, 1.0 - m_Params.Roughness)).rg;

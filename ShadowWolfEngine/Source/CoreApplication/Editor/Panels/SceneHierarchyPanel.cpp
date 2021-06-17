@@ -1,8 +1,6 @@
 #include "SWpch.h"
 #include "SceneHierarchyPanel.h"
-
 #include <imgui.h>
-
 #include "CoreApplication/Core/Application.h"
 #include "CoreApplication/Renderer/Mesh.h"
 #include "CoreApplication/Script/ScriptEngine.h"
@@ -188,7 +186,7 @@ namespace Wolf
 	{
 		static char imguiName[128];
 		memset(imguiName, 0, 128);
-		sprintf(imguiName, "Mesh##%d", imguiMeshID++);
+		sprintf_s(imguiName, "Mesh##%d", imguiMeshID++);
 
 		// Mesh Hierarchy
 		if (ImGui::TreeNode(imguiName))
@@ -268,12 +266,12 @@ namespace Wolf
 		ImGui::PushItemWidth(-1);
 
 		char buffer[256];
-		strcpy(buffer, value.c_str());
+		strcpy_s(buffer, value.c_str());
 
 		s_IDBuffer[0] = '#';
 		s_IDBuffer[1] = '#';
 		memset(s_IDBuffer + 2, 0, 14);
-		itoa(s_Counter++, s_IDBuffer + 2, 16);
+		_itoa(s_Counter++, s_IDBuffer + 2, 16);
 
 		if (error)
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.2f, 1.0f));
@@ -299,7 +297,7 @@ namespace Wolf
 		s_IDBuffer[0] = '#';
 		s_IDBuffer[1] = '#';
 		memset(s_IDBuffer + 2, 0, 14);
-		itoa(s_Counter++, s_IDBuffer + 2, 16);
+		_itoa(s_Counter++, s_IDBuffer + 2, 16);
 		ImGui::InputText(s_IDBuffer, (char*)value, 256, ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::PopItemWidth();
@@ -317,7 +315,7 @@ namespace Wolf
 		s_IDBuffer[0] = '#';
 		s_IDBuffer[1] = '#';
 		memset(s_IDBuffer + 2, 0, 14);
-		itoa(s_Counter++, s_IDBuffer + 2, 16);
+		_itoa(s_Counter++, s_IDBuffer + 2, 16);
 		if (ImGui::DragInt(s_IDBuffer, &value))
 			modified = true;
 
@@ -338,7 +336,7 @@ namespace Wolf
 		s_IDBuffer[0] = '#';
 		s_IDBuffer[1] = '#';
 		memset(s_IDBuffer + 2, 0, 14);
-		itoa(s_Counter++, s_IDBuffer + 2, 16);
+		_itoa(s_Counter++, s_IDBuffer + 2, 16);
 		if (ImGui::DragFloat(s_IDBuffer, &value, delta))
 			modified = true;
 
@@ -359,7 +357,7 @@ namespace Wolf
 		s_IDBuffer[0] = '#';
 		s_IDBuffer[1] = '#';
 		memset(s_IDBuffer + 2, 0, 14);
-		itoa(s_Counter++, s_IDBuffer + 2, 16);
+		_itoa(s_Counter++, s_IDBuffer + 2, 16);
 		if (ImGui::DragFloat2(s_IDBuffer, glm::value_ptr(value), delta))
 			modified = true;
 
@@ -380,7 +378,7 @@ namespace Wolf
 		s_IDBuffer[0] = '#';
 		s_IDBuffer[1] = '#';
 		memset(s_IDBuffer + 2, 0, 14);
-		itoa(s_Counter++, s_IDBuffer + 2, 16);
+		_itoa(s_Counter++, s_IDBuffer + 2, 16);
 		if (ImGui::DragFloat3(s_IDBuffer, glm::value_ptr(value), delta))
 			modified = true;
 
@@ -401,7 +399,7 @@ namespace Wolf
 		s_IDBuffer[0] = '#';
 		s_IDBuffer[1] = '#';
 		memset(s_IDBuffer + 2, 0, 14);
-		itoa(s_Counter++, s_IDBuffer + 2, 16);
+		_itoa(s_Counter++, s_IDBuffer + 2, 16);
 		if (ImGui::DragFloat4(s_IDBuffer, glm::value_ptr(value), delta))
 			modified = true;
 

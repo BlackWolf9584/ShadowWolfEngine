@@ -1,10 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
 #include "Scene.h"
 #include "CoreApplication/Renderer/Mesh.h"
-
 #include "Components.h"
 
 namespace Wolf {
@@ -71,5 +69,4 @@ namespace Wolf {
 		friend class SceneSerializer;
 		friend class ScriptEngine;
 	};
-
 }

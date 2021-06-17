@@ -1,29 +1,23 @@
 #include "SWpch.h" 
 #include "Mesh.h"
-
 #include <glad/glad.h>
-
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
 #include <assimp/DefaultLogger.hpp>
 #include <assimp/LogStream.hpp>
-
 #include <imgui.h>
-
 #include "CoreApplication/Renderer/Renderer.h"
-
 #include <filesystem>
 
-namespace Wolf {
-
+namespace Wolf 
+{
 #define MESH_DEBUG_LOG 0
 #if MESH_DEBUG_LOG
 #define SW_MESH_LOG(...) SW_CORE_TRACE(__VA_ARGS__)
@@ -84,7 +78,7 @@ namespace Wolf {
 		m_Scene = scene;
 
 		m_IsAnimated = scene->mAnimations != nullptr;
-		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("HazelPBR_Anim") : Renderer::GetShaderLibrary()->Get("HazelPBR_Static");
+		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("PBR_Anim.glsl") : Renderer::GetShaderLibrary()->Get("PBR_Static.glsl");
 		m_BaseMaterial = Ref<Material>::Create(m_MeshShader);
 		// m_MaterialInstance = Ref<MaterialInstance>::Create(m_BaseMaterial);
 		m_InverseTransform = glm::inverse(Mat4FromAssimpMat4(scene->mRootNode->mTransformation));

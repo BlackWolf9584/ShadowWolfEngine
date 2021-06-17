@@ -10,7 +10,7 @@
 namespace Wolf 
 {
 
-	static GLenum HazelToOpenGLTextureFormat(TextureFormat format)
+	static GLenum ShadowWolfToOpenGLTextureFormat(TextureFormat format)
 	{
 		switch (format)
 		{
@@ -42,7 +42,7 @@ namespace Wolf
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 			glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, HazelToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height, 0, HazelToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, ShadowWolfToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height, 0, ShadowWolfToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, nullptr);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
 		});
@@ -103,8 +103,8 @@ namespace Wolf
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-				GLenum internalFormat = HazelToOpenGLTextureFormat(instance->m_Format);
-				GLenum format = srgb ? GL_SRGB8 : (instance->m_IsHDR ? GL_RGB : HazelToOpenGLTextureFormat(instance->m_Format)); // HDR = GL_RGB for now
+				GLenum internalFormat = ShadowWolfToOpenGLTextureFormat(instance->m_Format);
+				GLenum format = srgb ? GL_SRGB8 : (instance->m_IsHDR ? GL_RGB : ShadowWolfToOpenGLTextureFormat(instance->m_Format)); // HDR = GL_RGB for now
 				GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
 				glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, instance->m_Width, instance->m_Height, 0, format, type, instance->m_ImageData.Data);
 				glGenerateMipmap(GL_TEXTURE_2D);
@@ -141,7 +141,7 @@ namespace Wolf
 		m_Locked = false;
 		Ref<OpenGLTexture2D> instance = this;
 		Renderer::Submit([instance]() {
-			glTextureSubImage2D(instance->m_RendererID, 0, 0, 0, instance->m_Width, instance->m_Height, HazelToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, instance->m_ImageData.Data);
+			glTextureSubImage2D(instance->m_RendererID, 0, 0, 0, instance->m_Width, instance->m_Height, ShadowWolfToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, instance->m_ImageData.Data);
 		});
 	}
 
@@ -181,7 +181,7 @@ namespace Wolf
 		Renderer::Submit([instance, levels]() mutable
 		{
 			glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &instance->m_RendererID);
-			glTextureStorage2D(instance->m_RendererID, levels, HazelToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height);
+			glTextureStorage2D(instance->m_RendererID, levels, ShadowWolfToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height);
 			glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
 			glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -264,7 +264,7 @@ namespace Wolf
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 			glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
 
-			auto format = HazelToOpenGLTextureFormat(instance->m_Format);
+			auto format = ShadowWolfToOpenGLTextureFormat(instance->m_Format);
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[2]);
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, faceWidth, faceHeight, 0, format, GL_UNSIGNED_BYTE, faces[0]);
 

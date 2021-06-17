@@ -4,7 +4,7 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 
-#define IMGUI_IMPL_API
+#define IMGUI_API
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_opengl3.h"
 
@@ -65,7 +65,7 @@ namespace Wolf
 
 		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init("#version 410");
+		ImGui_ImplOpenGL3_Init("#version 430");
 	}
 
 	void ImGuiLayer::OnDetach()

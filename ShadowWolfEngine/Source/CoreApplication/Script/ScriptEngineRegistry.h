@@ -1,11 +1,10 @@
 #pragma once
 
-namespace Wolf {
-
+namespace Wolf
+{
 	class ScriptEngineRegistry
 	{
 	public:
 		static void RegisterAll();
 	};
-
 }

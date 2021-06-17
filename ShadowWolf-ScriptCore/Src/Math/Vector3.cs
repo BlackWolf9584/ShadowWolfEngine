@@ -26,7 +26,5 @@ namespace Wolf
             Y = y;
             Z = z;
         }
-
-
     }
 }

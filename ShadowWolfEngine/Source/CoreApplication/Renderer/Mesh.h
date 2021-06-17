@@ -2,14 +2,11 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-
 #include "CoreApplication/Core/Utilities/Timestep.h"
-
 #include "CoreApplication/Renderer/VertexArray.h"
 #include "CoreApplication/Renderer/Buffer.h"
 #include "CoreApplication/Renderer/Shader.h"
 #include "CoreApplication/Renderer/Material.h"
-
 #include "CoreApplication/Core/Math/AABB.h"
 
 struct aiNode;

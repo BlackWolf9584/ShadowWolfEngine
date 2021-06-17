@@ -239,6 +239,7 @@
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="Source\CoreApplication\Platform\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="Source\CoreApplication\Platform\Vulkan\VKFramebuffer.h" />
     <ClInclude Include="Source\CoreApplication\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="Source\CoreApplication\Renderer\2DRenderer.h" />
     <ClInclude Include="Source\CoreApplication\Renderer\Buffer.h" />
@@ -426,8 +427,11 @@
     <ProjectReference Include="Dependencies\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\ShadowWolf-ScriptCore\ShadowWolf-ScriptCore.csproj">
+      <Project>{CEC1C6C0-3A2E-82BB-0322-1A196F4DA423}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

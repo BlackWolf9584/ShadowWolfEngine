@@ -3,7 +3,7 @@
 
 namespace Wolf
 {
-	void AssetManager::ProcessAseets(std::string assetType)
+	void AssetManager::ProcessAssets(std::string assetType)
 	{
 		std::vector<std::string> tokenizedAssetData;
 		auto filename = ParseFilename(assetType, '\\', tokenizedAssetData);
@@ -54,7 +54,7 @@ namespace Wolf
 		/* Just for debugging(it took me 1hr for this string literals n stuff! It better work!) */
 		SW_CORE_INFO(convCommand.c_str());
 
-		/* Fire the abov`e created command */
+		/* Fire the above created command */
 		system(convCommand.c_str());
 	}
 
@@ -70,11 +70,11 @@ namespace Wolf
 
 			auto dir_data = ParseFilename(entry.path().string(), '\\', std::vector<std::string>());
 			if (isDir) {
-				DirectoryInformation d(dir_data, ".hazel", entry.path().string(), false);
+				DirectoryInformation d(dir_data, ".swc", entry.path().string(), false);
 				dInfo.push_back(d);
 			}
 			else {
-				DirectoryInformation d(dir_data, ".hazel", entry.path().string(), true);
+				DirectoryInformation d(dir_data, ".swc", entry.path().string(), true);
 				dInfo.push_back(d);
 			}
 		}

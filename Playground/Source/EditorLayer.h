@@ -1,19 +1,15 @@
 #pragma once
 
 #include "Engine.h"
-
 #include "CoreApplication/ImGui/ImGuiLayer.h"
 #include "CoreApplication/Editor/EditorComponents/EditorCamera.h"
 #include "imgui/imgui_internal.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
-
 #include <string>
-
 #include "CoreApplication/Core/AssetBrowserCore/AssetManager.h"
 #include "CoreApplication/Core/AssetBrowserCore/DirectoryInformation.h"
 #include "CoreApplication/Editor/Panels/SceneHierarchyPanel.h"
